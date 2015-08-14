@@ -24,6 +24,12 @@
 #include <vector>
 #include <list>
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define CALLBACK __stdcall
+#else
+#define CALLBACK
+#endif // WIN32
+
 namespace SVGL
 {
     namespace Render
@@ -46,18 +52,18 @@ namespace SVGL
         typedef std::list<GluVertex> GluVertexList;
         GluVertexList gluCombineData;
 
-        GLvoid __stdcall callbackBegin(GLenum type)
+        GLvoid CALLBACK callbackBegin(GLint type)
         {
             gDst->newSet();
             gDst->back().type = type;
         }
 
-        GLvoid __stdcall callbackEnd()
+        GLvoid CALLBACK callbackEnd()
         {
 
         }
 
-        GLvoid __stdcall callbackVertex(GLvoid *vertex_data)
+        GLvoid CALLBACK callbackVertex(GLvoid *vertex_data)
         {
             double* v = (double*)vertex_data;
 
@@ -65,7 +71,7 @@ namespace SVGL
             gDst->pushPoint(&p);
         }
 
-        GLvoid __stdcall callbackCombine(GLdouble coords[3], void *vertex_data[4],
+        GLvoid CALLBACK callbackCombine(GLdouble coords[3], void *vertex_data[4],
                                          GLfloat weight[4], void **outData)
         {
             GluVertex v(coords[0], coords[1], coords[2]);
@@ -74,7 +80,7 @@ namespace SVGL
             *outData = &gluCombineData.back();
         }
 
-        typedef void(__stdcall *_GLUfuncptr)();
+        typedef void(CALLBACK *_GLUfuncptr)();
 
         void gluTessPointsSet(Buffer::Polygon* src, Buffer::Polygon* dst)
         {

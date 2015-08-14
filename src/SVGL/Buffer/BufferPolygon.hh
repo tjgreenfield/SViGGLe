@@ -21,7 +21,7 @@
 #pragma once
 
 #include "BufferContour.hh"
-#include <SVGL\Types\Point.hh>
+#include <SVGL/Types/Point.hh>
 #include <vector>
 #include <iostream>
 

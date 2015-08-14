@@ -26,7 +26,6 @@
 #include <SVGL/Styles/StyleShape.hh>
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <GL/gl.h>
 
 namespace SVGL

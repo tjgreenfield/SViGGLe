@@ -14,18 +14,16 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "ElementsPath.hh"
 #include "Path/PathParser.hh"
+#include <SVGL/Elements/Stroke/StrokeCap.hh>
 #include <SVGL/Buffer/BufferPolygon.hh>
 #include <SVGL/Render/RenderTessellation.hh>
 #include <SVGL/Render/RenderStroke.hh>
-
-#include <GL/glew.h>
-#include <GL/gl.h>
 
 namespace SVGL
 {
@@ -94,35 +92,40 @@ namespace SVGL
             glDeleteBuffers(strokeVertexArrays.size(), &strokeVertexArrays[0]);
             strokeVertexArrays.clear();
         }
+        dirty = true;
     }
 
     void Path::buffer(double tolerance)
     {
         if (!dirty) return;
         clearBuffers();
-        Buffer::Polygon pointBuffer;
-        Buffer::Polygon strokeBuffer;
-        Point at(*commandSet[0]);
 
-        for (PathCommand::PathCommandSet::iterator i = commandSet.begin(); i != commandSet.end(); ++i)
+        Buffer::BufferingState buffers(tolerance, commandSet[0].get(), &style);
+
+        for (PathCommand::PathCommand_uptr& command : commandSet)
         {
-            (*i)->buffer(&pointBuffer, tolerance);
-            (*i)->bufferStroke(&strokeBuffer, &at, &style, tolerance);
+            command->buffer(&buffers);
         }
 
-        // TODO: linecaps
-        // If last pathcommand isn't "Z", then Stroke::bufferEndCap(...)
+        if (dynamic_cast<PathCommand::ClosePath*>(commandSet[0].get()))
+        {
+            // TODO: final line join, here or in PathClosePath.cc?
+        }
+        else
+        {
+            Stroke::bufferEndCap(&buffers);
+        }
 
-        strokeGLBuffers.resize(strokeBuffer.size(), 0);
-        strokeVertexArrays.resize(strokeBuffer.size(), 0);
-        strokeArraySizes.resize(strokeBuffer.size(), 0);
+        strokeGLBuffers.resize(buffers.strokeBuffer.size(), 0);
+        strokeVertexArrays.resize(buffers.strokeBuffer.size(), 0);
+        strokeArraySizes.resize(buffers.strokeBuffer.size(), 0);
 
         glGenBuffers(strokeGLBuffers.size(), &strokeGLBuffers[0]);
         glGenVertexArrays(strokeVertexArrays.size(), &strokeVertexArrays[0]);
 
-        for (unsigned int i = 0; i < strokeBuffer.size(); ++i)
+        for (unsigned int i = 0; i < buffers.strokeBuffer.size(); ++i)
         {
-            Buffer::Contour& p = strokeBuffer[i];
+            Buffer::Contour& p = buffers.strokeBuffer[i];
 
             strokeArraySizes[i] = p.size();
 
@@ -137,7 +140,7 @@ namespace SVGL
 
         Buffer::Polygon fillPointBuffer;
 
-        Render::gluTessPointsSet(&pointBuffer, &fillPointBuffer);
+        Render::gluTessPointsSet(&buffers.pointBuffer, &fillPointBuffer);
 
         fillBuffers.resize(fillPointBuffer.size(), 0);
         fillVertexArrays.resize(fillPointBuffer.size(), 0);
@@ -188,5 +191,6 @@ namespace SVGL
             }
             context->popColor();
         }
+        context->incrementDepth();
     }
 }

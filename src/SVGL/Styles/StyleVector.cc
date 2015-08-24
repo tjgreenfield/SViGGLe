@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -94,19 +94,30 @@ namespace SVGL
         }
 
         /**
-         * Get the value of the stroke color property
+         * Get the value of the stroke color property, including alpha
          * @return The color property
          */
         Color Vector::getStroke() const
         {
+            unsigned int strokeColor;
+            unsigned int strokeOpacity;
             if (flags[Inherit::STROKE])
             {
-                return parent ? parent->getStroke() : defaultStroke;
+                strokeColor = parent ? parent->getStroke() : defaultStroke;
             }
             else
             {
-                return stroke;
+                strokeColor = stroke;
             }
+            if (flags[Inherit::STROKE_OPACITY])
+            {
+                strokeOpacity = parent ? parent->getStroke() : defaultStroke;
+            }
+            else
+            {
+                strokeOpacity = stroke;
+            }
+            return (strokeColor & 0x00FFFFFF) + (strokeOpacity & 0xFF000000);
         }
 
         /**
@@ -158,6 +169,22 @@ namespace SVGL
         }
 
         /**
+         * Get the line cap type for the stroke
+         * @return The stroke line cap type
+         */
+        LineCap Vector::getStrokeLineCap() const
+        {
+            if (flags[Inherit::STROKE_LINECAP])
+            {
+                return parent ? parent->getStrokeLineCap() : defaultStrokeLineCap;
+            }
+            else
+            {
+                return strokeLineCap;
+            }
+        }
+
+        /**
          * Get the stroke dash array
          * @return A pointer to the dash array
          */
@@ -170,6 +197,22 @@ namespace SVGL
             else
             {
                 return &strokeDashArray;
+            }
+        }
+
+        /**
+         * Get the stroke dash offset
+         * @return The offset length to start into the dash array
+         */
+        double Vector::getStrokeDashOffset() const
+        {
+            if (flags[Inherit::STROKE_DASHOFFSET])
+            {
+                return parent ? parent->getStrokeDashOffset() : defaultStrokeDashOffset;
+            }
+            else
+            {
+                return strokeDashOffset;
             }
         }
 
@@ -204,7 +247,7 @@ namespace SVGL
                 }
                 break;
             case Inherit::STROKE:
-                stroke = colorFromValue(value, &state);
+                stroke = colorFromValue(value, &state, (stroke & 0xFF000000) >> 24);
                 switch (state)
                 {
                 case CSS::INHERIT:
@@ -212,20 +255,35 @@ namespace SVGL
                     flags[Flags::STROKE_NONE] = false;
                     break;
                 case CSS::NONE:
-                    flags[Flags::STROKE_NONE] = true;
                     flags[Inherit::STROKE] = false;
+                    flags[Flags::STROKE_NONE] = true;
                     break;
                 case CSS::COLOR:
                 default:
-                    flags[Flags::STROKE_NONE] = false;
                     flags[Inherit::STROKE] = false;
+                    flags[Flags::STROKE_NONE] = false;
                     break;
+                }
+                break;
+            case Inherit::STROKE_OPACITY:
+                if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
+                {
+                    stroke = (stroke & 0x00FFFFFF) + (((int)(dimension->get() * 255)) << 24);
+                    flags[Inherit::STROKE_OPACITY] = false;
+                }
+                else if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
+                {
+                    if (ident->ident == "inherit")
+                    {
+                        flags[Inherit::STROKE_OPACITY] = true;
+                    }
                 }
                 break;
             case Inherit::STROKE_WIDTH:
                 if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
                 {
-                    strokeWidth = dimension->get();
+                    // Internally stroke width is distance from centre to edge, so half what SVG uses as stroke width
+                    strokeWidth = dimension->get() * 0.5;
                     flags[Inherit::STROKE_WIDTH] = false;
                 }
                 else if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
@@ -274,6 +332,30 @@ namespace SVGL
                     strokeMiterLimit = dimension->get();
                 }
                 break;
+            case Inherit::STROKE_LINECAP:
+                if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
+                {
+                    if (ident->ident == "inherit")
+                    {
+                        flags[Inherit::STROKE_LINECAP] = true;
+                    }
+                    else if (ident->ident == "butt")
+                    {
+                        flags[Inherit::STROKE_LINECAP] = false;
+                        strokeLineCap = LC_BUTT;
+                    }
+                    else if (ident->ident == "round")
+                    {
+                        flags[Inherit::STROKE_LINECAP] = false;
+                        strokeLineCap = LC_ROUND;
+                    }
+                    else if (ident->ident == "square")
+                    {
+                        flags[Inherit::STROKE_LINECAP] = false;
+                        strokeLineCap = LC_SQUARE;
+                    }
+                }
+                break;
             case Inherit::STROKE_DASHARRAY:
                 strokeDashArray.clear();
                 if (const CSS::ValueList* list = dynamic_cast<const CSS::ValueList*>(value))
@@ -297,6 +379,20 @@ namespace SVGL
                     for (unsigned int i=0; i < size; ++i)
                     {
                         strokeDashArray.push_back(strokeDashArray[i]);
+                    }
+                }
+                break;
+            case Inherit::STROKE_DASHOFFSET:
+                if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
+                {
+                    flags[Inherit::STROKE_DASHOFFSET] = false;
+                    strokeDashOffset = dimension->get();
+                }
+                else if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
+                {
+                    if (ident->ident == "inherit")
+                    {
+                        flags[Inherit::STROKE_DASHOFFSET] = true;
                     }
                 }
                 break;

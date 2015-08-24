@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -193,28 +193,30 @@ namespace SVGL
             return 0;
         }
 
-        Color colorFromHash(const Hash* hash)
+        Color colorFromHash(const Hash* hash, unsigned char alpha)
         {
             if (hash->hash.length() == 3)
             {
-                return rgb(
+                return rgba(
                     (hexChar(hash->hash[0]) << 4) + hexChar(hash->hash[0]),
                     (hexChar(hash->hash[1]) << 4) + hexChar(hash->hash[1]),
-                    (hexChar(hash->hash[2]) << 4) + hexChar(hash->hash[2])
+                    (hexChar(hash->hash[2]) << 4) + hexChar(hash->hash[2]),
+                    alpha
                     );
             }
             else if (hash->hash.length() == 6)
             {
-                return rgb(
+                return rgba(
                     (hexChar(hash->hash[0]) << 4) + hexChar(hash->hash[1]),
                     (hexChar(hash->hash[2]) << 4) + hexChar(hash->hash[3]),
-                    (hexChar(hash->hash[4]) << 4) + hexChar(hash->hash[5])
+                    (hexChar(hash->hash[4]) << 4) + hexChar(hash->hash[5]),
+                    alpha
                     );
             }
             return 0;
         }
 
-        Color colorFromRGBFunc(const Function* function)
+        Color colorFromRGBFunc(const Function* function, unsigned char alpha)
         {
             if (function->function == "rgb")
             {
@@ -231,13 +233,13 @@ namespace SVGL
                             && g->unit == Dimension::UNIT_USER
                             && b->unit == Dimension::UNIT_USER)
                         {
-                            return rgb((r->value), (unsigned int)(g->value), (unsigned int)(b->value));
+                            return rgba((r->value), (unsigned int)(g->value), (unsigned int)(b->value), alpha);
                         }
                         if (r->unit == Dimension::UNIT_PERCENT
                             && g->unit == Dimension::UNIT_PERCENT
                             && b->unit == Dimension::UNIT_PERCENT)
                         {
-                            return rgb((unsigned int)(r->value * 255 / 100), (unsigned int)(g->value * 255 / 100), (unsigned int)(b->value * 255 / 100));
+                            return rgba((unsigned int)(r->value * 255 / 100), (unsigned int)(g->value * 255 / 100), (unsigned int)(b->value * 255 / 100), alpha);
                         }
 
                     }
@@ -246,7 +248,7 @@ namespace SVGL
             return 0;
         }
 
-        Color colorFromValue(const Value* value, ColorState* state)
+        Color colorFromValue(const Value* value, ColorState* state, unsigned char alpha)
         {
             if (typeid(*value) == typeid(CSS::Ident))
             {
@@ -254,31 +256,31 @@ namespace SVGL
                 if (i != CSS::colorMap.end())
                 {
                     *state = COLOR;
-                    return i->second;
+                    return (i->second & 0xFFFFFF) + (alpha << 24);
                 }
                 else if (((CSS::Ident*)value)->ident == "inherit")
                 {
                     *state = INHERIT;
-                    return 0;
+                    return rgba(0, 0, 0, 0);
                 }
                 else if (((CSS::Ident*)value)->ident == "none")
                 {
                     *state = NONE;
-                    return 0;
+                    return rgba(0, 0, 0, 0);
                 }
             }
             else if (typeid(*value) == typeid(CSS::Hash))
             {
                 *state = COLOR;
-                return CSS::colorFromHash((CSS::Hash*)value);
+                return CSS::colorFromHash((CSS::Hash*)value, alpha);
             }
             else if (typeid(*value) == typeid(CSS::Function))
             {
                 *state = COLOR;
-                return CSS::colorFromRGBFunc((CSS::Function*)value);
+                return CSS::colorFromRGBFunc((CSS::Function*)value, alpha);
             }
             *state = NONE;
-            return 0;
+            return rgba(0, 0, 0, 0);
         }
     }
 }

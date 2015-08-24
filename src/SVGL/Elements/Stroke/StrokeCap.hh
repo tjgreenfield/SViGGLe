@@ -18,21 +18,27 @@
  *
  */
 
-#include "PathLineTo.hh"
-#include <SVGL/Elements/Stroke/StrokeDash.hh>
+#pragma once
+
+#include <SVGL/Buffer/BufferingState.hh>
+#include <SVGL/Types/Point.hh>
 
 namespace SVGL
 {
-    namespace PathCommand
+    namespace Stroke
     {
-        void LineTo::buffer(Buffer::BufferingState* state) const
-        {
-            // fill
-            state->pointBuffer.pushPoint(this);
+        void bufferStartCap(Buffer::BufferingState* state, const Point& dir);
 
-            Stroke::bufferJoin(state, *this);
+        void bufferEndCap(Buffer::BufferingState* state);
 
-            Stroke::bufferDash(state, *this);
-        }
+        void bufferCap(Buffer::BufferingState* state, const Point& dir);
+
+        void bufferStartCapSquare(Buffer::BufferingState* state, const Point& dir);
+
+        void bufferEndCapSquare(Buffer::BufferingState* state, const Point& dir);
+
+        void bufferStartCapRound(Buffer::BufferingState* state, const Point& dir);
+
+        void bufferEndCapRound(Buffer::BufferingState* state, const Point& dir);
     }
 }

@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -176,11 +176,24 @@ namespace SVGL
              */
             virtual double getStrokeMiterLimit() const;
 
+
+            /**
+             * Get the line cap type for the stroke
+             * @return The stroke line cap type
+             */
+            virtual LineCap getStrokeLineCap() const;
+
             /**
              * Get the stroke dash array
              * @return A pointer to the dash array
              */
             virtual const DashArray* getStrokeDashArray() const;
+
+            /**
+             * Get the stroke dash offset
+             * @return The offset length to start into the dash array
+             */
+            virtual double getStrokeDashOffset() const;
 
             /**
              * Set the style property of the style object.

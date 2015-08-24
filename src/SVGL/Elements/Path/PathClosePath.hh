@@ -14,25 +14,24 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #pragma once
 
 #include "PathCommand.hh"
+#include "PathLineTo.hh"
 #include <SVGL/Buffer/BufferPolygon.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        class ClosePath : public PathCommand
+        class ClosePath : public LineTo
         {
         public:
-            void buffer(Buffer::Polygon* pointBuffer, double tolerance) const override;
-
-            void bufferStroke(Buffer::Polygon* strokeBuffer, Point* at, Styles::SVG* style, double tolerance) const override;
+            void buffer(Buffer::BufferingState* state) const override;
         };
     }
 }

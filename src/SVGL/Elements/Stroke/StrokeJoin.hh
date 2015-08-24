@@ -14,26 +14,25 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #pragma once
 
-#include <SVGL/Buffer/BufferContour.hh>
-#include <SVGL/Buffer/BufferPolygon.hh>
-#include <SVGL/Styles/Styles.hh>
+#include <SVGL/Buffer/BufferingState.hh>
+#include <SVGL/Types/Point.hh>
 
 namespace SVGL
 {
     namespace Stroke
     {
-        void bufferJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance);
+        void bufferJoin(Buffer::BufferingState* state, const Point& to);
 
-        void bufferMiterJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance);
+        void bufferMiterJoin(Buffer::BufferingState* state, const Point& offset, double strokeWidth);
 
-        void bufferRoundJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance);
+        void bufferRoundJoin(Buffer::BufferingState* state, const Point& offset, double strokeWidth);
 
-        void bufferBevelJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance);
+        void bufferBevelJoin(Buffer::BufferingState* state, const Point& offset);
     }
 }

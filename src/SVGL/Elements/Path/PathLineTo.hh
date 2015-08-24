@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,7 +30,9 @@ namespace SVGL
         class LineTo : public MoveTo
         {
         public:
-            LineTo();
+            LineTo() :
+                MoveTo(0, 0)
+            {}
 
             LineTo(Point _p) :
                 MoveTo(_p)
@@ -40,9 +42,7 @@ namespace SVGL
                 MoveTo(_x, _y)
             {}
 
-            void buffer(Buffer::Polygon* pointBuffer, double tolerance) const override;
-
-            void bufferStroke(Buffer::Polygon* strokeBuffer, Point* at, Styles::SVG* style, double tolerance) const override;
+            void buffer(Buffer::BufferingState* state) const override;
         };
     }
 }

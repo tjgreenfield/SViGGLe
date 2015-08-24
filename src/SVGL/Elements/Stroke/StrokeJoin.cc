@@ -14,57 +14,72 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "StrokeJoin.hh"
+#include "StrokeCap.hh"
 #include <SVGL/Types/Consts.hh>
 
 #include <cmath>
-#include <iostream>
+#include <algorithm>
 
 namespace SVGL
 {
     namespace Stroke
     {
-        void bufferJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance)
+        void bufferJoin(Buffer::BufferingState* state, const Point& to)
         {
-            if (output->back().size() > 2)
+            if ((state->dashIndex & 0x01) == 1)
             {
-                switch (style->getStrokeLineJoin())
+                // don't do a join if we're in between dashes
+                return;
+            }
+
+            double strokeWidth = state->style->getStrokeWidth();
+            Point delta(to - state->at);
+            Point offset(strokeWidth * delta.normal());
+
+            if (state->strokeBuffer.back().size() > 2)
+            {
+                switch (state->style->getStrokeLineJoin())
                 {
                 default:
                 case Styles::LJ_MITER:
-                    bufferMiterJoin(output, a, b, style, tolerance);
+                    bufferMiterJoin(state, offset, strokeWidth);
                     break;
                 case Styles::LJ_ROUND:
-                    bufferRoundJoin(output, a, b, style, tolerance);
+                    bufferRoundJoin(state, offset, strokeWidth);
                     break;
                 case Styles::LJ_BEVEL:
-                    bufferBevelJoin(output, a, b, style, tolerance);
+                    bufferBevelJoin(state, offset);
                     break;
                 }
             }
             else
             {
-                Point c(0.5 * (a + b));
-                Point d(0.5 * (a - b));
-                Point e(c + 2 * d);
-                Point f(c - 2 * d);
-
-                output->pushPoint(a);
-                output->pushPoint(b);
-                //output->pushPoint(e);
-                //output->pushPoint(f);
+                bufferStartCap(state, delta);
+                bufferBevelJoin(state, offset);
             }
         }
 
-        void bufferMiterJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance)
+        void bufferMiterJoin(Buffer::BufferingState* state, const Point& offset, double strokeWidth)
         {
-            double strokeWidth(style->getStrokeWidth());
-            Point y(output->getSecondLastPoint());
-            Point z(output->getLastPoint());
+            /*
+             *           a---------->
+             *
+             *        y  c  z
+             *        |     |
+             *        |  b--+------->
+             *        |     |
+             */
+
+            double strokeMiterLimit(state->style->getStrokeMiterLimit());
+            Point a(state->at + offset);
+            Point b(state->at - offset);
+            Point y(state->strokeBuffer.getSecondLastPoint());
+            Point z(state->strokeBuffer.getLastPoint());
             Point zy(z - y);
             Point zyNorm(zy.normal());
             Point ba(b - a);
@@ -73,38 +88,75 @@ namespace SVGL
             double angle(baNorm.angle(&zyNorm));
 
             angle = angle / 2;
-            double miter(tan(angle) * strokeWidth);
+            // TODO: this isn't the correct comparision for strokeMiterLimit
+            double miter(std::min(tan(angle), strokeMiterLimit) * strokeWidth);
 
             Point m(y + miter * zyNorm);
             Point n(z - miter * zyNorm);
 
-            Point c(0.5 * (m + n));
-            Point q(c + 3 * (m - c));
-            Point r(c + 3 * (n - c));
+            state->strokeBuffer.pushPoint(m);
+            state->strokeBuffer.pushPoint(n);
 
-
-            output->pushPoint(m);
-            output->pushPoint(n);
-            //output->pushPoint(q);
-            //output->pushPoint(r);
-            output->pushPoint(a);
-            output->pushPoint(b);
+            state->strokeBuffer.pushPoint(a);
+            state->strokeBuffer.pushPoint(b);
         }
 
-        void bufferRoundJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance)
+        void bufferRoundJoin(Buffer::BufferingState* state, const Point& offset, double strokeWidth)
         {
-            //double strokeWidth = style->getStrokeWidth();
-            
-            output->pushPoint(a);
-            output->pushPoint(b);
+            /*
+             *           a---------->
+             *
+             *        y  c  z
+             *        |     |
+             *        |  b--+------->
+             *        |     |
+             */
+            Point a(state->at + offset);
+            Point b(state->at - offset);
+            Point y(state->strokeBuffer.getSecondLastPoint());
+
+            Point cy(y - state->at);
+            Point u(1, 0);
+
+            Point ca(a - state->at);
+
+            double t0(u.angle(&cy));
+            double t1(cy.angle(&ca) + t0);
+            if (t0 > t1)
+            {
+                std::swap(t0, t1);
+            }
+            double dt(state->tolerance / PI / strokeWidth);
+
+            for (double t = t0; t < t1; t += dt)
+            {
+                double sint = sin(t);
+                double cost = cos(t);
+                Point m(state->at.x + cost * strokeWidth, state->at.y + sint * strokeWidth);
+                Point n(state->at.x - cost * strokeWidth, state->at.y - sint * strokeWidth);
+                state->strokeBuffer.pushPoint(m);
+                state->strokeBuffer.pushPoint(n);
+            }
+            state->strokeBuffer.pushPoint(a);
+            state->strokeBuffer.pushPoint(b);
         }
 
-        void bufferBevelJoin(Buffer::Polygon* output, Point a, Point b, const Styles::SVG* style, double tolerance)
+        void bufferBevelJoin(Buffer::BufferingState* state, const Point& offset)
         {
-            //double strokeWidth = style->getStrokeWidth();
             
-            output->pushPoint(a);
-            output->pushPoint(b);
+            /*
+             *           a---------->
+             *
+             *        y  c  z
+             *        |     |
+             *        |  b--+------->
+             *        |     |
+             */
+            Point a(state->at + offset);
+            Point b(state->at - offset);
+
+            state->strokeBuffer.pushPoint(a);
+            state->strokeBuffer.pushPoint(b);
         }
     }
 }

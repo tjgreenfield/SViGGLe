@@ -14,11 +14,12 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "PathEllipticalTo.hh"
+#include <SVGL/Elements/Stroke/StrokeDash.hh>
 #include <SVGL/Types/Consts.hh>
 #include <algorithm>
 #include <cstdlib>
@@ -125,71 +126,30 @@ namespace SVGL
         }
 
 
-        void EllipticalTo::buffer(Buffer::Polygon* pointBuffer, double tolerance) const
+        void EllipticalTo::buffer(Buffer::BufferingState* state) const
         {
-            int vertexCount = int(std::max(rx, ry) * dt / PI / tolerance);
+            // this might need adjusting
+            int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / state->tolerance)), 2);
+
             for (int i = 1; i < vertexCount; i++)
             {
+                // fill
                 double t = (((double)i) / ((double)(vertexCount - 1))) * dt + t1;
                 double cost = cos(t);
                 double sint = sin(t);
 
-                Point p((cosp * rx * cost) - (sinp * ry * sint) + cx, //x
-                        (sinp * rx * cost) + (cosp * ry * sint) + cy); //y
-
-                pointBuffer->pushPoint(&p);
-            }
-            pointBuffer->pushPoint(this);
-        }
-
-        void EllipticalTo::bufferStroke(Buffer::Polygon* strokeBuffer, Point* at, Styles::SVG* style, double tolerance) const
-        {
-            double strokeWidth = style->getStrokeWidth();
-
-            double t = t1;
-            double cost = cos(t);
-            double sint = sin(t);
-
-             // The derviative of the pCentre position function below is used to get the direction
-            Point dir (-(cosp * rx * sint) - (sinp * ry * cost), //x
-                                             -(sinp * rx * sint) + (cosp * ry * cost)); //y
-            if (dt < 0) // need to make sure we're going in the right direction
-            {
-                dir *= -1;
-            }
-
-            // The normal of the direction is used for the direction of the offset
-            Point offset(strokeWidth * dir.normal());
-
-            Point a(*at + offset);
-            Point b(*at - offset);
-
-            Stroke::bufferJoin(strokeBuffer, a, b, style, tolerance);
-
-            // this might need adjusting
-            int vertexCount = abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / tolerance));
-
-            Point prevCentre = *at;
-
-            for (int i = 1; i < vertexCount; i++)
-            {
-                t = (((double)i) / ((double)(vertexCount - 1))) * dt + t1;
-                cost = cos(t);
-                sint = sin(t);
-
                 Point pCentre((cosp * rx * cost) - (sinp * ry * sint) + cx, //x
                               (sinp * rx * cost) + (cosp * ry * sint) + cy); //y
 
-                offset = strokeWidth * prevCentre.normal(&pCentre);
+                state->pointBuffer.pushPoint(pCentre);
 
-                strokeBuffer->pushPoint(pCentre + offset);
-                strokeBuffer->pushPoint(pCentre - offset);
+                if (i == 1)
+                {
+                    Stroke::bufferJoin(state, pCentre);
+                }
 
-                prevCentre = pCentre;
+                Stroke::bufferDash(state, pCentre);
             }
-
-            // Assume that the above loop ends close enough to the specified end point of this command
-            *at = *this;
         }
     }
 }

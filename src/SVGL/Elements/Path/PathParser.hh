@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -318,7 +318,7 @@ namespace SVGL
 
             inline bool readZ()
             {
-                commandSet.emplace_back(prev = new MoveTo(*prev));
+                commandSet.emplace_back(prev = new ClosePath());
                 return false;
             }
 

@@ -18,21 +18,8 @@
  *
  */
 
-#include "PathLineTo.hh"
-#include <SVGL/Elements/Stroke/StrokeDash.hh>
+#pragma once
 
-namespace SVGL
-{
-    namespace PathCommand
-    {
-        void LineTo::buffer(Buffer::BufferingState* state) const
-        {
-            // fill
-            state->pointBuffer.pushPoint(this);
-
-            Stroke::bufferJoin(state, *this);
-
-            Stroke::bufferDash(state, *this);
-        }
-    }
-}
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GL/gl.h>

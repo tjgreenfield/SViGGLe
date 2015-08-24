@@ -14,11 +14,12 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "PathCubicTo.hh"
+#include <SVGL/Elements/Stroke/StrokeDash.hh>
 #include <algorithm>
 
 #include <iostream>
@@ -27,69 +28,34 @@ namespace SVGL
 {
     namespace PathCommand
     {
-        void CubicTo::buffer(Buffer::Polygon* pointBuffer, double tolerance) const
+        void CubicTo::buffer(Buffer::BufferingState* state) const
         {
-            Point op = pointBuffer->getLastPoint();
+            Point op = state->pointBuffer.getLastPoint();
 
             // this might need adjusting
-            double dt = std::min(tolerance / (p1.distance() + p2.distance(&p1) + distance(&p2)) * 3, 0.5);
+            unsigned int vertexCount = (p1.distance() + p2.distance(&p1) + distance(&p2)) / (3 * state->tolerance);
 
-            for (double t = dt; t < 1; t += dt)
+            for (unsigned int i = 1; i <= vertexCount; ++i)
             {
+                double t = ((double)i) / ((double) vertexCount);
                 double nt = 1 - t;
                 double a = nt * nt * nt;
                 double b = 3 * t * nt * nt;
                 double c = 3 * t * t * nt;
                 double d = t * t * t;
 
-                Point pOut(a * op.x + b * p1.x + c * p2.x + d*x,
-                        a * op.y + b * p1.y + c * p2.y + d * y);
-                pointBuffer->pushPoint(&pOut);
+                // fill
+                Point pCentre(a * op.x + b * p1.x + c * p2.x + d * x,
+                              a * op.y + b * p1.y + c * p2.y + d * y);
+                state->pointBuffer.pushPoint(&pCentre);
+
+                if (i == 1)
+                {
+                    Stroke::bufferJoin(state, pCentre);
+                }
+
+                Stroke::bufferDash(state, pCentre);
             }
-            pointBuffer->pushPoint(this);
-        }
-
-        void CubicTo::bufferStroke(Buffer::Polygon* strokeBuffer, Point* at, Styles::SVG* style, double tolerance) const
-        {
-            double strokeWidth = style->getStrokeWidth();
-
-            Point offset(strokeWidth * at->normal(&p1));
-
-            Point a(*at + offset);
-            Point b(*at - offset);
-
-            Stroke::bufferJoin(strokeBuffer, a, b, style, tolerance);
-
-            // this might need adjusting
-            double dt = std::min(tolerance / (p1.distance() + p2.distance(&p1) + distance(&p2)) * 3, 0.5);
-
-            Point prevCentre = *at;
-
-            for (double t = dt; t < 1; t += dt)
-            {
-                double nt = 1 - t;
-                double a = nt * nt * nt;
-                double b = 3 * t * nt * nt;
-                double c = 3 * t * t * nt;
-                double d = t * t * t;
-
-                Point pCentre(a * at->x + b * p1.x + c * p2.x + d * x,
-                              a * at->y + b * p1.y + c * p2.y + d * y);
-
-                offset = strokeWidth * prevCentre.normal(&pCentre);
-
-                strokeBuffer->pushPoint(pCentre + offset);
-                strokeBuffer->pushPoint(pCentre - offset);
-
-                prevCentre = pCentre;
-            }
-
-            offset = strokeWidth * prevCentre.normal(this);
-
-            strokeBuffer->pushPoint(*this + offset);
-            strokeBuffer->pushPoint(*this - offset);
-
-            *at = *this;
         }
     }
 }

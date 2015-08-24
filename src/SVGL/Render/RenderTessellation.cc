@@ -14,13 +14,13 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "RenderTessellation.hh"
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <SVGL/GL/gl.h>
+
 #include <vector>
 #include <list>
 

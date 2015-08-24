@@ -14,16 +14,18 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #pragma once
 
 #include <SVGL/Buffer/BufferPolygon.hh>
+#include <SVGL/Buffer/BufferingState.hh>
 #include <SVGL/Styles/Styles.hh>
 #include <SVGL/Elements/Stroke/StrokeJoin.hh>
 #include <SVGL/Types/Point.hh>
+
 
 #include <memory>
 
@@ -51,9 +53,7 @@ namespace SVGL
             
             }
 
-            virtual void buffer(Buffer::Polygon* pointBuffer, double tolerance) const = 0;
-
-            virtual void bufferStroke(Buffer::Polygon* pointBuffer, Point* at, Styles::SVG* style, double tolerance) const = 0;
+            virtual void buffer(Buffer::BufferingState* state) const = 0;
         };
 
         typedef std::unique_ptr<PathCommand> PathCommand_uptr;

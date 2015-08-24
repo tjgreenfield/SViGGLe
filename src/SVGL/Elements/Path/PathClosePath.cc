@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,28 +24,13 @@ namespace SVGL
 {
     namespace PathCommand
     {
-        void ClosePath::buffer(Buffer::Polygon* pointBuffer, double tolerance) const
+        void ClosePath::buffer(Buffer::BufferingState* state) const
         {
-        	pointBuffer->pushPoint(pointBuffer->getFirstPoint());
-        }
+            static_cast<Point>(*this) = state->pointBuffer.getFirstPoint();
 
-        void ClosePath::bufferStroke(Buffer::Polygon* strokeBuffer, Point* at, Styles::SVG* style, double tolerance) const
-        {
-            double strokeWidth = style->getStrokeWidth();
+            LineTo::buffer(state);
 
-            Point offset = strokeWidth * at->normal(this);
-
-            Point a(*at + offset);
-            Point b(*at - offset);
-
-            Stroke::bufferJoin(strokeBuffer, a, b, style, tolerance);
-
-            strokeBuffer->pushPoint(*this + offset);
-            strokeBuffer->pushPoint(*this - offset);
-
-            *at = *this;
-
-            // Add final join?
+            // TODO: Final line join, here or in ElementsPath.cc?
         }
     }
 }

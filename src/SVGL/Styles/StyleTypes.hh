@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -118,12 +118,15 @@ namespace SVGL
         extern ClipRule defaultClipRule; //!< Default clip-rule: NonZero
 
         typedef unsigned char LineJoin;
+        typedef unsigned char LineCap;
 
         extern Color defaultFill; //!< Default fill color: black
         extern Color defaultStroke; //!< Default stroke color: none
         extern double defaultStrokeWidth; //!< Default stroke width: 1
         extern LineJoin defaultStrokeLineJoin; //!< Default stroke line join: LJ_MITER
         extern double defaultStrokeMiterLimit; //!< Default stroke miter limit: 4
+        extern LineCap defaultStrokeLineCap; //!< Default stroke line join: LC_BUTT
+        extern double defaultStrokeDashOffset; //!< Default stroke dash offset: 0
 
         typedef std::vector<double> DashArray;
 
@@ -165,7 +168,7 @@ namespace SVGL
         };
 
         /**
-         * Possible color interpolation options
+         * Color interpolation options
          */
         enum _ColorInterpolation {
             CI_AUTO,
@@ -174,7 +177,7 @@ namespace SVGL
         };
 
         /**
-         * Possible clip rule options
+         * Clip rule options
          */
         enum _ClipRule {
             CR_NONZERO = 0,
@@ -182,12 +185,21 @@ namespace SVGL
         };
 
         /**
-         * Possible line join options
+         * Line join options
          */
         enum _LineJoin {
             LJ_MITER,
             LJ_ROUND,
             LJ_BEVEL
+        };
+
+        /**
+         * Line cap options
+         */
+        enum _LineCap {
+            LC_BUTT,
+            LC_ROUND,
+            LC_SQUARE
         };
 
     }

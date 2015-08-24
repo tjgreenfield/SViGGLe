@@ -1,16 +1,47 @@
+/**
+ *  Copyright (c) 2015 Timothy Greenfield <tjgreenfield@gmail.com>
+ *
+ * This file is part of SViGGLe.
+ *
+ * SViGGLe is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ * SViGGLe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#define GLEW_STATIC
+
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Elements/Transform/Transform.hh>
 #include <SVGL/Document.hh>
 #include <SVGL/Elements/ElementsElement.hh>
-#include <GL/glew.h>
+
+#include <SVGL/GL/gl.h>
 #include <GLFW/glfw3.h>
-#include <GL/gl.h>
 
 #include <iostream>
 #include <stdlib.h>
 
 using namespace std;
 using namespace SVGL;
+
+SVGL::Document_uptr document(nullptr);
+CSS::StyleSheet styleSheet;
+float viewX = 0.0f;
+float viewY = 0.0f;
+float scale = 0.0008f;
+double tolerance = 2000 / 480.f;
+bool wireframe = true;
+
 
 static void errorCallback(int error, const char* description)
 {
@@ -19,8 +50,90 @@ static void errorCallback(int error, const char* description)
 
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
+    switch (key)
+    {
+    case GLFW_KEY_ESCAPE:
+        if (action == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, GL_TRUE);
+        }
+        break;
+    case GLFW_KEY_UP:
+        if (action == GLFW_PRESS)
+        {
+            viewY += 0.05 / scale;
+        }
+        break;
+    case GLFW_KEY_DOWN:
+        if (action == GLFW_PRESS)
+        {
+            viewY -= 0.05 / scale;
+        }
+        break;
+    case GLFW_KEY_LEFT:
+        if (action == GLFW_PRESS)
+        {
+            viewX += 0.05 / scale;
+        }
+        break;
+    case GLFW_KEY_RIGHT:
+        if (action == GLFW_PRESS)
+        {
+            viewX -= 0.05 / scale;
+        }
+        break;
+
+    case GLFW_KEY_EQUAL:
+        if (action == GLFW_PRESS)
+        {
+            scale /= 0.9;
+        }
+        break;
+    case GLFW_KEY_MINUS:
+        if (action == GLFW_PRESS)
+        {
+            scale *= 0.9;
+        }
+        break;
+    case GLFW_KEY_COMMA:
+        if (action == GLFW_PRESS)
+        {
+            tolerance *= 2;
+            document->clearBuffers();
+            document->buffer(tolerance);
+        }
+        break;
+    case GLFW_KEY_PERIOD:
+        if (action == GLFW_PRESS)
+        {
+            tolerance *= 0.5;
+            document->clearBuffers();
+            document->buffer(tolerance);
+        }
+        break;
+    case GLFW_KEY_SPACE:
+        if (action == GLFW_PRESS)
+        {
+            wireframe = !wireframe;
+            if (wireframe)
+            {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            }
+            else
+            {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+        }
+    case GLFW_KEY_ENTER:
+        if (action == GLFW_PRESS)
+        {
+            SVGL::Parser parser;
+            parser.loadFile("data/example.svg");
+            document = parser.readSVG();
+            document->applyStyleSheet(&styleSheet);
+            document->buffer(tolerance);
+        }
+    }
 }
 
 static GLFWwindow* initGL()
@@ -63,20 +176,21 @@ static int initShaders()
     const char* vertexShader =
         "#version 400\n"
         "uniform dmat3x2 transform;"
+        "uniform float depth;"
         "in vec2 vp;"
         "void main () {"
         "  gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],"
         "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],"
-        "                      0.0,"
+        "                      depth,"
         "                      1.0);"
         "}";
 
     const char* fragmentShader =
         "#version 400\n"
-        "uniform vec3 pen;"
+        "uniform vec4 pen;"
         "out vec4 frag_colour;"
         "void main () {"
-        "  frag_colour = vec4 (pen, 1.0);"
+        "  frag_colour = vec4 (pen);"
         "}";
 
 
@@ -110,16 +224,16 @@ void renderTest()
     GLFWwindow* window = initGL();
     int shaderProgramme = initShaders();
     
+
     SVGL::Parser parser;
     parser.loadFile("data/example.svg");
 
-    SVGL::Document_uptr document = parser.readSVG();
+    document = parser.readSVG();
     
-    CSS::StyleSheet styleSheet;
     styleSheet.add("path {stroke:red;}");
 
     document->applyStyleSheet(&styleSheet);
-    document->buffer(20 / 480.f);
+    document->buffer(tolerance);
 
 
     const unsigned int size(5);
@@ -141,7 +255,11 @@ void renderTest()
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_BLEND);
+    glEnable (GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glLineWidth(1.0);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -154,18 +272,17 @@ void renderTest()
         // Reset GL rendering
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
         glUseProgram(shaderProgramme);
-        glLineWidth(3.0);
 
         // Setup SVG rendering
         SVGL::Render::Context context;
-        //float scale = float(cos(glfwGetTime()/2) + 1.2) * 0.5;
-        float scale = 0.2f;
         
         SVGL::Transform t;
         t.scaleR(1, ratio);
         //t.rotateR(glfwGetTime() / 10);
-        t.scaleR(scale, scale);
+        t.scaleR(scale, -scale);
+        t.translateR(viewX, viewY);
         context.pushTransform(&t);
         context.pushColor(rgb(128, 128, 128));
 

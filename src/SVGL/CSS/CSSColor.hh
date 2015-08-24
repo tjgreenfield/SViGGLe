@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,9 +34,9 @@ namespace SVGL
 
         class Hash;
         class Function;
-        Color colorFromHash(const Hash* hash);
-        Color colorFromRGBFunc(const Function* function);
-        Color colorFromValue(const Value* value, ColorState* state);
+        Color colorFromHash(const Hash* hash, unsigned char alpha = 255);
+        Color colorFromRGBFunc(const Function* function, unsigned char alpha = 255);
+        Color colorFromValue(const Value* value, ColorState* state, unsigned char alpha = 255);
 
         extern ColorMap colorMap;
     }

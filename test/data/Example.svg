@@ -48,13 +48,13 @@
         inkscape:window-y="101"
         inkscape:current-layer="svg2" />
     <g>
-        <g transform="scale(0.5, 0.7) rotate(-45)" stroke-width="20">
+        <g>
             <apath style="fill:none;stroke:blue;stroke-width:0.1;stroke-dasharray:0.1,0.1" d="M0,0 l1,0 0,1 0.5,0" />
-            <apath style="fill:none;stroke:purple;stroke-width:0.1;stroke-dasharray:0.40,0.05" d="M0,0 l1,0 0,1 0.5,0 c 0,-0.5 1,-0.5, 1,0 l1,0 0,-1 1,0" />
-            <apath style="fill:none;stroke:blue;stroke-width:0.1;stroke-dasharray:0.40,0.05" d="M0,0 l1,0 0,1 0.5,0 c 0,2 1,2, 1,0 l1,0 0,-1 1,0" />
+            <path style="fill:none;stroke:purple;stroke-opacity:0.5;stroke-width:10" d="M0,0 l100,0 0,100 50,0 c 0,-50 100,-50, 100,0 l100,0 0,-100 100,0" />
+            <path style="fill:none;stroke:blue;stroke-opacity:0.5;stroke-width:10" d="M0,100 l100,0 0,100 50,0 c 0,200 100,200, 100,0 l100,0 0,-100 100,0" />
             
             
-            <path style="fill:none;stroke:pink;stroke-width:0.09;" d="M0,0 l0,0.5 0.12,0.5 0.5,0.5 0,-0.5 0.5,0.5 0.5,0.12" />            
+            <path style="fill:none;stroke:pink;stroke-opacity:0.5;stroke-width:9;" d="M0,0 l0,50 12,50 50,50 0,-50 50,50 50,12" />            
             
             
             <apath style="fill:none;stroke:blue;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 1,0 -1,0 l-1,0 0,-1 -1,0" />
@@ -62,25 +62,23 @@
             <apath style="fill:none;stroke:yellow;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0 0,-1 -1,0" />
             <apath style="fill:none;stroke:red;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0 0,-1 -1,0" />
             
+            <path style="fill:none;stroke:lime;stroke-width:9;stroke-opacity:0.5;stroke-linecap:round;stroke-dasharray:40,30" d="M-100,0 l-100,0 0,100 -100,0 a 70,170 0 0,0 -100,0 l-100,0 0,-100 -100,0" />
+            <path style="fill:none;stroke:blue;stroke-opacity:0.5;stroke-width:9;" d="M-100,0 l-100,0 0,-100 -100,0 a 70,170 0 0,100 -100,0 l-100,0 0,100 -100,0" />
             
+            <path style="fill:none;stroke:green;stroke-width:9;stroke-linecap:square;stroke-dasharray:40,25,25,25" d="M100,0 l100,0 0,100 100,0 a 70,170 0 0,100 100,0 l100,0 0,-100 100,0" />
+            <path style="fill:none;stroke:yellow;stroke-opacity:0.5;stroke-width:9" d="M100,0 l100,0 0,-100 100,0 a 70,170 0 0,0 100,0 l100,0 0,100 100,0" />
             
-            <path style="fill:none;stroke:lime;stroke-width:0.09" d="M-1,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0 0,-1 -1,0" />
-            <path style="fill:none;stroke:blue;stroke-width:0.09" d="M-1,0 l-1,0 0,-1 -1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0 0,1 -1,0" />
+            <path style="fill:none;stroke:orange;stroke-width:9;stroke-dasharray:40,25,25,25" d="M0,-100 l0,-100 100,0 0,-100 a 170,70 0 0,100 0,-100 l0,-100 -100,0 0,-100" />
+            <path style="fill:none;stroke:magenta;stroke-opacity:0.5;stroke-linejoin:bevel;stroke-width:9" d="M0,-100 l0,-100 -100,0 0,-100 a 170,70 0 0,0 0,-100 l0,-100 100,0 0,-100" />
             
-            <path style="fill:none;stroke:green;stroke-width:0.09" d="M1,0 l1,0 0,1 1,0 a 0.7,1.7 0 0,1 1,0 l1,0 0,-1 1,0" />
-            <path style="fill:none;stroke:yellow;stroke-width:0.09" d="M1,0 l1,0 0,-1 1,0 a 0.7,1.7 0 0,0 1,0 l1,0 0,1 1,0" />
+            <path style="fill:none;stroke:cyan;stroke-width:9;stroke-dasharray:40,25,25,25" d="M0,100 l0,100 100,0 0,100 a 170,70 0 0,0 0,100 l0,100 -100,0 0,100" />
+            <path style="fill:none;stroke:red;stroke-width:9;stroke-opacity:0.5;stroke-linejoin:round" d="M0,100 l0,100 -100,0 0,100 a 170,70 0 0,100 0,100 l0,100 100,0 0,100" />
             
-            <path style="fill:none;stroke:orange;stroke-width:0.09" d="M0,-1 l0,-1 1,0 0,-1 a 1.7,0.7 0 0,1 0,-1 l0,-1 -1,0 0,-1" />
-            <path style="fill:none;stroke:magenta;stroke-width:0.09" d="M0,-1 l0,-1 -1,0 0,-1 a 1.7,0.7 0 0,0 0,-1 l0,-1 1,0 0,-1" />
+            <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-1 a 0.7,1.7 0 1,0 1,0 l1,0 a 0.7,1.7 0 1,0 1,0 l1,0" />
+            <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-2 a 0.7,1.7 0 1,1 1,0 l1,0 a 0.7,1.7 0 1,1 1,0 l1,0" />
             
-            <path style="fill:none;stroke:cyan;stroke-width:0.09" d="M0,1 l0,1 1,0 0,1 a 1.7,0.7 0 0,0 0,1 l0,1 -1,0 0,1" />
-            <path style="fill:none;stroke:red;stroke-width:0.09" d="M0,1 l0,1 -1,0 0,1 a 1.7,0.7 0 0,1 0,1 l0,1 1,0 0,1" />
-            
-            <path style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-1 a 0.7,1.7 0 1,0 1,0 l1,0 a 0.7,1.7 0 1,0 1,0 l1,0" />
-            <path style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-2 a 0.7,1.7 0 1,1 1,0 l1,0 a 0.7,1.7 0 1,1 1,0 l1,0" />
-            
-            <path style="fill:none;stroke:grey;stroke-width:0.09" d="M0,-1 a 0.7,1.7 0 0,1 -1,0 l-1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0" />
-            <path style="fill:none;stroke:grey;stroke-width:0.09" d="M0,-2 a 0.7,1.7 0 0,0 -1,0 l-1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0" />
+            <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M0,-1 a 0.7,1.7 0 0,1 -1,0 l-1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0" />
+            <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M0,-2 a 0.7,1.7 0 0,0 -1,0 l-1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0" />
             
             <apath style="fill:red;opacity:0.5;stroke-width:0.01" stroke="cyan" d="M0,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0 Z" />
         </g>

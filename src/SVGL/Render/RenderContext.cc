@@ -14,14 +14,15 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "RenderContext.hh"
 
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <SVGL/GL/gl.h>
+
+#include <iostream>
 
 namespace SVGL
 {
@@ -61,10 +62,11 @@ namespace SVGL
             glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
             int location = glGetUniformLocation(program, "pen");
-            glUniform3f(location,
+            glUniform4f(location,
                         ((float)((color >> 16) & 0xff)) / 0xff,
                         ((float)((color >> 8) & 0xff)) / 0xff,
-                        ((float)((color) & 0xff)) / 0xff);
+                        ((float)((color) & 0xff)) / 0xff,
+                        ((float)((color >> 24) & 0xff)) / 0xff);
         }
 
         void Context::popColor()
@@ -76,10 +78,22 @@ namespace SVGL
             glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
             int location = glGetUniformLocation(program, "pen");
-            glUniform3f(location,
+            glUniform4f(location,
                         ((float)((color >> 16) & 0xff)) / 0xff,
                         ((float)((color >> 8) & 0xff)) / 0xff,
-                        ((float)((color) & 0xff)) / 0xff);
+                        ((float)((color) & 0xff)) / 0xff,
+                        ((float)((color >> 24) & 0xff)) / 0xff);
+        }
+
+        void Context::incrementDepth()
+        {
+            ++depth;
+
+            GLint program;
+            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+
+            int location = glGetUniformLocation(program, "depth");
+            glUniform1f(location, -((float)depth) / 10000);
         }
 
     }

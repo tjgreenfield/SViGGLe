@@ -14,29 +14,28 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "PathMoveTo.hh"
+#include <SVGL/Elements/Stroke/StrokeCap.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void MoveTo::buffer(Buffer::Polygon* pointBuffer, double tolerance) const
+        void MoveTo::buffer(Buffer::BufferingState* state) const
         {
-            pointBuffer->newSet();
-            pointBuffer->pushPoint(this);
-        }
+            state->pointBuffer.newSet();
+            state->pointBuffer.pushPoint(this);
 
-        void MoveTo::bufferStroke(Buffer::Polygon* strokeBuffer, Point* at, Styles::SVG* style, double tolerance) const
-        {
-            // TODO Line caps
-            // Stroke::bufferEndCap(...)
-            strokeBuffer->newSet();
-            *at = *this;
-            // Stroke::bufferStartCap(...)
+            if (!state->strokeBuffer.lastSetEmpty())
+            {
+                Stroke::bufferEndCap(state);
+            }
+            state->strokeBuffer.newSet();
+            state->at = *this;
         }
     }
 }

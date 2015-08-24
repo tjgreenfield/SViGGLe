@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,9 +37,15 @@ namespace SVGL
             typedef std::vector<Color> ColorStack;
             ColorStack colorStack;
 
+            int depth;
+
         public:
             Transform worldTransform;
             Color color;
+
+            inline Context() :
+                depth(0)
+            {}
 
             void updateTransform();
             void pushTransform(Transform* t);
@@ -47,6 +53,8 @@ namespace SVGL
 
             void pushColor(unsigned int c);
             void popColor();
+
+            void incrementDepth();
         };
     }
 }

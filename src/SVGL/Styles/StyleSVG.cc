@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -194,12 +194,30 @@ namespace SVGL
         }
 
         /**
+         * Get the line cap type for the stroke
+         * @return The stroke line cap type
+         */
+        LineCap SVG::getStrokeLineCap() const
+        {
+            return parent ? parent->getStrokeLineCap() : defaultStrokeLineCap;
+        }
+
+        /**
          * Get the stroke dash array
          * @return A pointer to the dash array
          */
         const DashArray* SVG::getStrokeDashArray() const
         {
             return parent ? parent->getStrokeDashArray() : nullptr;
+        }
+
+        /**
+         * Get the stroke dash offset
+         * @return The offset length to start into the dash array
+         */
+        double SVG::getStrokeDashOffset() const
+        {
+            return parent ? parent->getStrokeDashOffset() : defaultStrokeDashOffset;
         }
 
         /**

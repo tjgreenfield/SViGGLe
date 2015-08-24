@@ -1,6 +1,13 @@
 # build directories
 build
 CMake
+Debug
+Release
+
+# Eclipse workarea
+.settings
+.project
+.cproject
 
 # Compiled Object files
 *.slo
@@ -30,3 +37,4 @@ CMake
 *.exe
 *.out
 *.app
+

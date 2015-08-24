@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with SViGGLe.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,10 +34,12 @@ namespace SVGL
         ClipRule defaultClipRule(CR_NONZERO); //!< Default clip-rule: NonZero
 
         Color defaultFill(0xFF000000); //!< Default fill color: black
-        Color defaultStroke(0x00000000); //!< Default stroke color: none
+        Color defaultStroke(0xFF000000); //!< Default stroke color: none
         double defaultStrokeWidth(1); //!< Default stroke width: 1
         LineJoin defaultStrokeLineJoin(LJ_MITER); //!< Default stroke line join: LJ_MITER
         double defaultStrokeMiterLimit(4); //!< Default stroke miter limit: 4
+        LineCap defaultStrokeLineCap(LC_BUTT); //!< Default stroke line cap: LC_BUTT
+        double defaultStrokeDashOffset(0); //!< Default stroke dash offset: 0
 
         /**
          * Global map to map property names to indexes

@@ -18,24 +18,21 @@
  *
  */
 
-#include "PathMoveTo.hh"
-#include <SVGL/Elements/Stroke/StrokeCap.hh>
+#include "PathLineTo.hh"
+#include <SVGL/Stroke/StrokeDash.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void MoveTo::buffer(Buffer::BufferingState* state) const
+        void LineTo::buffer(Buffer::BufferingState* state) const
         {
-            state->pointBuffer.newSet();
+            // fill
             state->pointBuffer.pushPoint(this);
 
-            if (!state->strokeBuffer.lastSetEmpty())
-            {
-                Stroke::bufferEndCap(state);
-            }
-            state->strokeBuffer.newSet();
-            state->at = *this;
+            Stroke::bufferJoin(state, *this);
+
+            Stroke::bufferDash(state, *this);
         }
     }
 }

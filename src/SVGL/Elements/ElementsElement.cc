@@ -19,6 +19,9 @@
  */
 
 #include "ElementsElement.hh"
+
+#include <SVGL/Transform/TransformParser.hh>
+
 #include <utility>
 
 namespace SVGL
@@ -122,6 +125,11 @@ namespace SVGL
                 CSS::Parser(value.start).readPropertyValue()
                 ))
                 );
+            break;
+        case TRANSFORM:
+            {
+                TransformParser(value.start).readTransform(&transform);
+            }
             break;
         default:
             break;

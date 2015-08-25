@@ -21,8 +21,8 @@
 #pragma once
 
 #include "ElementsElement.hh"
-#include "Path/PathCommand.hh"
 
+#include <SVGL/Path/PathCommand.hh>
 #include <SVGL/Styles/StyleShape.hh>
 #include <SVGL/GL/gl.h>
 
@@ -39,7 +39,7 @@ namespace SVGL
         GlIntV strokeGLBuffers;
         GlIntV strokeVertexArrays;
         GlIntV strokeArraySizes;
-        
+
         GlIntV fillBuffers;
         GlIntV fillVertexArrays;
         GlIntV fillArraySizes;
@@ -50,7 +50,7 @@ namespace SVGL
         ~Path();
 
         /* From CSS::Element */
-        
+
         /**
          * Get the Style object for the current element.
          *

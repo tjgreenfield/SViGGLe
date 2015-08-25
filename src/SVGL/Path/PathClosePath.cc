@@ -18,11 +18,27 @@
  *
  */
 
-#pragma once
+#include "PathClosePath.hh"
+#include <SVGL/Stroke/StrokeJoin.hh>
+#include <SVGL/Stroke/StrokeDash.hh>
 
-#include "Path/PathCommand.hh"
-#include "Path/PathClosePath.hh"
-#include "Path/PathCubicTo.hh"
-#include "Path/PathEllipticalTo.hh"
-#include "Path/PathLineTo.hh"
-#include "Path/PathMoveTo.hh"
+namespace SVGL
+{
+    namespace PathCommand
+    {
+        void ClosePath::buffer(Buffer::BufferingState* state) const
+        {
+            Point first(state->pointBuffer.getFirstPoint());
+            Point dir(state->pointBuffer.getDir());
+
+            // fill
+            state->pointBuffer.pushPoint(&first);
+
+            Stroke::bufferJoin(state, first);
+
+            Stroke::bufferDash(state, first);
+            // closing join
+            Stroke::bufferJoin(state, first + dir);
+        }
+    }
+}

@@ -26,7 +26,7 @@
 #include <vector>
 
 /*
- * Assumes 32 bits per pixel: r,g,b,a
+ * Assumes 24 bits per pixel: r,g,b
  */
 void screenshot(unsigned char* data, int width, int height)
 {

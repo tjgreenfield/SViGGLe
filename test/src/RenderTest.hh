@@ -22,9 +22,10 @@
 #include "screenshot.hh"
 
 #include <SVGL/Render/RenderContext.hh>
-#include <SVGL/Elements/Transform/Transform.hh>
+#include <SVGL/Transform/Transform.hh>
 #include <SVGL/Document.hh>
 #include <SVGL/Elements/ElementsElement.hh>
+#include <SVGL/Types/Point.hh>
 
 #include <SVGL/GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -40,6 +41,8 @@ CSS::StyleSheet styleSheet;
 float viewX = 0.0f;
 float viewY = 0.0f;
 float scale = 0.0008f;
+float rotate = 0.0f;
+float prevRotate = 0.0f;
 double tolerance = 2000 / 480.f;
 bool wireframe = true;
 bool needScreenshot = false;
@@ -62,6 +65,7 @@ static void windowSizeCallback(GLFWwindow* window, int width, int height)
 double mouseX = 0.0f;
 double mouseY = 0.0f;
 int mouseLeftButton = 0;
+int mouseRightButton = 0;
 
 static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -70,6 +74,13 @@ static void mouseButtonCallback(GLFWwindow* window, int button, int action, int 
     case GLFW_MOUSE_BUTTON_1:
         mouseLeftButton = action;
         break;
+    case GLFW_MOUSE_BUTTON_2:
+        mouseRightButton = action;
+        if (action == GLFW_RELEASE)
+        {
+            prevRotate = rotate;
+        }
+        break;
     }
 }
 
@@ -77,11 +88,34 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
     if (mouseLeftButton == GLFW_PRESS)
     {
-        viewX += (x - mouseX) / scale / windowWidth * 2;
-        viewY += (y - mouseY) / scale / windowWidth * 2;
+        float deltaX = (x - mouseX) / scale / windowWidth * 2;
+        float deltaY = (y - mouseY) / scale / windowWidth * 2;
+
+        double cosr(cos(rotate));
+        double sinr(sin(rotate));
+
+        viewX += deltaX * cosr + deltaY * sinr;
+        viewY += -deltaX * sinr + deltaY * cosr;
+
+        mouseX = x;
+        mouseY = y;
     }
-    mouseX = x;
-    mouseY = y;
+    else if (mouseRightButton == GLFW_PRESS)
+    {
+        SVGL::Point centre(windowWidth * 0.5, windowHeight * 0.5);
+        SVGL::Point prev(mouseX, mouseY);
+        SVGL::Point now(x, y);
+        SVGL::Point a(prev - centre);
+        SVGL::Point b(now - centre);
+        double angle = a.angle(&b);
+
+        rotate = prevRotate + angle;
+    }
+    else
+    {
+        mouseX = x;
+        mouseY = y;
+    }
 }
 
 static void mouseScrollCallback(GLFWwindow* window, double x, double y)
@@ -339,6 +373,7 @@ void renderTest()
         t.scaleR(1, ratio);
         //t.rotateR(glfwGetTime() / 10);
         t.scaleR(scale, -scale);
+        t.rotateR(rotate);
         t.translateR(viewX, viewY);
         context.pushTransform(&t);
         context.pushColor(rgb(128, 128, 128));

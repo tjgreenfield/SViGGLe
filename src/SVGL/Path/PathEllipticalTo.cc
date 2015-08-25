@@ -19,7 +19,7 @@
  */
 
 #include "PathEllipticalTo.hh"
-#include <SVGL/Elements/Stroke/StrokeDash.hh>
+#include <SVGL/Stroke/StrokeDash.hh>
 #include <SVGL/Types/Consts.hh>
 #include <algorithm>
 #include <cstdlib>

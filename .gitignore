@@ -13,6 +13,7 @@ Release
 *.save
 *.cbp
 *.depend
+*.layout
 
 # Test stuff
 test/test_screenshots/*

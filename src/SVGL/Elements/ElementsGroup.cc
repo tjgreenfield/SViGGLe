@@ -147,9 +147,11 @@ namespace SVGL
      */
     void Group::render(Render::Context* context)
     {
+        context->pushTransform(&transform);
         for (const Element_uptr& child : children)
         {
             child->render(context);
         }
+        context->popTransform();
     }
 }

@@ -81,7 +81,7 @@ namespace SVGL
 
             if (readNum(&value))
             {
-                if (unit = readIdent())
+                if ((unit = readIdent()))
                 {
                     return Dimension(value, unit);
                 }
@@ -178,7 +178,7 @@ namespace SVGL
             SubString ident;
             if (readChar('#'))
             {
-                if (ident = readIdent())
+                if ((ident = readIdent()))
                 {
                     return SubSelector_uptr(new IDSelector(ident));
                 }
@@ -194,7 +194,7 @@ namespace SVGL
             SubString ident;
             if (readChar('.'))
             {
-                if (ident = readIdent())
+                if ((ident = readIdent()))
                 {
                     return SubSelector_uptr(new AttributeSelector(SubString("class"), ident, AttributeSelector::CLASS));
                 }
@@ -214,7 +214,7 @@ namespace SVGL
             if (readChar('['))
             {
                 readWSP();
-                if (ident = readIdent())
+                if ((ident = readIdent()))
                 {
                     readWSP();
                     if (readChar('='))
@@ -236,11 +236,11 @@ namespace SVGL
                     if (mode != AttributeSelector::EMPTY)
                     {
                         readWSP();
-                        if (value = readIdent())
+                        if ((value = readIdent()))
                         {
 
                         }
-                        else if (value = readString())
+                        else if ((value = readString()))
                         {
 
                         }
@@ -269,13 +269,13 @@ namespace SVGL
             if (readChar(':'))
             {
                 SubString type;
-                if (type = readIdent())
+                if ((type = readIdent()))
                 {
                     State save2(s);
                     if (readChar('('))
                     {
                         SubString subtype;
-                        if (subtype = readIdent())
+                        if ((subtype = readIdent()))
                         {
                             if (readChar(')'))
                             {
@@ -376,7 +376,7 @@ namespace SVGL
             SubString result;
             if (readChar('@'))
             {
-                if (result = readIdent())
+                if ((result = readIdent()))
                 {
                     return result;
                 }
@@ -392,7 +392,7 @@ namespace SVGL
             SubString result;
             if (readChar('#'))
             {
-                if (result = readName())
+                if ((result = readName()))
                 {
                     return result;
                 }
@@ -422,7 +422,7 @@ namespace SVGL
         {
             State save(s);
             SubString name;
-            if (name = readIdent())
+            if ((name = readIdent()))
             {
                 State save2(s);
                 if (readChar('('))
@@ -470,7 +470,7 @@ namespace SVGL
         {
             SubString name;
             State save(s);
-            if (name = readFunctionStart())
+            if ((name = readFunctionStart()))
             {
                 readWSP();
                 Function_uptr func(new Function(name));
@@ -504,7 +504,7 @@ namespace SVGL
             Function_uptr func;
             Dimension dimension;
 
-            if (subString = readIdent())
+            if ((subString = readIdent()))
             {
                 if (Value_uptr func = readFunctionParams(subString))
                 {
@@ -521,11 +521,11 @@ namespace SVGL
                 return Value_uptr(new Dimension(value));
             }
             //if (readURI(s)) TODO
-            if (subString = readHash())
+            if ((subString = readHash()))
             {
                 return Value_uptr(new Hash(subString));
             }
-            if (subString = readString())
+            if ((subString = readString()))
             {
                 return Value_uptr(new String(subString));
             }
@@ -536,7 +536,7 @@ namespace SVGL
         {
             State save(s);
             SubString ident;
-            if (ident = readIdent())
+            if ((ident = readIdent()))
             {
                 Declaration_uptr decl(new Declaration(ident));
                 readWSP();

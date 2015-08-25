@@ -40,6 +40,10 @@ namespace SVGL
             {
                 return Point();
             }
+            if (back().empty())
+            {
+                return Point();
+            }
             return back().back();
         }
 
@@ -63,7 +67,47 @@ namespace SVGL
             {
                 return Point();
             }
+            if (back().empty())
+            {
+                return Point();
+            }
             return back().front();
+        }
+
+        Point Polygon::getSecondPoint() const
+        {
+            if (empty())
+            {
+                return Point();
+            }
+            const Contour& contour(back());
+            if (contour.size() < 2)
+            {
+                return Point();
+            }
+            return contour[2];
+        }
+
+        Point Polygon::getDir() const
+        {
+            if (empty())
+            {
+                return Point();
+            }
+            const Contour& contour(back());
+            if (contour.size() < 2)
+            {
+                return Point();
+            }
+            Point first(contour.front());
+            for (unsigned int i = 1; i < contour.size(); ++i)
+            {
+                if (first != contour[i])
+                {
+                    return contour[i] - first;
+                }
+            }
+            return Point();
         }
 
         void Polygon::pushPoint(const Point* p)
@@ -93,7 +137,7 @@ namespace SVGL
                     return; // don't make a new empty set if we already have one
                 }
             }
-            push_back(Contour());
+            emplace_back();
         }
 
         bool Polygon::lastSetEmpty()

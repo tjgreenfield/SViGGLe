@@ -75,6 +75,7 @@ namespace SVGL
         Element* parent;
         std::string id;
         CSS::DeclarationBlock styleDeclarations;
+        Transform transform;
         bool dirty;
 
     public:
@@ -98,7 +99,7 @@ namespace SVGL
         }
 
         /* From CSS::Element */
-        
+
         /**
          * Get the StyleSheet object that contains the specified styles for the element.
          *
@@ -132,7 +133,7 @@ namespace SVGL
          * Get the child before the one specified, used to implement getPrevSibling above
          */
         virtual const Element* getPrevChild(const Element* element) const;
-        
+
         /* From XML::Node */
 
         void setAttribute(SubString name, SubString value) override;

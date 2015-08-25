@@ -41,7 +41,11 @@ namespace SVGL
 
             Point getFirstPoint() const;
 
+            Point getSecondPoint() const;
+
             Point getSecondLastPoint() const;
+
+            Point getDir() const;
 
             void pushPoint(const Point* p);
 

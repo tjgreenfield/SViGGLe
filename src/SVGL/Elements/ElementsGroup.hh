@@ -29,14 +29,14 @@ namespace SVGL
     {
     protected:
         Styles::Graphic style;
-        
+
         typedef std::vector<Element_uptr> Elements;
         Elements children;
 
     public:
 
         /* From CSS::Element */
-        
+
         /**
          * Get the Style object for the current element.
          *
@@ -59,7 +59,7 @@ namespace SVGL
 
 
         /* From XML::Node */
-        
+
         void appendChild(Node_uptr&& child) override;
 
 

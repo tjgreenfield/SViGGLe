@@ -19,8 +19,8 @@
  */
 
 #include "ElementsPath.hh"
-#include "Path/PathParser.hh"
-#include <SVGL/Elements/Stroke/StrokeCap.hh>
+#include <SVGL/Path/PathParser.hh>
+#include <SVGL/Stroke/StrokeCap.hh>
 #include <SVGL/Buffer/BufferPolygon.hh>
 #include <SVGL/Render/RenderTessellation.hh>
 #include <SVGL/Render/RenderStroke.hh>
@@ -107,9 +107,9 @@ namespace SVGL
             command->buffer(&buffers);
         }
 
-        if (dynamic_cast<PathCommand::ClosePath*>(commandSet[0].get()))
+        if (dynamic_cast<PathCommand::ClosePath*>(commandSet.back().get()))
         {
-            // TODO: final line join, here or in PathClosePath.cc?
+            // final join is done in close path command
         }
         else
         {
@@ -170,6 +170,7 @@ namespace SVGL
 
     void Path::render(Render::Context* context)
     {
+        context->pushTransform(&transform);
         if (style.hasFill())
         {
             context->pushColor(style.getFill());
@@ -191,6 +192,7 @@ namespace SVGL
             }
             context->popColor();
         }
+        context->popTransform();
         context->incrementDepth();
     }
 }

@@ -36,6 +36,11 @@ namespace SVGL
                 // don't do a join if we're in between dashes
                 return;
             }
+            // no movement, no join
+            if (state->at == to)
+            {
+                return;
+            }
 
             double strokeWidth = state->style->getStrokeWidth();
             Point delta(to - state->at);

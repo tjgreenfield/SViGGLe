@@ -36,7 +36,7 @@ namespace SVGL
         {
 
         }
-            
+
 
         inline Point& operator+=(const Point& p)
         {
@@ -130,6 +130,16 @@ namespace SVGL
             x *= m;
             y *= m;
             return *this;
+        }
+
+        inline bool operator==(const Point& p) const
+        {
+            return (x == p.x) && (y == p.y);
+        }
+
+        inline bool operator!=(const Point& p) const
+        {
+            return (x != p.x) || (y != p.y);
         }
 
         friend std::ostream& operator<<(std::ostream& out, const Point& point);

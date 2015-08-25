@@ -18,19 +18,24 @@
  *
  */
 
-#include "PathClosePath.hh"
+#include "PathMoveTo.hh"
+#include <SVGL/Stroke/StrokeCap.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void ClosePath::buffer(Buffer::BufferingState* state) const
+        void MoveTo::buffer(Buffer::BufferingState* state) const
         {
-            static_cast<Point>(*this) = state->pointBuffer.getFirstPoint();
+            state->pointBuffer.newSet();
+            state->pointBuffer.pushPoint(this);
 
-            LineTo::buffer(state);
-
-            // TODO: Final line join, here or in ElementsPath.cc?
+            if (!state->strokeBuffer.lastSetEmpty())
+            {
+                Stroke::bufferEndCap(state);
+            }
+            state->strokeBuffer.newSet();
+            state->at = *this;
         }
     }
 }

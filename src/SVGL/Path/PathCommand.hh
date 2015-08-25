@@ -18,21 +18,46 @@
  *
  */
 
-#include "PathLineTo.hh"
-#include <SVGL/Elements/Stroke/StrokeDash.hh>
+#pragma once
+
+#include <SVGL/Buffer/BufferPolygon.hh>
+#include <SVGL/Buffer/BufferingState.hh>
+#include <SVGL/Styles/Styles.hh>
+#include <SVGL/Stroke/StrokeJoin.hh>
+#include <SVGL/Types/Point.hh>
+
+
+#include <memory>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void LineTo::buffer(Buffer::BufferingState* state) const
+        class PathCommand : public Point
         {
-            // fill
-            state->pointBuffer.pushPoint(this);
+        public:
+            inline PathCommand()
+            {
 
-            Stroke::bufferJoin(state, *this);
+            };
 
-            Stroke::bufferDash(state, *this);
-        }
+            inline PathCommand(Point _p) :
+                Point(_p)
+            {
+
+            }
+
+            inline PathCommand(double _x, double _y) :
+                Point(_x, _y)
+            {
+
+            }
+
+            virtual void buffer(Buffer::BufferingState* state) const = 0;
+        };
+
+        typedef std::unique_ptr<PathCommand> PathCommand_uptr;
+
+        typedef std::vector<PathCommand_uptr> PathCommandSet;
     }
 }

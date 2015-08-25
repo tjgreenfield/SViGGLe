@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <SVGL/Elements/Transform/Transform.hh>
+#include <SVGL/Transform/Transform.hh>
 #include <SVGL/Types/Color.hh>
 #include <vector>
 

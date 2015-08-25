@@ -60,7 +60,7 @@ public:
             }
             --back;
         }
-        
+
         const char* forward(s);
         int forwardCount = 10;
         while (*forward)
@@ -181,11 +181,11 @@ class TestElement : public CSS::Element
 {
 public:
     std::string tag;
-    
-    TestElement* parent; 
+
+    TestElement* parent;
     TestElement* prevSibling;
     std::vector<TestElement*> children;
-    
+
     CSS::DeclarationBlock specifiedStyle;
     Styles::Graphic style;
 
@@ -298,7 +298,7 @@ void CSSTest()
     testDeclarationBlock("Test 4", "blah-1f2 : 15pt;blah:324 ; asdfadf:'string'");
 
     testDeclarationBlock("Error 1", "blah-1f2 : 'string");
-    
+
     cout << endl;
 
     getchar();
@@ -381,9 +381,9 @@ void CSSTest()
 
         CSS::Parser p("A B C {color:#00FF00}");
         CSS::StyleSheet_uptr styleSheet = p.readStyleSheet();
-        
 
-        cout << A->toString() << endl; 
+
+        cout << A->toString() << endl;
         cout << *styleSheet << endl;
         cout << "before: " << C->style.getColor() << endl;
         A->applyStyleSheet(styleSheet.get());
@@ -403,9 +403,9 @@ void CSSTest()
 
         CSS::Parser p("A>B>C {color:#00FF00}");
         CSS::StyleSheet_uptr styleSheet = p.readStyleSheet();
-        
 
-        cout << A->toString() << endl; 
+
+        cout << A->toString() << endl;
         cout << *styleSheet << endl;
         cout << "before: " << C->style.getColor() << endl;
         A->applyStyleSheet(styleSheet.get());
@@ -429,7 +429,7 @@ void CSSTest()
         CSS::Parser p("A>B>C {color:#00FF00}");
         CSS::StyleSheet_uptr styleSheet = p.readStyleSheet();
 
-        cout << A->toString() << endl; 
+        cout << A->toString() << endl;
         cout << *styleSheet << endl;
         cout << "before: " << C->style.getColor() << endl;
         A->applyStyleSheet(styleSheet.get());
@@ -444,14 +444,14 @@ void CSSTest()
         cout << "Test 4a" << endl;
 
         TestElement* P = new TestElement("A");
-        TestElement* A = P->push("A");
-        TestElement* B = P->push("B");
+        P->push("A");
+        P->push("B");
         TestElement* C = P->push("C");
 
         CSS::Parser p("A+B+C {color:#00FF00}");
         CSS::StyleSheet_uptr styleSheet = p.readStyleSheet();
 
-        cout << P->toString() << endl; 
+        cout << P->toString() << endl;
         cout << *styleSheet << endl;
         cout << "before: " << C->style.getColor() << endl;
         P->applyStyleSheet(styleSheet.get());
@@ -466,16 +466,16 @@ void CSSTest()
         cout << "Test 4b" << endl;
 
         TestElement* P = new TestElement("A");
-        TestElement* A = P->push("A");
-        TestElement* B = P->push("B");
-        TestElement* B2 = P->push("B");
+        P->push("A");
+        P->push("B");
+        P->push("B");
         TestElement* C = P->push("C");
 
         CSS::Parser p("A+B+C {color:#00FF00}");
         CSS::StyleSheet_uptr styleSheet = p.readStyleSheet();
-        
 
-        cout << P->toString() << endl; 
+
+        cout << P->toString() << endl;
         cout << *styleSheet << endl;
         cout << "before: " << C->style.getColor() << endl;
         P->applyStyleSheet(styleSheet.get());

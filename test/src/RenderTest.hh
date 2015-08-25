@@ -19,6 +19,7 @@
  */
 
 #define GLEW_STATIC
+#include "screenshot.hh"
 
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Elements/Transform/Transform.hh>
@@ -41,11 +42,51 @@ float viewY = 0.0f;
 float scale = 0.0008f;
 double tolerance = 2000 / 480.f;
 bool wireframe = true;
+bool needScreenshot = false;
 
 
 static void errorCallback(int error, const char* description)
 {
     fputs(description, stderr);
+}
+
+int windowWidth = 0;
+int windowHeight = 0;
+
+static void windowSizeCallback(GLFWwindow* window, int width, int height)
+{
+    windowWidth = width;
+    windowHeight = height;
+}
+
+double mouseX = 0.0f;
+double mouseY = 0.0f;
+int mouseLeftButton = 0;
+
+static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+    switch (button)
+    {
+    case GLFW_MOUSE_BUTTON_1:
+        mouseLeftButton = action;
+        break;
+    }
+}
+
+static void mouseMoveCallback(GLFWwindow* window, double x, double y)
+{
+    if (mouseLeftButton == GLFW_PRESS)
+    {
+        viewX += (x - mouseX) / scale / windowWidth * 2;
+        viewY += (y - mouseY) / scale / windowWidth * 2;
+    }
+    mouseX = x;
+    mouseY = y;
+}
+
+static void mouseScrollCallback(GLFWwindow* window, double x, double y)
+{
+    scale *= std::pow(0.9, -y);
 }
 
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -124,6 +165,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
         }
+        break;
     case GLFW_KEY_ENTER:
         if (action == GLFW_PRESS)
         {
@@ -133,6 +175,14 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             document->applyStyleSheet(&styleSheet);
             document->buffer(tolerance);
         }
+        break;
+    case GLFW_KEY_F10:
+        if (action == GLFW_PRESS)
+        {
+            needScreenshot = true;
+        }
+
+        break;
     }
 }
 
@@ -148,10 +198,17 @@ static GLFWwindow* initGL()
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+    windowWidth = 1280;
+    windowHeight = 720;
 
     glfwMakeContextCurrent(window);
 
+    glfwSetWindowSizeCallback(window, windowSizeCallback);
+
     glfwSetKeyCallback(window, keyCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCursorPosCallback(window, mouseMoveCallback);
+    glfwSetScrollCallback(window, mouseScrollCallback);
 
     GLenum err = glewInit();
     if (GLEW_OK != err)
@@ -223,13 +280,13 @@ void renderTest()
 {
     GLFWwindow* window = initGL();
     int shaderProgramme = initShaders();
-    
+
 
     SVGL::Parser parser;
     parser.loadFile("data/example.svg");
 
     document = parser.readSVG();
-    
+
     styleSheet.add("path {stroke:red;}");
 
     document->applyStyleSheet(&styleSheet);
@@ -277,7 +334,7 @@ void renderTest()
 
         // Setup SVG rendering
         SVGL::Render::Context context;
-        
+
         SVGL::Transform t;
         t.scaleR(1, ratio);
         //t.rotateR(glfwGetTime() / 10);
@@ -302,8 +359,18 @@ void renderTest()
         // Next frame
         document->render(&context);
 
+        if (needScreenshot)
+        {
+            std::unique_ptr<GLubyte> buffer(new GLubyte[windowWidth * windowHeight * 4]);
+            glReadPixels(0, 0, windowWidth, windowHeight, GL_RGB, GL_UNSIGNED_BYTE, buffer.get());
+            screenshot(buffer.get(), windowWidth, windowHeight);
+            needScreenshot = false;
+        }
+
         // next frame
-        glfwSwapBuffers(window);
         glfwPollEvents();
+
+        glfwSwapBuffers(window);
+
     }
 }

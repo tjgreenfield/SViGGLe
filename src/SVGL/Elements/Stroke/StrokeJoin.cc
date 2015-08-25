@@ -121,15 +121,14 @@ namespace SVGL
             Point ca(a - state->at);
 
             double t0(u.angle(&cy));
-            double t1(cy.angle(&ca) + t0);
-            if (t0 > t1)
-            {
-                std::swap(t0, t1);
-            }
-            double dt(state->tolerance / PI / strokeWidth);
+            double dt = cy.angle(&ca);
 
-            for (double t = t0; t < t1; t += dt)
+            // this might need adjusting
+            int vertexCount = std::max(abs(strokeWidth * dt / state->tolerance), 2);
+
+            for (int i = 0; i <= vertexCount; ++i)
             {
+                double t = t0 + (((double)i) / ((double)vertexCount)) * dt;
                 double sint = sin(t);
                 double cost = cos(t);
                 Point m(state->at.x + cost * strokeWidth, state->at.y + sint * strokeWidth);
@@ -143,7 +142,7 @@ namespace SVGL
 
         void bufferBevelJoin(Buffer::BufferingState* state, const Point& offset)
         {
-            
+
             /*
              *           a---------->
              *

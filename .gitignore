@@ -9,6 +9,14 @@ Release
 .project
 .cproject
 
+# Code Blocks
+*.save
+*.cbp
+*.depend
+
+# Test stuff
+test/test_screenshots/*
+
 # Compiled Object files
 *.slo
 *.lo

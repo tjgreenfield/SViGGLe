@@ -65,7 +65,7 @@ namespace SVGL
     {
         switch (index)
         {
-        case D:
+        case Attribute::D:
             commandSet = PathCommand::Parser(value.start).readPathCommandSet();
             break;
         default:
@@ -98,7 +98,13 @@ namespace SVGL
     void Path::buffer(double tolerance)
     {
         if (!dirty) return;
-        clearBuffers();
+        Path::clearBuffers();
+        tolerance = transform.transformTolerance(tolerance);
+
+        if (commandSet.size() == 0)
+        {
+            return;
+        }
 
         Buffer::BufferingState buffers(tolerance, commandSet[0].get(), &style);
 
@@ -171,17 +177,6 @@ namespace SVGL
     void Path::render(Render::Context* context)
     {
         context->pushTransform(&transform);
-        if (style.hasFill())
-        {
-            context->pushColor(style.getFill());
-            for (unsigned int i = 0; i < fillVertexArrays.size(); ++i)
-            {
-                glBindVertexArray(fillVertexArrays[i]);
-                glDrawArrays(fillArrayTypes[i], 0, fillArraySizes[i]);
-            }
-            context->popColor();
-        }
-
         if (style.hasStroke())
         {
             context->pushColor(style.getStroke());
@@ -189,6 +184,16 @@ namespace SVGL
             {
                 glBindVertexArray(strokeVertexArrays[i]);
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, strokeArraySizes[i]);
+            }
+            context->popColor();
+        }
+        if (style.hasFill())
+        {
+            context->pushColor(style.getFill());
+            for (unsigned int i = 0; i < fillVertexArrays.size(); ++i)
+            {
+                glBindVertexArray(fillVertexArrays[i]);
+                glDrawArrays(fillArrayTypes[i], 0, fillArraySizes[i]);
             }
             context->popColor();
         }

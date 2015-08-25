@@ -72,11 +72,11 @@ namespace SVGL
         void bufferMiterJoin(Buffer::BufferingState* state, const Point& offset, double strokeWidth)
         {
             /*
-             *           a---------->
+             *        m  a---------->
              *
              *        y  c  z
              *        |     |
-             *        |  b--+------->
+             *        |  b--n------->
              *        |     |
              */
 
@@ -88,19 +88,27 @@ namespace SVGL
             Point zy(z - y);
             Point zyNorm(zy.normal());
             Point ba(b - a);
-            Point baNorm(ba.normal());
 
-            double angle(baNorm.angle(&zyNorm));
+            double angle(ba.angle(zy));
 
             angle = angle / 2;
             // TODO: this isn't the correct comparision for strokeMiterLimit
             double miter(std::min(tan(angle), strokeMiterLimit) * strokeWidth);
 
-            Point m(y + miter * zyNorm);
-            Point n(z - miter * zyNorm);
-
-            state->strokeBuffer.pushPoint(m);
-            state->strokeBuffer.pushPoint(n);
+            if (angle > 0)
+            {
+                Point m(y + miter * zyNorm);
+                Point n(z);
+                state->strokeBuffer.pushPoint(m);
+                state->strokeBuffer.pushPoint(n);
+            }
+            else
+            {
+                Point m(y);
+                Point n(z - miter * zyNorm);
+                state->strokeBuffer.pushPoint(m);
+                state->strokeBuffer.pushPoint(n);
+            }
 
             state->strokeBuffer.pushPoint(a);
             state->strokeBuffer.pushPoint(b);
@@ -125,8 +133,8 @@ namespace SVGL
 
             Point ca(a - state->at);
 
-            double t0(u.angle(&cy));
-            double dt = cy.angle(&ca);
+            double t0(u.angle(cy));
+            double dt = cy.angle(ca);
 
             // this might need adjusting
             int vertexCount = std::max(abs(strokeWidth * dt / state->tolerance), 2);

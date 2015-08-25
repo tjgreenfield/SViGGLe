@@ -34,7 +34,7 @@ namespace SVGL
             for (const Buffer::Contour& in : *input)
             {
                 Buffer::Contour out;
-                
+
                 unsigned int inCount = in.size();
                 if (inCount == 1)
                 {
@@ -44,31 +44,31 @@ namespace SVGL
                 }
                 unsigned int inCountM1 = inCount - 1;
                 unsigned int outCount = inCount * 2;
-                
+
                 out.resize(outCount);
 
                 Point offset;
 
                 // First start corner point
-                offset = strokeWidth * in[0].normal(&in[1]);
+                offset = strokeWidth * in[0].normal(in[1]);
                 out[0] = in[0] + offset;
-                
+
                 // Second start corner point
                 out[1] = in[0] - offset;
 
                 // loop over all intermediate points
                 for (unsigned int inIndex = 1; inIndex < inCountM1; ++inIndex)
                 {
-                    offset = strokeWidth * in[inIndex - 1].normal(&in[inIndex + 1]);
-                    
+                    offset = strokeWidth * in[inIndex - 1].normal(in[inIndex + 1]);
+
                     // add two "out" points for each "in" point
-                    unsigned int outIndex = inIndex * 2; 
+                    unsigned int outIndex = inIndex * 2;
                     out[outIndex] = in[inIndex] + offset;
                     out[outIndex + 1] = in[inIndex] - offset;
                 }
 
                 // First end corner point
-                offset = strokeWidth * in[inCountM1 - 1].normal(&in[inCountM1]);
+                offset = strokeWidth * in[inCountM1 - 1].normal(in[inCountM1]);
                 out[outCount - 2] = in[inCountM1] + offset;
 
                 // Opposite end corner point

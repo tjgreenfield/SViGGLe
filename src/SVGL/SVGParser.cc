@@ -27,8 +27,14 @@ namespace SVGL
     ElementTypeMap elementTypeMap = {
         { "svg", ET_SVG },
         { "g", ET_G },
-        { "path", ET_PATH }
-        };
+        { "path", ET_PATH },
+        { "rect", ET_RECT },
+        { "circle", ET_CIRCLE},
+        { "ellipse", ET_ELLIPSE},
+        { "line", ET_LINE},
+        { "polyline", ET_POLYLINE},
+        { "polygon", ET_POLYGON},
+    };
 
     ElementType getElementType(SubString tag)
     {
@@ -51,6 +57,18 @@ namespace SVGL
             return std::move(Node_uptr(new Group()));
         case ET_PATH:
             return std::move(Node_uptr(new Path()));
+        case ET_RECT:
+            return std::move(Node_uptr(new Rect()));
+        case ET_CIRCLE:
+            return std::move(Node_uptr(new Circle()));
+        case ET_ELLIPSE:
+            return std::move(Node_uptr(new Ellipse()));
+        case ET_LINE:
+            return std::move(Node_uptr(new Line()));
+        case ET_POLYLINE:
+            return std::move(Node_uptr(new PolyLine()));
+        case ET_POLYGON:
+            return std::move(Node_uptr(new Polygon()));
         default:
             return std::move(Node_uptr(new XML::Node()));
         }

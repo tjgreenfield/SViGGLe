@@ -33,7 +33,7 @@ namespace SVGL
             Point op = state->pointBuffer.getLastPoint();
 
             // this might need adjusting
-            unsigned int vertexCount = std::max(2.0, (p1.distance() + p2.distance(&p1) + distance(&p2)) / (3 * state->tolerance));
+            unsigned int vertexCount = std::max(2.0, (p1.distance() + p2.distance(p1) + distance(p2)) / (3 * state->tolerance));
 
             for (unsigned int i = 1; i <= vertexCount; ++i)
             {

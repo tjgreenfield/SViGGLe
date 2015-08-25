@@ -136,9 +136,10 @@ namespace SVGL
      */
     void Group::buffer(double tolerance)
     {
+        double t = transform.transformTolerance(tolerance);
         for (const Element_uptr& child : children)
         {
-            child->buffer(tolerance);
+            child->buffer(t);
         }
     }
 

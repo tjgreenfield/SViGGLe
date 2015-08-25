@@ -86,22 +86,26 @@
             <apath fill="none" stroke="lime" d="M-0.5,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0" />
         </g>
 
-        <g transform="translate(200, 0)">
-            <rect fill="black" stroke="red" x="-10000" y="-10000" width="20000" height="20000" />
+        <g transform="translate(500, 0) scale(4, 4)">
+            <rect fill="darkgrey" stroke="red" rx="10" ry="20" x="-100" y="-100" width="200" height="200" />
+            <circle fill="magenta" stroke="pink" style="stroke-width:3; stroke-dasharray:3,8; stroke-linecap:round" cx="25" cy="25" r="50"/>
+            <ellipse fill="lime" stroke="yellow" style="stroke-width:1.5; stroke-dasharray:6,4; stroke-linecap:square" cx="25" cy="25" rx="15" ry="25"/>
             <line fill="none" stroke="white" x1="-0.5" y1="-50" x2="50" y2="10" />
-            <polyline fill="none" stroke="white" points="-20,-20 -10,20 10,-20 30,30" />
-            <rect fill="none" stroke="white" x="-10cm" y="-10cm" width="60cm" height="10cm" />
-
-            <apath fill="none" stroke="cyan" d="M0,0 h2 v-2 l4,3  -2,3  4,3  -2,3 c 5,0 0,5 5,5 z"  />
-            <apath fill="none" stroke="white" d="M10,0 h2 v-2 l4,3 l-2,3 l4,3 l-2,3 c 5,0 0,5 5,5 z"  />
-            <apath fill="none" stroke="red" d="M10,0 c50,0 50,50 0,50 z" />
-            <apath fill="none" stroke="cyan" d="M0,0 c50,0 50,50 0,50 z" />
-            <apath fill="none" stroke="pink" d="M-10,0 q50,25 0,50 z" />
-            <apath fill="none" stroke="yellow" d="M0,0 a 15,25 10 1 1 10,0 z" />
+            <polyline fill="none" stroke="purple" style="stroke-width:4;stroke-linejoin:round" points="-20,-20 -10,20 10,-20 30,30 20,40 0,30 -30,30" />
+            <polygon transform="translate(0, 100)" fill="navy" stroke="cyan" style="stroke-width:4;stroke-linejoin:round" points="-20,-20 -10,20 10,-20 30,30 20,40 0,30 -30,30" />
+            <rect fill="blue" stroke="green" rx="1" ry="1" x="10" y="10" width="60" height="10" />
+            <g transform="translate(0, -100)">
+                <path fill="none" stroke="cyan" d="M50,0 h2 v-2 l4,3  -2,3  4,3  -2,3 c 5,0 0,5 5,5 z"  />
+                <path fill="none" stroke="white" d="M50,0 h2 v-2 l4,3 l-2,3 l4,3 l-2,3 c 5,0 0,5 5,5 z"  />
+                <path fill="none" stroke="red" d="M50,0 c50,0 50,50 0,50 z" />
+                <path fill="none" stroke="cyan" d="M50,0 c50,0 50,50 0,50 z" />
+                <path fill="none" stroke="pink" d="M40,0 q50,25 0,50 z" />
+                <path fill="none" stroke="yellow" d="M50,0 a 15,25 10 1 1 10,0 z" />
+            </g>
         </g>
         <g
             id="g2161"
-            transform="translate(-200, 0) scale(-2, 2)">
+            transform="translate(-700, 0) scale(2, 2)">
             <path
                 stroke="salmon"
                 style="stroke-width:1"

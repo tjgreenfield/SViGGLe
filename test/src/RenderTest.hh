@@ -44,7 +44,7 @@ float scale = 0.0008f;
 float rotate = 0.0f;
 float prevRotate = 0.0f;
 double tolerance = 2000 / 480.f;
-bool wireframe = true;
+bool wireframe = false;
 bool needScreenshot = false;
 
 
@@ -107,7 +107,7 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
         SVGL::Point now(x, y);
         SVGL::Point a(prev - centre);
         SVGL::Point b(now - centre);
-        double angle = a.angle(&b);
+        double angle = a.angle(b);
 
         rotate = prevRotate + angle;
     }
@@ -346,7 +346,7 @@ void renderTest()
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_BLEND);
     glEnable (GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

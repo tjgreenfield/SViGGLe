@@ -20,23 +20,25 @@
 
 #pragma once
 
-#include "PathCommand.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
+#include "ElementsPath.hh"
 
 namespace SVGL
 {
-    namespace PathCommand
+    class Ellipse : public Path
     {
-        class EllipticalTo : public PathCommand
-        {
-        public:
-            double rx, ry, xAxisRotation, largeArcFlag, sweepFlag;
+    protected:
+        double cx;
+        double cy;
+        double rx;
+        double ry;
 
-            double cosp, sinp, t1, dt, cx, cy; // calculated values
+    public:
+        Ellipse();
 
-            EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev);
+        void setAttribute(unsigned int index, SubString name, SubString value);
 
-            void buffer(Buffer::BufferingState* state) const override;
-        };
-    }
+        void clearBuffers() override;
+
+        void buffer(double tolerance) override;
+    };
 }

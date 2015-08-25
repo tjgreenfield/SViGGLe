@@ -28,8 +28,7 @@ namespace SVGL
 {
     namespace PathCommand
     {
-
-        EllipticalTo::EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, PathCommand* prev) :
+        EllipticalTo::EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev) :
             PathCommand(p),
             rx(_rx),
             ry(_ry),
@@ -129,7 +128,7 @@ namespace SVGL
         void EllipticalTo::buffer(Buffer::BufferingState* state) const
         {
             // this might need adjusting
-            int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / state->tolerance)), 2);
+            int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / state->tolerance)), 4);
 
             for (int i = 1; i < vertexCount; i++)
             {

@@ -76,22 +76,30 @@ namespace SVGL
     }
 
     Element::AttributeMap Element::attributeMap = {
-        { "id", ID },
-        { "class", CLASS },
-        { "style", STYLE },
-        { "transform", TRANSFORM },
-        { "d", D },
-        { "pathLength", PATH_LENGTH },
-        { "x", X },
-        { "y", Y },
-        { "width", WIDTH },
-        { "height", HEIGHT },
-        { "rx", RX },
-        { "ry", RY },
+        { "id", Attribute::ID },
+        { "class", Attribute::CLASS },
+        { "style", Attribute::STYLE },
+        { "transform", Attribute::TRANSFORM },
+        { "d", Attribute::D },
+        { "pathLength", Attribute::PATH_LENGTH },
+        { "x", Attribute::X },
+        { "y", Attribute::Y },
+        { "x1", Attribute::X1 },
+        { "y1", Attribute::Y1 },
+        { "x2", Attribute::X2 },
+        { "y2", Attribute::Y2 },
+        { "width", Attribute::WIDTH },
+        { "height", Attribute::HEIGHT },
+        { "rx", Attribute::RX },
+        { "ry", Attribute::RY },
+        { "cx", Attribute::CX },
+        { "cy", Attribute::CY },
+        { "r", Attribute::R },
+        { "points", Attribute::POINTS },
 
-        { "color", COLOR },
-        { "fill", FILL },
-        { "stroke", STROKE },
+        { "color", Attribute::COLOR },
+        { "fill", Attribute::FILL },
+        { "stroke", Attribute::STROKE },
     };
 
     void Element::setAttribute(SubString name, SubString value)
@@ -108,17 +116,17 @@ namespace SVGL
         CSS::Value_uptr v;
         switch (index)
         {
-        case ID:
+        case Attribute::ID:
             id.assign(value);
             break;
-        case STYLE:
+        case Attribute::STYLE:
             styleDeclarations.put(std::move(
                 CSS::Parser(value.start).readDeclarationBlock()
                 ));
             break;
-        case COLOR:
-        case FILL:
-        case STROKE:
+        case Attribute::COLOR:
+        case Attribute::FILL:
+        case Attribute::STROKE:
             styleDeclarations.put(
                 CSS::Declaration_uptr(new CSS::Declaration(
                 name,
@@ -126,7 +134,7 @@ namespace SVGL
                 ))
                 );
             break;
-        case TRANSFORM:
+        case Attribute::TRANSFORM:
             {
                 TransformParser(value.start).readTransform(&transform);
             }

@@ -26,6 +26,12 @@ namespace SVGL
         ET_INVALID,
         ET_SVG,
         ET_G,
-        ET_PATH
+        ET_PATH,
+        ET_RECT,
+        ET_CIRCLE,
+        ET_ELLIPSE,
+        ET_LINE,
+        ET_POLYLINE,
+        ET_POLYGON
     };
 }

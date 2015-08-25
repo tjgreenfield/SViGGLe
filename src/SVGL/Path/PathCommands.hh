@@ -21,22 +21,8 @@
 #pragma once
 
 #include "PathCommand.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
-
-namespace SVGL
-{
-    namespace PathCommand
-    {
-        class EllipticalTo : public PathCommand
-        {
-        public:
-            double rx, ry, xAxisRotation, largeArcFlag, sweepFlag;
-
-            double cosp, sinp, t1, dt, cx, cy; // calculated values
-
-            EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev);
-
-            void buffer(Buffer::BufferingState* state) const override;
-        };
-    }
-}
+#include "PathMoveTo.hh"
+#include "PathLineTo.hh"
+#include "PathCubicTo.hh"
+#include "PathEllipticalTo.hh"
+#include "PathClosePath.hh"

@@ -67,17 +67,17 @@ namespace SVGL
             return Point(-x, -y);
         }
 
-        inline double distance(const Point* p) const
+        inline double distance(const Point& p) const
         {
-            double dx = p->x - x;
-            double dy = p->y - y;
+            double dx = p.x - x;
+            double dy = p.y - y;
             return std::sqrt(dx * dx + dy * dy);
         }
 
-        inline double length(const Point* p) const
+        inline double length(const Point& p) const
         {
-            double dx = p->x - x;
-            double dy = p->y - y;
+            double dx = p.x - x;
+            double dy = p.y - y;
             return std::sqrt(dx * dx + dy * dy);
         }
 
@@ -91,9 +91,9 @@ namespace SVGL
             return std::sqrt((x * x) + (y * y));
         }
 
-        inline Point normal(const Point* p) const
+        inline Point normal(const Point& p) const
         {
-            Point diff(p->x - x, p->y - y);
+            Point diff(p.x - x, p.y - y);
             double dist = diff.distance();
             return Point(-diff.y / dist, diff.x / dist);
         }
@@ -110,17 +110,17 @@ namespace SVGL
             return Point(x / dist, y / dist);
         }
 
-        inline double dot(const Point* p) const
+        inline double dot(const Point& p) const
         {
-            return x * p->x + y * p->y;
+            return x * p.x + y * p.y;
         }
 
-        inline double cross(const Point* p) const
+        inline double cross(const Point& p) const
         {
-            return x * p->y - y * p->x;
+            return x * p.y - y * p.x;
         }
 
-        inline double angle(const Point* p) const
+        inline double angle(const Point& p) const
         {
             return atan2(cross(p), dot(p));
         }

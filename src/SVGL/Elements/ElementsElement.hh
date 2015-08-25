@@ -39,36 +39,49 @@ namespace SVGL
     public:
         static const int GRAPHIC_OFFSET = 0x01000000;
 
-        enum AttributeIndex {
-            // Primary attribute list
-            ID,
-            CLASS,
-            STYLE,
-            TRANSFORM,
-            D,
-            PATH_LENGTH,
-            X,
-            Y,
-            WIDTH,
-            HEIGHT,
-            RX,
-            RY,
-            //...
+        class Attribute
+        {
+        public:
+            enum Index {
+                // Primary attribute list
+                ID,
+                CLASS,
+                STYLE,
+                TRANSFORM,
+                D,
+                PATH_LENGTH,
+                X,
+                Y,
+                X1,
+                Y1,
+                X2,
+                Y2,
+                WIDTH,
+                HEIGHT,
+                RX,
+                RY,
+                CX,
+                CY,
+                R,
+                POINTS,
+                //...
 
-            // Include "presentation" aka style attributes
-            COLOR = GRAPHIC_OFFSET + Styles::Inherit::COLOR,
-            // ...
+                // Include "presentation" aka style attributes
+                COLOR = GRAPHIC_OFFSET + Styles::Inherit::COLOR,
+                // ...
 
-            FILL,
-            STROKE,
+                FILL,
+                STROKE,
 
-            // Include "event" attributes
+                // Include "event" attributes
 
-            // Include "conditional processing" attributes
+                // Include "conditional processing" attributes
+            };
         };
 
 
-        typedef std::unordered_map<SubString, unsigned int> AttributeMap;
+
+        typedef std::unordered_map<SubString, Attribute::Index> AttributeMap;
         static AttributeMap attributeMap;
 
     protected:

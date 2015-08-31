@@ -29,5 +29,8 @@
 #include "CSSStructures.hh"
 #include "CSSParser.hh"
 #include "CSSStyle.hh"
+#include "CSSSizeContext.hh"
+#include "CSSProperty.hh"
+#include "CSSPropertySet.hh"
 #include "CSSStyleSheet.hh"
 #include "CSSColor.hh"

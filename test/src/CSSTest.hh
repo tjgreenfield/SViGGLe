@@ -28,7 +28,7 @@
 #include <SVGL/CSS/CSSParser.hh>
 #include <SVGL/CSS/CSSStructures.hh>
 #include <SVGL/CSS/CSSSelectors.hh>
-#include <SVGL/Styles/Styles.hh>
+#include <SVGL/Styles/StyleShape.hh>
 
 using namespace std;
 using namespace SVGL;
@@ -37,9 +37,9 @@ class TestParser : public CSS::Parser
 {
 public:
     const char *start;
-    TestParser(const char* data) :
-        CSS::Parser(data),
-        start(data)
+    TestParser(const char* _data) :
+        CSS::Parser(_data),
+        start(_data)
     {
     }
 
@@ -85,6 +85,8 @@ public:
         cout << indent1 << "^Starting here." << endl;
     }
 };
+
+void testDeclarationBlock(const char* label, const char* s);
 
 void testDeclarationBlock(const char* label, const char* s)
 {
@@ -177,7 +179,7 @@ void testStyleSheet(const char* label, const char* s)
     }
 }
 
-class TestElement : public CSS::Element
+class TestElement : public CSS::CSSElement
 {
 public:
     std::string tag;
@@ -205,6 +207,11 @@ public:
         }
     }
 
+    void calculate(const CSS::SizeContext& sizeContext) override
+    {
+
+    }
+
     virtual const CSS::DeclarationBlock* getSpecifiedStyle() const
     {
         return &specifiedStyle;
@@ -225,17 +232,17 @@ public:
         return nullptr;
     }
 
-    virtual const char* getAttributeValue(const char* attributeName) const
+    bool testAttributeValue(const char* attributeName, const char* attributeValue) const override
     {
-        return nullptr;
+        return false;
     }
 
-    virtual Element* getParent() const
+    virtual CSSElement* getParent() const
     {
         return parent;
     }
 
-    virtual Element* getPrevSibling() const
+    virtual CSSElement* getPrevSibling() const
     {
         return prevSibling;
     }
@@ -277,12 +284,13 @@ public:
         return str;
     }
 
-    void applyStyleSheet(CSS::StyleSheet* styleSheet)
+    void applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext)
     {
-        styleSheet->apply(this);
+        CSS::PropertySet propertySet;
+        styleSheet->apply(this, &propertySet, inherit, sizeContext);
         for (TestElement* child : children)
         {
-            child->applyStyleSheet(styleSheet);
+            child->applyStyleSheet(styleSheet, propertySet, sizeContext);
         }
     }
 };
@@ -345,10 +353,14 @@ void CSSTest()
 
     getchar();
 
+    CSS::PropertySet inherit;
+    CSS::SizeContext sizeContext(1280,720,10);
 
     cout << "testing applying stylesheet to elements" << endl;
 
     {
+
+
         cout << "Test 1" << endl;
 
         TestElement* A = new TestElement("A");
@@ -358,11 +370,13 @@ void CSSTest()
         CSS::Parser p("A B C {color:#00FF00}");
         CSS::StyleSheet_uptr styleSheet = p.readStyleSheet();
 
+
+
         cout << A->toString() << endl;
         cout << *styleSheet << endl;
-        cout << "before: " << C->style.getColor() << endl;
-        A->applyStyleSheet(styleSheet.get());
-        cout << "after: " << C->style.getColor() << endl;
+        cout << "before: " << C->style.color << endl;
+        A->applyStyleSheet(styleSheet.get(), inherit, sizeContext);
+        cout << "after: " << C->style.color << endl;
 
         delete A;
 
@@ -385,9 +399,9 @@ void CSSTest()
 
         cout << A->toString() << endl;
         cout << *styleSheet << endl;
-        cout << "before: " << C->style.getColor() << endl;
-        A->applyStyleSheet(styleSheet.get());
-        cout << "after: " << C->style.getColor() << endl;
+        cout << "before: " << C->style.color << endl;
+        A->applyStyleSheet(styleSheet.get(), inherit, sizeContext);
+        cout << "after: " << C->style.color << endl;
 
         delete A;
 
@@ -407,9 +421,9 @@ void CSSTest()
 
         cout << A->toString() << endl;
         cout << *styleSheet << endl;
-        cout << "before: " << C->style.getColor() << endl;
-        A->applyStyleSheet(styleSheet.get());
-        cout << "after: " << C->style.getColor() << endl;
+        cout << "before: " << C->style.color << endl;
+        A->applyStyleSheet(styleSheet.get(), inherit, sizeContext);
+        cout << "after: " << C->style.color << endl;
 
         delete A;
 
@@ -431,9 +445,9 @@ void CSSTest()
 
         cout << A->toString() << endl;
         cout << *styleSheet << endl;
-        cout << "before: " << C->style.getColor() << endl;
-        A->applyStyleSheet(styleSheet.get());
-        cout << "after: " << C->style.getColor() << endl;
+        cout << "before: " << C->style.color << endl;
+        A->applyStyleSheet(styleSheet.get(), inherit, sizeContext);
+        cout << "after: " << C->style.color << endl;
 
         delete A;
 
@@ -453,9 +467,9 @@ void CSSTest()
 
         cout << P->toString() << endl;
         cout << *styleSheet << endl;
-        cout << "before: " << C->style.getColor() << endl;
-        P->applyStyleSheet(styleSheet.get());
-        cout << "after: " << C->style.getColor() << endl;
+        cout << "before: " << C->style.color << endl;
+        P->applyStyleSheet(styleSheet.get(), inherit, sizeContext);
+        cout << "after: " << C->style.color << endl;
 
         delete P;
 
@@ -477,9 +491,9 @@ void CSSTest()
 
         cout << P->toString() << endl;
         cout << *styleSheet << endl;
-        cout << "before: " << C->style.getColor() << endl;
-        P->applyStyleSheet(styleSheet.get());
-        cout << "after: " << C->style.getColor() << endl;
+        cout << "before: " << C->style.color << endl;
+        P->applyStyleSheet(styleSheet.get(), inherit, sizeContext);
+        cout << "after: " << C->style.color << endl;
 
         delete P;
 

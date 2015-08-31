@@ -22,12 +22,6 @@
 
 #include "StyleGraphic.hh"
 
-#include <SVGL/CSS/CSS.hh>
-
-#include <bitset>
-#include <unordered_map>
-#include <vector>
-
 namespace SVGL
 {
     namespace Styles
@@ -35,19 +29,7 @@ namespace SVGL
         // shape & text but not images
         class Vector : public Graphic
         {
-            Color fill;
-
-            Color stroke;
-            double strokeWidth;
-            double strokeMiterLimit;
-            LineJoin strokeLineJoin;
-            LineCap strokeLineCap;
-
-            DashArray strokeDashArray;
-            double strokeDashOffset;
-
         public:
-
             /*
             'fill'
             'fill-rule'
@@ -64,79 +46,52 @@ namespace SVGL
             */
 
             /**
-             * Constructor
+             * Fill rule options
              */
-            Vector(SVG* parent = nullptr);
+            enum FillRule {
+                FR_NONZERO = 0,
+                FR_EVENODD = 1
+            };
 
             /**
-             * Test if the fill is none
-             * @retval true There is a fill
-             * @retval false There is no fill
+             * Line join options
              */
-            bool hasFill() const override;
+            enum _LineJoin {
+                LJ_MITER,
+                LJ_ROUND,
+                LJ_BEVEL
+            };
 
             /**
-             * Get the value of the fill color property
-             * @return The color property
+             * Line cap options
              */
-            Color getFill() const override;
+            enum _LineCap {
+                LC_BUTT,
+                LC_ROUND,
+                LC_SQUARE
+            };
 
             /**
-             * Test if the stroke is none
-             * @retval true There is a stroke
-             * @retval false There is no stroke
+             * Dash array type
              */
-            bool hasStroke() const override;
-            
-            /**
-             * Get the value of the stroke color property
-             * @return The color property
-             */
-            Color getStroke() const override;
-            
-            /**
-             * Get the value of the stroke width property
-             * @return The stroke width
-             */
-            double getStrokeWidth() const override;
+            typedef std::vector<double> DashArray;
 
-            /**
-             * Get the line join type for the stroke
-             * @return The stroke line join type
-             */
-            LineJoin getStrokeLineJoin() const override;
+            BITRANGE_IMPL(hasFill, bits, 12, 1);
+            BITRANGE_IMPL(fillRule, bits, 13, 1);
+            BITRANGE_IMPL(hasStroke, bits, 14, 1);
+            BITRANGE_IMPL(strokeLineCap, bits, 15, 2);
+            BITRANGE_IMPL(strokeLineJoin, bits, 17, 2);
 
-            /**
-             * Get the limit for the miter joins
-             * @return The limit for the miter joins
-             */
-            double getStrokeMiterLimit() const override;
+            Color fill;
+            Color stroke;
+            double strokeWidth;
+            double strokeMiterLimit;
+            double strokeDashOffset;
+            DashArray strokeDashArray;
 
-            /**
-             * Get the line cap type for the stroke
-             * @return The stroke line cap type
-             */
-            LineCap getStrokeLineCap() const override;
+            Vector();
 
-            /**
-             * Get the stroke dash array
-             * @return A pointer to the dash array
-             */
-            const DashArray* getStrokeDashArray() const override;
-
-            /**
-             * Get the stroke dash offset
-             * @return The offset length to start into the dash array
-             */
-            double getStrokeDashOffset() const override;
-
-            /**
-             * Set the style property of the style object.
-             *
-             * @param[in] index The index of the style property to set.
-             * @param[in] value The value to assign to the property.
-             */
-            void setProperty(unsigned int index, const CSS::Value* value) override;
+            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

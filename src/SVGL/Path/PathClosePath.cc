@@ -19,26 +19,24 @@
  */
 
 #include "PathClosePath.hh"
-#include <SVGL/Stroke/StrokeJoin.hh>
-#include <SVGL/Stroke/StrokeDash.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void ClosePath::buffer(Buffer::BufferingState* state) const
+        void ClosePath::buffer(Stroker* stroker) const
         {
-            Point first(state->pointBuffer.getFirstPoint());
-            Point dir(state->pointBuffer.getDir());
+            Point first(stroker->pointBuffer.getFirstPoint());
+            Point dir(stroker->pointBuffer.getDir());
 
             // fill
-            state->pointBuffer.pushPoint(&first);
+            stroker->pointBuffer.pushPoint(&first);
 
-            Stroke::bufferJoin(state, first);
+            stroker->bufferJoin(first);
 
-            Stroke::bufferDash(state, first);
+            stroker->bufferDash(first);
             // closing join
-            Stroke::bufferJoin(state, first + dir);
+            stroker->bufferJoin(first + dir);
         }
     }
 }

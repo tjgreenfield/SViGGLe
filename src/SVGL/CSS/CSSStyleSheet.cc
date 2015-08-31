@@ -47,23 +47,34 @@ namespace SVGL
             buildIndex();
         }
 
+        void StyleSheet::applyProperty(PropertySet* propertySet, const PropertySet& inherit, const Property::Index property, const Value* value)
+        {
+            if (const Keyword* keyword = dynamic_cast<const Keyword*>(value))
+            {
+                if (keyword->keyword == Keyword::INHERIT)
+                {
+                    (*propertySet)[property] = inherit[property];
+                    return;
+                }
+            }
+            // TODO, decompose 'font' property
+            (*propertySet)[property] = value;
+        }
+
         /**
          * Apply the stylesheet to specified element (where applicable)
          * param[in] element The element to apply the stylesheet to
          */
-        void StyleSheet::apply(Element* element) const
+        void StyleSheet::apply(CSSElement* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const
         {
-            Style* style = element->getStyle();
+            propertySet->inherit(inherit);
             for (SelectorBlock selectorBlock : selectorIndex)
             {
                 if (selectorBlock.selector->match(element))
                 {
                     for (auto const& i : selectorBlock.block->map)
                     {
-                        if (!i.second->important)
-                        {
-                            style->setProperty(i.first, i.second->value.get());
-                        }
+                        applyProperty(propertySet, inherit, i.first, i.second->value.get());
                     }
                 }
             }
@@ -71,21 +82,21 @@ namespace SVGL
             {
                 if (selectorBlock.selector->match(element))
                 {
-                    for (auto const& i : selectorBlock.block->map)
+                    for (auto const& i : selectorBlock.block->importantMap)
                     {
-                        if (i.second->important)
-                        {
-                            style->setProperty(i.first, i.second->value.get());
-                        }
+                        applyProperty(propertySet, inherit, i.first, i.second->value.get());
                     }
                 }
             }
             // Apply element's style over the top of the style sheet
+            // TODO move into element code?
             const DeclarationBlock* specifiedStyle = element->getSpecifiedStyle();
             for (auto const& i : specifiedStyle->map)
             {
-                style->setProperty(i.first, i.second->value.get());
+                applyProperty(propertySet, inherit, i.first, i.second->value.get());
             }
+            element->calculate(sizeContext);
+            element->getStyle()->applyPropertySet(*propertySet, inherit, sizeContext);
         }
 
         /**

@@ -20,12 +20,8 @@
 
 #pragma once
 
-#include "StyleTypes.hh"
-#include "StyleSVG.hh"
 #include <SVGL/CSS/CSS.hh>
-
-#include <bitset>
-#include <unordered_map>
+#include <SVGL/Types/BitRange.hh>
 
 namespace SVGL
 {
@@ -34,10 +30,9 @@ namespace SVGL
         /**
          * Graphic: style basis for containers, shape, text & images
          */
-        class Graphic : public SVG
+        class Graphic : public CSS::Style
         {
         public:
-            
 
             /*
             'color'
@@ -51,83 +46,80 @@ namespace SVGL
             'pointer-events'
             'color-interpolation'
             */
-        protected:
-            ClipPathElement* clipPath; //!< The linked clip-path element
-            MaskElement* mask; //!< The linked mask element
-            FilterElement* filter; //!< The linked filter element
-            Color color; //!< The color property
-            Opacity opacity; //!< The opacity property
-            Cursor cursor; //!< The cursor property
-            PointerEvents pointerEvents; //!< The pointer events property
-            ColorInterpolation colorInterpolation; //!< The color interpolation property
+
+            /**
+             * Possible cursor values
+             */
+            enum Cursor {
+                CURSOR_AUTO,
+                CURSOR_CROSSHAIR,
+                CURSOR_DEFAULT,
+                CURSOR_POINTER,
+                CURSOR_MOVE,
+                CURSOR_E_RESIZE,
+                CURSOR_NE_RESIZE,
+                CURSOR_W_RESIZE,
+                CURSOR_NW_RESIZE,
+                CURSOR_S_RESIZE,
+                CURSOR_SE_RESIZE,
+                CURSOR_SW_RESIZE,
+                CURSOR_N_RESIZE,
+                CURSOR_TEXT,
+                CURSOR_WAIT,
+                CURSOR_HELP
+            };
+
+            /**
+             * Possible pointer events
+             */
+            enum PointerEvents {
+                PE_VISIBLE_PAINTED,
+                PE_VISIBLE_FILL,
+                PE_VISIBLE_STROKE,
+                PE_VISIBLE,
+                PE_PAINTED,
+                PE_FILL,
+                PE_STROKE,
+                PE_ALL,
+                PE_NONE
+            };
+
+            /**
+             * Color interpolation options
+             */
+            enum ColorInterpolation {
+                CI_AUTO,
+                CI_SRGB,
+                CI_LINEAR_RGB
+            };
+
+            /**
+             * Clip rule options
+             */
+            enum ClipRule {
+                CR_NONZERO = 0,
+                CR_EVENODD = 1
+            };
+
+            unsigned int bits;
+
+            BITRANGE_IMPL(display, bits, 0, 1);
+            BITRANGE_IMPL(cursor, bits, 1, 4);
+            BITRANGE_IMPL(pointerEvents, bits, 5, 4);
+            BITRANGE_IMPL(colorInterpolation, bits, 9, 2);
+            BITRANGE_IMPL(clipRule, bits, 11, 1);
+
+            Color color;
+            unsigned char opacity;
+            /*ClipPathElement* clipPath;
+            MaskElement* mask;
+            FilterElement* filter;*/
 
         public:
-            /**
-             * Constructor
-             */
-            Graphic(SVG* parent = nullptr);
+            Graphic();
 
-            /**
-             * Get the value of the color property
-             * @return The color property
-             */
-            Color getColor() const override;
-            
-            /**
-             * Get the value of the display property
-             * @return The display property
-             */
-            Display getDisplay() const override;
-            
-            /**
-             * Get the value of the clip-rule property
-             * @return The clip-rule property
-             */
-            ClipRule getClipRule() const override;
-            
-            /**
-             * Get the value of the clip-path property
-             * @return The clip-path property
-             */
-            const ClipPathElement* getClipPath() const override;
+            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
 
-            /**
-             * Get the value of the mask property
-             * @return The mask property
-             */
-            const MaskElement* getMask() const override;
-            
-            /**
-             * Get the value of the opacity property
-             * @return The opacity property
-             */
-            Opacity getOpacity() const override;
-            
-            /**
-             * Get the value of the filter property
-             * @return The filter property
-             */
-            const FilterElement* getFilter() const override;
-            
-            /**
-             * Get the value of the pointer-events property
-             * @return The pointer-events property
-             */
-            PointerEvents getPointerEvents() const override;
-            
-            /**
-             * Get the value of the color-interpolation property
-             * @return The color-interpolation property
-             */
-            ColorInterpolation getColorInterpolation() const override;
-
-            /**
-             * Set the style property of the style object.
-             *
-             * @param[in] index The index of the style property to set.
-             * @param[in] value The value to assign to the property.
-             */
-            void setProperty(unsigned int index, const CSS::Value* value) override;
         };
     }
 }

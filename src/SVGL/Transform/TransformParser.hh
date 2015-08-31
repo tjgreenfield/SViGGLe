@@ -30,8 +30,8 @@ namespace SVGL
     class TransformParser : public BaseParser::Parser
     {
     public:
-        inline TransformParser(const char* s) :
-            BaseParser::Parser(s)
+        inline TransformParser(const char* _s) :
+            BaseParser::Parser(_s)
         {
 
         }
@@ -40,5 +40,5 @@ namespace SVGL
 
 
     };
-     
+
 }

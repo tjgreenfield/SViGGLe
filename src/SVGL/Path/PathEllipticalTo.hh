@@ -21,13 +21,13 @@
 #pragma once
 
 #include "PathCommand.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
+#include "Buffer/PathPolygon.hh"
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        class EllipticalTo : public PathCommand
+        class EllipticalTo : public Command
         {
         public:
             double rx, ry, xAxisRotation, largeArcFlag, sweepFlag;
@@ -36,7 +36,7 @@ namespace SVGL
 
             EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev);
 
-            void buffer(Buffer::BufferingState* state) const override;
+            void buffer(Stroker* stroker) const override;
         };
     }
 }

@@ -20,13 +20,7 @@
 
 #pragma once
 
-#include "StyleTypes.hh"
-#include "StyleSVG.hh"
 #include "StyleVector.hh"
-#include <SVGL/CSS/CSS.hh>
-
-#include <bitset>
-#include <unordered_map>
 
 namespace SVGL
 {
@@ -34,9 +28,6 @@ namespace SVGL
     {
         class Shape : public Vector
         {
-
-            unsigned int marker;
-
             /*
             ‘marker’
             ‘marker-start’
@@ -45,14 +36,8 @@ namespace SVGL
             ‘shape-rendering’
             */
         public:
-            /*virtual unsigned int getMarker()
-            {
-            if (inheritedShape[0])
-            {
-            return parent ? parent->getMarker() : 0;
-            }
-            return marker;
-            }*/
+
+            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

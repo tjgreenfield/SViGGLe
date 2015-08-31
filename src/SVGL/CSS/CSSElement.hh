@@ -20,7 +20,10 @@
 
 #pragma once
 
+#include "CSSSizeContext.hh"
+
 #include <SVGL/Types/SubString.hh>
+#include <SVGL/CSS/Values/CSSValue.hh>
 
 #include <memory>
 #include <vector>
@@ -42,9 +45,14 @@ namespace SVGL
          * @details
          *   Specifies an interface through which the selectors can get the tag name, attributes, parent/sibling and style interface of the element.
          */
-        class Element
+        class CSSElement
         {
         public:
+
+            /**
+             * Virtual destructor
+             */
+            virtual ~CSSElement() = default;
 
             /**
              * Get the StyleSheet object that contains the specified styles for the element.
@@ -63,6 +71,11 @@ namespace SVGL
             virtual Style* getStyle() = 0;
 
             /**
+             * Calculate any relative units used in the element
+             */
+            virtual void calculate(const SizeContext& sizeContext) = 0;
+
+            /**
              * Get the tag name of the element.
              */
             virtual const char* getTagName() const = 0;
@@ -71,29 +84,29 @@ namespace SVGL
              * Get the element id
              */
             virtual const char* getID() const = 0;
-            
+
             /**
              * Get the value of the specified attribute.
              *
              * @param[in] attributeName The name of the attribute to get.
              */
-            virtual const char* getAttributeValue(const char* attributeName) const = 0;
+            virtual bool testAttributeValue(const char* attributeName, const char* attributeValue) const = 0;
 
             /**
              * Get the parent element.
              *
-             * @return A pointer to the Element object that is the parent of this object.
+             * @return A pointer to the CSSElement object that is the parent of this object.
              * @retval nullptr Indicates there is no parent object.
              */
-            virtual const Element* getParent() const = 0;
+            virtual const CSSElement* getParent() const = 0;
 
             /**
              * Get the previous sibling element.
              *
-             * @return A pointer to the Element object that is the previous sibling of this object.
+             * @return A pointer to the CSSElement object that is the previous sibling of this object.
              * @retval nullptr Indicates there is no previous sibling object.
              */
-            virtual const Element* getPrevSibling() const = 0;
+            virtual const CSSElement* getPrevSibling() const = 0;
         };
     }
 }

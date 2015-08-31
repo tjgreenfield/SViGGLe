@@ -43,7 +43,7 @@ namespace SVGL
         TypeSelector::TypeSelector(std::string&& _type) :
             type(std::move(_type))
         {
-            
+
         }
 
         /**
@@ -53,7 +53,7 @@ namespace SVGL
         TypeSelector::TypeSelector(SubString _type) :
             type(_type)
         {
-            
+
         }
 
         /**
@@ -62,7 +62,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool TypeSelector::match(const Element* element) const
+        bool TypeSelector::match(const CSSElement* element) const
         {
             return type.empty() || type == "*" || type == element->getTagName();
         }

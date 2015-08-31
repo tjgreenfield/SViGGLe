@@ -21,11 +21,13 @@
 #pragma once
 
 #include "CSSDeclaration.hh"
+#include <SVGL/CSS/CSSProperty.hh>
 #include <SVGL/Types/SubString.hh>
 #include <SVGL/Types/CStrHash.hh>
 #include <unordered_map>
 #include <string>
 #include <memory>
+#include <type_traits>
 
 namespace SVGL
 {
@@ -43,7 +45,7 @@ namespace SVGL
             friend std::ostream& operator<<(std::ostream& out, const DeclarationBlock& block);
 
         public:
-            typedef std::unordered_map<const char*, Declaration_uptr, CStrHash, CStrEquals> Map; //!< Map type designed to use raw string data from declaration as key
+            typedef std::unordered_map<Property::Index, Declaration_uptr, std::hash<int>> Map; //!< Map type designed to use raw string data from declaration as key
             Map map; //!< Set of not-important declarations
             Map importantMap; //!< Set of important declarations
 

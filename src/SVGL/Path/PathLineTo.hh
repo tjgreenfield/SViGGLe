@@ -21,7 +21,7 @@
 #pragma once
 
 #include "PathMoveTo.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
+#include <SVGL/Path/Buffer/PathPolygon.hh>
 
 namespace SVGL
 {
@@ -42,7 +42,7 @@ namespace SVGL
                 MoveTo(_x, _y)
             {}
 
-            void buffer(Buffer::BufferingState* state) const override;
+            void buffer(Stroker* stroker) const override;
         };
     }
 }

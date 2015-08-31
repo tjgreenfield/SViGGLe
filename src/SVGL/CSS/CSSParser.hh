@@ -50,8 +50,8 @@ namespace SVGL
                 SVGL::BaseParser::Parser(_s)
             {
             }
-            
-            /** 
+
+            /**
              * Reads the includes operator "~=" if present.
              * @retval true If the operator is found.
              * @retval false If the operator is not found.
@@ -70,7 +70,7 @@ namespace SVGL
                 return 0;
             }
 
-            /** 
+            /**
              * Reads the dash operator "|=" if present.
              * @retval true If the operator is found.
              * @retval false If the operator is not found.
@@ -89,14 +89,14 @@ namespace SVGL
                 return 0;
             }
 
-            /** 
+            /**
              * Read over comment.
              * @retval true If a comment is found.
              * @retval false If a comment is not found.
              */
             bool readComment();
 
-            /** 
+            /**
              * Read a floating point numerical value only if it is followed by a percent sign "%".
              * @param[out] percent Pointer to a double to set as the value. Left unchanged if no numerical value is found.
              * @retval true If a percent value is found.
@@ -104,163 +104,163 @@ namespace SVGL
              */
             bool readPercent(double* percent);
 
-            /** 
+            /**
              * Read a floating point numerical value and associated units.
              * @return Dimension object containing the read dimension. Dimension opbject is invalid if no dimension is found.
              */
             Dimension readDimension();
 
-            /** 
+            /**
              * Read a character if it is a valid start of name character
              * @retval true If a valid character is found.
              * @retval false If a valid character is not found.
              */
             char readNmStart();
-            
-            /** 
+
+            /**
              * Read a character if it is a valid name character
              * @retval true If a valid character is found.
              * @retval false If a valid character is not found.
              */
             char readNmChar();
-            
-            /** 
+
+            /**
              * Read a name.
               * @return A SubString containing the name. SubString is invalid is an name is not found.
              */
             SubString readName();
-            
-            /** 
+
+            /**
              * Read an ident.
              * @return A SubString containing the identifier. SubString is invalid is an identifier is not found.
              */
             SubString readIdent();
-            
-            /** 
+
+            /**
              * Read a Type Selector
              * @param[out] type Pointer to the TypeSelector object where to set the ident
              * @retval true If a valid type selector is found.
              * @retval false If a valid type selector is not found.
              */
-            bool readTypeSelector(TypeSelector* type);
+            bool readTypeSelector(std::string* type);
 
-            /** 
+            /**
              * Read an ID Selector.
              * @return A unique_ptr to a IDSelector object.
              * @retval nullptr if no ID Selector is found.
              */
             SubSelector_uptr readIDSelector();
 
-            /** 
+            /**
              * Read an Class Selector.
              * @return A unique_ptr to a ClassSelector object.
              * @retval nullptr if no Class Selector is found.
              */
             SubSelector_uptr readClassSelector();
 
-            /** 
+            /**
              * Read an Attribute Selector.
              * @return A unique_ptr to a AttributeSelector object.
              * @retval nullptr if no Attribute Selector is found.
              */
             SubSelector_uptr readAttributeSelector();
 
-            /** 
+            /**
              * Read a Pseudo Selector.
              * @return A unique_ptr to a PseudoSelector object.
              * @retval nullptr if no Pseudo Selector is found.
              */
             SubSelector_uptr readPseudoSelector();
 
-            /** 
+            /**
              * Read a Simple Selector.
              * @return A unique_ptr to a Simple Selector object.
              * @retval nullptr if no simple selector is found.
              */
             SimpleSelector_uptr readSimpleSelector();
 
-            /** 
+            /**
              * Read a combinator and following selector
              * @return A Combinator object.
              * @retval Combinator type will be INVALID if no combinator is found.
              */
             Combinator readCombinator();
 
-            /** 
+            /**
              * Read a selector
              * @return A unique_ptr to a Selector object.
              * @retval nullptr if no selector is found.
              */
             Selector_uptr readSelector();
 
-            /** 
+            /**
              * Read a keyword prefixed with "@".
              * @return Substring containing hash. Substring is invalid if not found.
              */
             SubString readAtKeyword();
 
-            /** 
-             * Read a value prefixed with "#". 
+            /**
+             * Read a value prefixed with "#".
              * @return Substring containing hash. Substring is invalid if not found.
              */
             SubString readHash();
 
-            /** 
+            /**
              * Reads the !important signifier if present.
              * @retval true If !important is found.
              * @retval false If !important is not found.
              */
             bool readImportant();
 
-            /** 
+            /**
              * Read the identifier and openning bracket "(" of a function, if present.
              * @return Substring containing function name. Substring is invalid if not found.
              */
             SubString readFunctionStart();
 
-            /** 
+            /**
              * Read the parameters of a function.
              * @param[in] ident Pointer to a string that contains the function identifier.
              * @return A unique_ptr to a Function object.
              */
             Function_uptr readFunctionParams(SubString ident);
 
-            /** 
+            /**
              * Read a function.
              * @return A unique_ptr to a Function object.
              * @retval nullptr if no function is found.
              */
             Function_uptr readFunction();
 
-            /** 
+            /**
              * Read a property value.
              * @return A unique_ptr to a Value object.
              * @retval nullptr if no property is found.
              */
             Value_uptr readPropertyValue();
 
-            /** 
+            /**
              * Read a declaration
              * @return A unique_ptr to a Declaration object.
              * @retval nullptr if no declaration is found.
              */
             Declaration_uptr readDeclaration();
 
-            /** 
+            /**
              * Read a declaration block
              * @return A unique_ptr to a DeclarationBlock object.
              * @retval nullptr if no declaration block is found.
              */
             DeclarationBlock_uptr readDeclarationBlock();
 
-            /** 
+            /**
              * Read a ruleset
              * @return A unique_ptr to a Ruleset object.
              * @retval nullptr if no ruleset is found.
              */
             Ruleset_uptr readRuleset();
 
-            /** 
+            /**
              * Read a style sheet
              * @return A unique_ptr to a StyleSheet object.
              * @retval nullptr if no stylesheet is found.

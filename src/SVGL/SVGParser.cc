@@ -34,6 +34,8 @@ namespace SVGL
         { "line", ET_LINE},
         { "polyline", ET_POLYLINE},
         { "polygon", ET_POLYGON},
+        { "text", ET_TEXT},
+        { "style", ET_STYLE}
     };
 
     ElementType getElementType(SubString tag)
@@ -51,26 +53,31 @@ namespace SVGL
         ElementType type = getElementType(tag);
         switch (type)
         {
-        case ET_SVG:
-            return std::move(Node_uptr(new Document()));
-        case ET_G:
-            return std::move(Node_uptr(new Group()));
-        case ET_PATH:
-            return std::move(Node_uptr(new Path()));
-        case ET_RECT:
-            return std::move(Node_uptr(new Rect()));
-        case ET_CIRCLE:
-            return std::move(Node_uptr(new Circle()));
-        case ET_ELLIPSE:
-            return std::move(Node_uptr(new Ellipse()));
-        case ET_LINE:
-            return std::move(Node_uptr(new Line()));
-        case ET_POLYLINE:
-            return std::move(Node_uptr(new PolyLine()));
-        case ET_POLYGON:
-            return std::move(Node_uptr(new Polygon()));
         default:
-            return std::move(Node_uptr(new XML::Node()));
+        case ET_INVALID:
+            return std::move(XML::Node_uptr(new XML::Node()));
+        case ET_SVG:
+            return std::move(XML::Node_uptr(new Document()));
+        case ET_G:
+            return std::move(XML::Node_uptr(new Element::Group()));
+        case ET_PATH:
+            return std::move(XML::Node_uptr(new Element::Path()));
+        case ET_RECT:
+            return std::move(XML::Node_uptr(new Element::Rect()));
+        case ET_CIRCLE:
+            return std::move(XML::Node_uptr(new Element::Circle()));
+        case ET_ELLIPSE:
+            return std::move(XML::Node_uptr(new Element::Ellipse()));
+        case ET_LINE:
+            return std::move(XML::Node_uptr(new Element::Line()));
+        case ET_POLYLINE:
+            return std::move(XML::Node_uptr(new Element::PolyLine()));
+        case ET_POLYGON:
+            return std::move(XML::Node_uptr(new Element::Polygon()));
+        case ET_TEXT:
+            return std::move(XML::Node_uptr(new Element::Text()));
+        case ET_STYLE:
+            return std::move(XML::Node_uptr(new Element::Style()));
         }
     }
 }

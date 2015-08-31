@@ -21,34 +21,33 @@
 #pragma once
 
 #include "PathCommand.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        class CubicTo : public PathCommand
+        class CubicTo : public Command
         {
         public:
             Point p1, p2;
 
             inline CubicTo(double _p1x, double _p1y, double _p2x, double _p2y, double _x, double _y) :
-                PathCommand(_x, _y),
+                Command(_x, _y),
                 p1(_p1x, _p1y),
                 p2(_p2x, _p2y)
             {
-            
+
             }
 
             inline CubicTo(Point _p1, Point _p2, Point _pend) :
-                PathCommand(_pend),
+                Command(_pend),
                 p1(_p1),
                 p2(_p2)
             {
-            
+
             }
 
-            void buffer(Buffer::BufferingState* state) const override;
+            void buffer(Stroker* stroker) const override;
         };
     }
 }

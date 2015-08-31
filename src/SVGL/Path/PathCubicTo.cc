@@ -19,7 +19,6 @@
  */
 
 #include "PathCubicTo.hh"
-#include <SVGL/Stroke/StrokeDash.hh>
 #include <algorithm>
 
 #include <iostream>
@@ -28,12 +27,12 @@ namespace SVGL
 {
     namespace PathCommand
     {
-        void CubicTo::buffer(Buffer::BufferingState* state) const
+        void CubicTo::buffer(Stroker* stroker) const
         {
-            Point op = state->pointBuffer.getLastPoint();
+            Point op = stroker->pointBuffer.getLastPoint();
 
             // this might need adjusting
-            unsigned int vertexCount = std::max(2.0, (p1.distance() + p2.distance(p1) + distance(p2)) / (3 * state->tolerance));
+            unsigned int vertexCount = std::max(2.0, (p1.distance() + p2.distance(p1) + distance(p2)) / (3 * stroker->tolerance));
 
             for (unsigned int i = 1; i <= vertexCount; ++i)
             {
@@ -47,14 +46,14 @@ namespace SVGL
                 // fill
                 Point pCentre(a * op.x + b * p1.x + c * p2.x + d * x,
                               a * op.y + b * p1.y + c * p2.y + d * y);
-                state->pointBuffer.pushPoint(&pCentre);
+                stroker->pointBuffer.pushPoint(&pCentre);
 
                 if (i == 1)
                 {
-                    Stroke::bufferJoin(state, pCentre);
+                    stroker->bufferJoin(pCentre);
                 }
 
-                Stroke::bufferDash(state, pCentre);
+                stroker->bufferDash(pCentre);
             }
         }
     }

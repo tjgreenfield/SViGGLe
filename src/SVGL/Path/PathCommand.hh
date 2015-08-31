@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <SVGL/Buffer/BufferPolygon.hh>
-#include <SVGL/Buffer/BufferingState.hh>
-#include <SVGL/Styles/Styles.hh>
-#include <SVGL/Stroke/StrokeJoin.hh>
+#include "Buffer/PathPolygon.hh"
+#include "Buffer/PathStroker.hh"
+
+#include <SVGL/Path/Buffer/PathStroker.hh>
 #include <SVGL/Types/Point.hh>
 
 
@@ -33,31 +33,27 @@ namespace SVGL
 {
     namespace PathCommand
     {
-        class PathCommand : public Point
+
+        class Command : public Point
         {
         public:
-            inline PathCommand()
-            {
+            virtual ~Command() = default;
 
-            };
-
-            inline PathCommand(Point _p) :
+            inline Command(Point _p) :
                 Point(_p)
             {
 
             }
 
-            inline PathCommand(double _x, double _y) :
+            inline Command(double _x, double _y) :
                 Point(_x, _y)
             {
 
             }
 
-            virtual void buffer(Buffer::BufferingState* state) const = 0;
+            virtual void buffer(Stroker* state) const = 0;
         };
 
-        typedef std::unique_ptr<PathCommand> PathCommand_uptr;
-
-        typedef std::vector<PathCommand_uptr> PathCommandSet;
+        typedef std::unique_ptr<Command> Command_uptr;
     }
 }

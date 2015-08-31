@@ -24,26 +24,30 @@
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Transform/Transform.hh>
 #include <SVGL/Document.hh>
-#include <SVGL/Elements/ElementsElement.hh>
 #include <SVGL/Types/Point.hh>
+
+#include <SVGL/Font/FontCollection.hh>
 
 #include <SVGL/GL/gl.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <stdlib.h>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 using namespace SVGL;
 
 SVGL::Document_uptr document(nullptr);
 CSS::StyleSheet styleSheet;
+bool dirty = true;
 float viewX = 0.0f;
 float viewY = 0.0f;
-float scale = 0.0008f;
+float scale = 1.0f / 720.f; //0.0008f;
 float rotate = 0.0f;
 float prevRotate = 0.0f;
-double tolerance = 2000 / 480.f;
+double tolerance = 2000.0 / 720.f;
 bool wireframe = false;
 bool needScreenshot = false;
 
@@ -99,6 +103,8 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
 
         mouseX = x;
         mouseY = y;
+
+        dirty = true;
     }
     else if (mouseRightButton == GLFW_PRESS)
     {
@@ -110,6 +116,7 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
         double angle = a.angle(b);
 
         rotate = prevRotate + angle;
+        dirty = true;
     }
     else
     {
@@ -121,6 +128,7 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
 static void mouseScrollCallback(GLFWwindow* window, double x, double y)
 {
     scale *= std::pow(0.9, -y);
+    dirty = true;
 }
 
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -137,24 +145,28 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         if (action == GLFW_PRESS)
         {
             viewY += 0.05 / scale;
+            dirty = true;
         }
         break;
     case GLFW_KEY_DOWN:
         if (action == GLFW_PRESS)
         {
             viewY -= 0.05 / scale;
+            dirty = true;
         }
         break;
     case GLFW_KEY_LEFT:
         if (action == GLFW_PRESS)
         {
             viewX += 0.05 / scale;
+            dirty = true;
         }
         break;
     case GLFW_KEY_RIGHT:
         if (action == GLFW_PRESS)
         {
             viewX -= 0.05 / scale;
+            dirty = true;
         }
         break;
 
@@ -162,12 +174,14 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         if (action == GLFW_PRESS)
         {
             scale /= 0.9;
+            dirty = true;
         }
         break;
     case GLFW_KEY_MINUS:
         if (action == GLFW_PRESS)
         {
             scale *= 0.9;
+            dirty = true;
         }
         break;
     case GLFW_KEY_COMMA:
@@ -176,6 +190,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             tolerance *= 2;
             document->clearBuffers();
             document->buffer(tolerance);
+            dirty = true;
         }
         break;
     case GLFW_KEY_PERIOD:
@@ -184,6 +199,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             tolerance *= 0.5;
             document->clearBuffers();
             document->buffer(tolerance);
+            dirty = true;
         }
         break;
     case GLFW_KEY_SPACE:
@@ -198,6 +214,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
+            dirty = true;
         }
         break;
     case GLFW_KEY_ENTER:
@@ -206,14 +223,16 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             SVGL::Parser parser;
             parser.loadFile("data/example.svg");
             document = parser.readSVG();
-            document->applyStyleSheet(&styleSheet);
+            document->applyStyleSheets();
             document->buffer(tolerance);
+            dirty = true;
         }
         break;
     case GLFW_KEY_F10:
         if (action == GLFW_PRESS)
         {
             needScreenshot = true;
+            dirty = true;
         }
 
         break;
@@ -312,6 +331,18 @@ static int initShaders()
 
 void renderTest()
 {
+    Font::Collection::ftInit();
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    Font::Collection::scanDirectory("c:/windows/fonts");
+#else
+    Font::Collection::scanDirectory("/usr/share/fonts");
+    Font::Collection::scanDirectory("~/.fonts");
+#endif // defined
+
+    Font::Collection::scanDirectory("data");
+
+
     GLFWwindow* window = initGL();
     int shaderProgramme = initShaders();
 
@@ -321,20 +352,28 @@ void renderTest()
 
     document = parser.readSVG();
 
-    styleSheet.add("path {stroke:red;}");
+    if (document == nullptr)
+    {
+        return;
+    }
 
-    document->applyStyleSheet(&styleSheet);
+    //styleSheet.add("path {stroke-width:8;}");
+
+    //document->applyStyleSheet(nullptr);
+    document->applyStyleSheets();
     document->buffer(tolerance);
 
 
     const unsigned int size(5);
     GLuint buffer;
     GLuint vertexArray;
-    double points[] = {-0.3, -0.3,
-                                    0.3, -0.3,
-                                    0.3, 0.3,
-                                    -0.3, 0.3,
-                                    -0.3, -0.3};
+    double points[] = {
+        -30, -30,
+        30, -30,
+        30, 30,
+        -30, 30,
+        -30, -30
+        };
 
     glGenBuffers(1, &buffer);
     glGenVertexArrays(1, &vertexArray);
@@ -352,60 +391,77 @@ void renderTest()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glLineWidth(1.0);
 
+    glHint(GL_POINT_SMOOTH, GL_NICEST);
+    glHint(GL_LINE_SMOOTH, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH, GL_NICEST);
+
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+
+    int frameCount = 0;
+
     while (!glfwWindowShouldClose(window))
     {
-        // Update window information to adapt to any window size changes
-        float ratio;
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float) height;
-
-        // Reset GL rendering
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shaderProgramme);
-
-        // Setup SVG rendering
-        SVGL::Render::Context context;
-
-        SVGL::Transform t;
-        t.scaleR(1, ratio);
-        //t.rotateR(glfwGetTime() / 10);
-        t.scaleR(scale, -scale);
-        t.rotateR(rotate);
-        t.translateR(viewX, viewY);
-        context.pushTransform(&t);
-        context.pushColor(rgb(128, 128, 128));
-
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex2f(-0.5, -0.5);
-        glVertex2f(0.5, -0.5);
-        glVertex2f(0.5, 0.5);
-        glVertex2f(-0.5, 0.5);
-        glVertex2f(-0.5, -0.5);
-        glEnd();
-
-        context.pushColor(rgb(128, 0, 128));
-
-        glBindVertexArray(vertexArray);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, size);
-
-        // Next frame
-        document->render(&context);
-
-        if (needScreenshot)
+        if (dirty)
         {
-            std::unique_ptr<GLubyte> buffer(new GLubyte[windowWidth * windowHeight * 4]);
-            glReadPixels(0, 0, windowWidth, windowHeight, GL_RGB, GL_UNSIGNED_BYTE, buffer.get());
-            screenshot(buffer.get(), windowWidth, windowHeight);
-            needScreenshot = false;
-        }
+            std::cout << "Frame: " << ++frameCount << std::endl;
+            // Update window information to adapt to any window size changes
+            float ratio;
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            ratio = width / (float) height;
 
+            // Reset GL rendering
+            glViewport(0, 0, width, height);
+            glClearColor(0.25, 0.25, 0.25, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glUseProgram(shaderProgramme);
+
+            // Setup SVG rendering
+            SVGL::Render::Context context;
+
+            SVGL::Transform t;
+            t.scaleR(1, ratio);
+            //t.rotateR(glfwGetTime() / 10);
+            t.scaleR(scale, -scale);
+            t.rotateR(rotate);
+            t.translateR(viewX, viewY);
+            context.pushTransform(&t);
+
+            /*context.pushColor(RGB(255, 0, 0));
+
+            glBindVertexArray(vertexArray);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, size);
+
+            context.pushColor(RGB(128, 128, 128));
+            glBegin(GL_TRIANGLE_STRIP);
+            glVertex2f(-50, -50);
+            glVertex2f(50, -50);
+            glVertex2f(50, 50);
+            glVertex2f(-50, 50);
+            glVertex2f(-50, -50);
+            glEnd();*/
+
+            document->render(&context);
+
+            if (needScreenshot)
+            {
+                std::unique_ptr<GLubyte> buffer(new GLubyte[windowWidth * windowHeight * 4]);
+                glReadPixels(0, 0, windowWidth, windowHeight, GL_RGB, GL_UNSIGNED_BYTE, buffer.get());
+                screenshot(buffer.get(), windowWidth, windowHeight);
+                needScreenshot = false;
+            }
+            glfwSwapBuffers(window);
+            dirty = false;
+
+        }
+        else
+        {
+            std::this_thread::sleep_for(2ms);
+        }
         // next frame
         glfwPollEvents();
-
-        glfwSwapBuffers(window);
-
     }
 }

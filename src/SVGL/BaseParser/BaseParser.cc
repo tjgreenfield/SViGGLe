@@ -29,6 +29,11 @@ namespace SVGL
 {
     namespace BaseParser
     {
+        Parser::~Parser()
+        {
+
+        }
+
         /**
           * Error reporting function
           * @details
@@ -36,7 +41,7 @@ namespace SVGL
           * @param[in] message The error message relevant to the current position.
           * @param[in] message (optional) Pointer to the starting point of the error.
           */
-        void Parser::error(const char* message, State begin)
+        void Parser::error(const char*, State)
         {
 
         }
@@ -55,7 +60,7 @@ namespace SVGL
                 error("Failed to open file", nullptr);
                 return;
             }
-            
+
             // get the file size
             file.seekg(0, std::ios::end);
             long long int length = (int)file.tellg();
@@ -77,6 +82,8 @@ namespace SVGL
             double value = 0;
             char push;
             bool valid = false;
+            bool sign = false;
+            sign = readChar('-');
             if ((push = readNumChar()))
             {
                 valid = true;
@@ -98,14 +105,14 @@ namespace SVGL
             }
             if (valid)
             {
-                *number = value;
+                *number = sign ? -value : value;
             }
             return valid;
         }
 
         bool Parser::readDouble(double* d)
         {
-            State save(s); 
+            State save(s);
             bool neg = false;
             bool good = false;
             double v = 0;
@@ -144,7 +151,6 @@ namespace SVGL
             // exponential part
             if (*s == 'e' || *s == 'E')
             {
-                State save(s);
                 ++s;
                 double e = 0;
                 bool eneg = false;

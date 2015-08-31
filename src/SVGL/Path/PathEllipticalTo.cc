@@ -19,7 +19,6 @@
  */
 
 #include "PathEllipticalTo.hh"
-#include <SVGL/Stroke/StrokeDash.hh>
 #include <SVGL/Types/Consts.hh>
 #include <algorithm>
 #include <cstdlib>
@@ -29,7 +28,7 @@ namespace SVGL
     namespace PathCommand
     {
         EllipticalTo::EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev) :
-            PathCommand(p),
+            Command(p),
             rx(_rx),
             ry(_ry),
             xAxisRotation(_xAxisRotation),
@@ -125,10 +124,10 @@ namespace SVGL
         }
 
 
-        void EllipticalTo::buffer(Buffer::BufferingState* state) const
+        void EllipticalTo::buffer(Stroker* stroker) const
         {
             // this might need adjusting
-            int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / state->tolerance)), 4);
+            int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / stroker->tolerance)), 4);
 
             for (int i = 1; i < vertexCount; i++)
             {
@@ -140,14 +139,14 @@ namespace SVGL
                 Point pCentre((cosp * rx * cost) - (sinp * ry * sint) + cx, //x
                               (sinp * rx * cost) + (cosp * ry * sint) + cy); //y
 
-                state->pointBuffer.pushPoint(pCentre);
+                stroker->pointBuffer.pushPoint(pCentre);
 
                 if (i == 1)
                 {
-                    Stroke::bufferJoin(state, pCentre);
+                    stroker->bufferJoin(pCentre);
                 }
 
-                Stroke::bufferDash(state, pCentre);
+                stroker->bufferDash(pCentre);
             }
         }
     }

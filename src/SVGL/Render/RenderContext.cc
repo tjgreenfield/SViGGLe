@@ -28,6 +28,20 @@ namespace SVGL
 {
     namespace Render
     {
+        Context::Context() :
+            depth(0),
+            color(RGBA(255,255,255,255))
+        {
+            update();
+        }
+
+        void Context::update()
+        {
+            updateTransform();
+            updateColor();
+            updateDepth();
+        }
+
         void Context::updateTransform()
         {
             GLint program;
@@ -51,6 +65,19 @@ namespace SVGL
             transformStack.pop_back();
 
             updateTransform();
+        }
+
+        void Context::updateColor()
+        {
+            GLint program;
+            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+
+            int location = glGetUniformLocation(program, "pen");
+            glUniform4f(location,
+                        ((float)((color >> 16) & 0xff)) / 0xff,
+                        ((float)((color >> 8) & 0xff)) / 0xff,
+                        ((float)((color) & 0xff)) / 0xff,
+                        ((float)((color >> 24) & 0xff)) / 0xff);
         }
 
         void Context::pushColor(unsigned int c)
@@ -85,15 +112,20 @@ namespace SVGL
                         ((float)((color >> 24) & 0xff)) / 0xff);
         }
 
-        void Context::incrementDepth()
+        void Context::updateDepth()
         {
-            ++depth;
-
             GLint program;
             glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
             int location = glGetUniformLocation(program, "depth");
-            glUniform1f(location, -((float)depth) / 10000);
+            glUniform1f(location, -((float)depth) / (1 << 20));
+        }
+
+        void Context::incrementDepth()
+        {
+            ++depth;
+
+            updateDepth();
         }
 
     }

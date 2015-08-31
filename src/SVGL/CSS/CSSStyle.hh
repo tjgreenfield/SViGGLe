@@ -21,6 +21,7 @@
 #pragma once
 
 #include <SVGL/CSS/CSSValues.hh>
+#include <SVGL/CSS/CSSSizeContext.hh>
 
 namespace SVGL
 {
@@ -39,22 +40,13 @@ namespace SVGL
             virtual ~Style();
 
             /**
-             * Set the style property of the style object.
-             * @details
-             * Compiles the value string into a Value object before calling the virtual version of the function
+             * Set the style properties of the style object using the values in the property set
              *
-             * @param[in] name The name of the style property to set.
-             * @param[in] value The a string representation of the value to assign to the property.
+             * @param[in] propertySet The set of properties to apply.
              */
-            void setProperty(const char* name, const char* value);
+            virtual void applyPropertySet(const PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) = 0;
 
-            /**
-             * Set the style property of the style object.
-             *
-             * @param[in] name The name of the style property to set.
-             * @param[in] value The value to assign to the property.
-             */
-            virtual void setProperty(const char* name, const Value* value) = 0;
+            virtual void updateSizeContext(SizeContext* sizeContext);
         };
     }
 }

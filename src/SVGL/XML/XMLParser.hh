@@ -30,8 +30,8 @@ namespace SVGL
         class Parser : public SVGL::BaseParser::Parser
         {
         public:
-            inline Parser(const char* s = nullptr) :
-                SVGL::BaseParser::Parser(s)
+            inline Parser(const char* _s = nullptr) :
+                SVGL::BaseParser::Parser(_s)
             {
             }
 
@@ -94,23 +94,23 @@ namespace SVGL
             bool readEncodingDecl();
             bool readEncName();
             bool readSDDecl();
-            
+
             bool readProlog();
             bool readXMLDecl();
             bool readVersionInfo();
-            
+
             bool readVersionNum();
             bool readMisc();
 
             bool readDocTypeDecl();
-            
+
 
             /* TODO list?
             bool readDeclSep();
             bool readIntSubset();
             bool readMarkupDecl();
-            
-            bool readNameToken(std::string* str); 
+
+            bool readNameToken(std::string* str);
             bool readNameTokens(std::string* str);
 
             bool readEntityValue(std::string* str);

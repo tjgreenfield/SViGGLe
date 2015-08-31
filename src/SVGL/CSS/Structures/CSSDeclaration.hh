@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <SVGL/CSS/CSSProperty.hh>
 #include <SVGL/CSS/CSSValues.hh>
 #include <SVGL/Types/SubString.hh>
 #include <string>
@@ -39,21 +40,21 @@ namespace SVGL
         protected:
 
         public:
-            std::string name; //!< The name of the attribute
+            Property::Index property; //!< The name of the property
             Value_uptr value; //!< The value to be assigned
             bool important; //!< Important flag
 
             /**
              * Constructor
-             * @param[in] _name The name of the attribute
+             * @param[in] _name The name of the property
              * @param[in] _value The value to be assigned
              * @param[in] _important Important flag
              */
-            Declaration(std::string&& _name, Value_uptr _value = nullptr, bool _important = false);
+            Declaration(std::string& _name, Value_uptr _value = nullptr, bool _important = false);
 
             /**
              * Constructor
-             * @param[in] _name The name of the attribute
+             * @param[in] _name The name of the property
              * @param[in] _value The value to be assigned
              * @param[in] _important Important flag
              */
@@ -61,11 +62,19 @@ namespace SVGL
 
             /**
              * Constructor
-             * @param[in] _name The name of the attribute
+             * @param[in] _name The name of the property
              * @param[in] _value The value to be assigned
              * @param[in] _important Important flag
              */
             Declaration(const char* _name = "", Value_uptr _value = nullptr, bool _important = false);
+
+            /**
+             * Constructor
+             * @param[in] _name The name of the property
+             * @param[in] _value The value to be assigned
+             * @param[in] _important Important flag
+             */
+            Declaration(Property::Index _property, Value_uptr _value = nullptr, bool _important = false);
         };
 
         typedef std::unique_ptr<Declaration> Declaration_uptr;

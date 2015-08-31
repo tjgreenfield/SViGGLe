@@ -25,5 +25,6 @@
 #include "Values/CSSString.hh"
 #include "Values/CSSIdent.hh"
 #include "Values/CSSHash.hh"
+#include "Values/CSSKeyword.hh"
 #include "Values/CSSValueList.hh"
 #include "Values/CSSFunction.hh"

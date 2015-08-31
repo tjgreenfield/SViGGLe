@@ -60,7 +60,7 @@ namespace SVGL
              * @retval true Selector matches element.
              * @retval false Selector doesn't match element.
              */
-            bool match(const Element* element) const override;
+            bool match(const CSSElement* element) const override;
 
             /**
              * Output to stream

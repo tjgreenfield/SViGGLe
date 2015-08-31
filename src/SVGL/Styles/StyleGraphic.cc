@@ -19,213 +19,185 @@
  */
 
 #include "StyleGraphic.hh"
+#include <SVGL/CSS/CSSColor.hh>
 
 namespace SVGL
 {
     namespace Styles
     {
-        /**
-         * Graphic: style basis for containers, shape, text & images
-         */
-
-        /*
-         * Default inherit flags for properties
-         * TODO: rest of the flags
-         */
-        unsigned int defaultFlags =
-              (1 << Inherit::COLOR)
-            + (1 << Inherit::CLIP_RULE)
-            + (1 << Inherit::POINTER_EVENTS)
-            + (1 << Inherit::COLOR_INTERPOLATION)
-            + (1 << Flags::STROKE_NONE);
-
-        /**
-         * Constructor
-         */
-        Graphic::Graphic(SVG* _parent) :
-            SVG(defaultFlags, _parent),
-            clipPath(nullptr),
+        Graphic::Graphic() :
+            bits(0),
+            color(RGB(0, 0, 0))
+            /*clipPath(nullptr),
             mask(nullptr),
-            filter(nullptr),
-            color(defaultColor),
-            opacity(defaultOpacity),
-            cursor(defaultCursor),
-            pointerEvents(defaultPointerEvents),
-            colorInterpolation(defaultColorInterpolation)
+            filter(nullptr)*/
         {
-
+            display() = true;
+            cursor() = CURSOR_DEFAULT;
+            pointerEvents() = PE_VISIBLE_PAINTED;
+            clipRule() =CR_NONZERO;
         }
 
-        /**
-         * Get the value of the color property
-         * @return The color property
-         */
-        Color Graphic::getColor() const
+        void Graphic::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet&, const CSS::SizeContext& sizeContext)
         {
-            if (flags[Inherit::COLOR])
+            using namespace CSS;
+            using namespace CSS::Property;
+
+            constexpr auto keywordFromValue = &Keyword::keywordFromValue;
+
+            // display
+            if (keywordFromValue(propertySet[Property::DISPLAY]) == Keyword::NONE)
             {
-                return parent ? parent->getColor() : defaultColor;
+                display() = 1;
             }
             else
             {
-                return color;
+                display() = 0;
             }
-        }
 
-        /**
-         * Get the value of the display property
-         * @return The display property
-         */
-        Display Graphic::getDisplay() const
-        {
-            if (flags[Inherit::DISPLAY])
+            // color
+            if (!colorFromValue(&color, propertySet[Property::COLOR]))
             {
-                return parent ? parent->getDisplay() : defaultDisplay;
+                color = RGB(0, 0, 0);
             }
-            else
-            {
-                return flags[Flags::DISPLAY];
-            }
-        }
 
-        /**
-         * Get the value of the clip-rule property
-         * @return The clip-rule property
-         */
-        ClipRule Graphic::getClipRule() const
-        {
-            if (flags[Inherit::CLIP_RULE])
+            // cursor
+            switch (keywordFromValue(propertySet[Property::CURSOR]))
             {
-                return parent ? parent->getClipRule() : defaultClipRule;
-            }
-            else
-            {
-                return flags[Flags::CLIP_RULE];
-            }
-        }
-
-        /**
-         * Get the value of the clip-path property
-         * @return The clip-path property
-         */
-        const ClipPathElement* Graphic::getClipPath() const
-        {
-            if (flags[Inherit::CLIP_PATH])
-            {
-                return parent ? parent->getClipPath() : nullptr;
-            }
-            else
-            {
-                return clipPath;
-            }
-        }
-
-        /**
-         * Get the value of the mask property
-         * @return The mask property
-         */
-        const MaskElement* Graphic::getMask() const
-        {
-            if (flags[Inherit::MASK])
-            {
-                return parent ? parent->getMask() : nullptr;
-            }
-            else
-            {
-                return mask;
-            }
-        }
-
-        /**
-         * Get the value of the opacity property
-         * @return The opacity property
-         */
-        Opacity Graphic::getOpacity() const
-        {
-            if (flags[Inherit::OPACITY])
-            {
-                return parent ? parent->getOpacity() : defaultOpacity;
-            }
-            else
-            {
-                return opacity;
-            }
-        }
-
-        /**
-         * Get the value of the filter property
-         * @return The filter property
-         */
-        const FilterElement* Graphic::getFilter() const
-        {
-            if (flags[Inherit::FILTER])
-            {
-                return parent ? parent->getFilter() : nullptr;
-            }
-            else
-            {
-                return filter;
-            }
-        }
-
-        /**
-         * Get the value of the pointer-events property
-         * @return The pointer-events property
-         */
-        PointerEvents Graphic::getPointerEvents() const
-        {
-            if (flags[Inherit::POINTER_EVENTS])
-            {
-                return parent ? parent->getPointerEvents() : defaultPointerEvents;
-            }
-            else
-            {
-                return pointerEvents;
-            }
-        }
-
-        /**
-         * Get the value of the color-interpolation property
-         * @return The color-interpolation property
-         */
-        ColorInterpolation Graphic::getColorInterpolation() const
-        {
-            if (flags[Inherit::COLOR_INTERPOLATION])
-            {
-                return parent ? parent->getColorInterpolation() : defaultColorInterpolation;
-            }
-            else
-            {
-                return colorInterpolation;
-            }
-        }
-
-        /**
-         * Set the style property of the style object.
-         *
-         * @param[in] index The index of the style property to set.
-         * @param[in] value The value to assign to the property.
-         */
-        void Graphic::setProperty(unsigned int index, const CSS::Value* value)
-        {
-            CSS::ColorState state;
-            switch (index)
-            {
-            case Inherit::COLOR:
-                color = colorFromValue(value, &state);
-                switch (state)
-                {
-                case CSS::INHERIT:
-                    flags[Inherit::COLOR] = true;
-                    break;
-                default:
-                    flags[Inherit::COLOR] = false;
-                    break;
-                }
+            case Keyword::AUTO:
+                cursor() = CURSOR_AUTO;
+                break;
+            case Keyword::CROSSHAIR:
+                cursor() = CURSOR_CROSSHAIR;
+                break;
+            case Keyword::DEFAULT:
+                cursor() = CURSOR_DEFAULT;
+                break;
+            case Keyword::POINTER:
+                cursor() = CURSOR_POINTER;
+                break;
+            case Keyword::MOVE:
+                cursor() = CURSOR_MOVE;
+                break;
+            case Keyword::E_RESIZE:
+                cursor() = CURSOR_E_RESIZE;
+                break;
+            case Keyword::NE_RESIZE:
+                cursor() = CURSOR_NE_RESIZE;
+                break;
+            case Keyword::W_RESIZE:
+                cursor() = CURSOR_W_RESIZE;
+                break;
+            case Keyword::NW_RESIZE:
+                cursor() = CURSOR_NW_RESIZE;
+                break;
+            case Keyword::S_RESIZE:
+                cursor() = CURSOR_S_RESIZE;
+                break;
+            case Keyword::SE_RESIZE:
+                cursor() = CURSOR_SE_RESIZE;
+                break;
+            case Keyword::SW_RESIZE:
+                cursor() = CURSOR_SW_RESIZE;
+                break;
+            case Keyword::N_RESIZE:
+                cursor() = CURSOR_N_RESIZE;
+                break;
+            case Keyword::TEXT:
+                cursor() = CURSOR_TEXT;
+                break;
+            case Keyword::WAIT:
+                cursor() = CURSOR_WAIT;
+                break;
+            case Keyword::HELP:
+                cursor() = CURSOR_HELP;
                 break;
             default:
+                cursor() = CURSOR_DEFAULT;
+                break;
+            };
+
+            // clip-rule
+            if (keywordFromValue(propertySet[Property::CLIP_RULE]) == Keyword::NONZERO)
+            {
+                clipRule() = CR_NONZERO;
+            }
+            else
+            {
+                clipRule() = CR_EVENODD;
+            }
+
+            // TODO clip-path
+
+
+            // TODO mask
+
+
+            // opacity
+            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::OPACITY]))
+            {
+                opacity = 255 * dimension->calculate(sizeContext);
+            }
+            else
+            {
+                opacity = 255;
+            }
+
+            // TODO filter
+
+
+            // pointer-events
+            switch (keywordFromValue(propertySet[Property::POINTER_EVENTS]))
+            {
+            case Keyword::VISIBLE_PAINTED:
+                pointerEvents() = PE_VISIBLE_PAINTED;
+                break;
+            case Keyword::VISIBLE_FILL:
+                pointerEvents() = PE_VISIBLE_FILL;
+                break;
+            case Keyword::VISIBLE_STROKE:
+                pointerEvents() = PE_VISIBLE_STROKE;
+                break;
+            case Keyword::VISIBLE:
+                pointerEvents() = PE_VISIBLE;
+                break;
+            case Keyword::PAINTED:
+                pointerEvents() = PE_PAINTED;
+                break;
+            case Keyword::FILL:
+                pointerEvents() = PE_FILL;
+                break;
+            case Keyword::STROKE:
+                pointerEvents() = PE_STROKE;
+                break;
+            case Keyword::ALL:
+                pointerEvents() = PE_ALL;
+                break;
+            case Keyword::NONE:
+                pointerEvents() = PE_NONE;
+                break;
+            default:
+                pointerEvents() = PE_NONE;
+                break;
+            }
+
+            // color-interpolation
+            switch (keywordFromValue(propertySet[Property::COLOR_INTERPOLATION]))
+            {
+            case Keyword::AUTO:
+                pointerEvents() = CI_AUTO;
+                break;
+            case Keyword::SRGB:
+                pointerEvents() = CI_SRGB;
+                break;
+            case Keyword::LINEAR_RGB:
+                pointerEvents() = CI_LINEAR_RGB;
+                break;
+            default:
+                pointerEvents() = CI_AUTO;
                 break;
             }
         }
+
     }
 }

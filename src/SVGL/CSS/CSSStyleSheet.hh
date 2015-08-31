@@ -21,6 +21,8 @@
 #pragma once
 
 #include "CSSStructures.hh"
+#include "CSSPropertySet.hh"
+#include "CSSStyle.hh"
 #include <memory>
 
 namespace SVGL
@@ -42,11 +44,13 @@ namespace SVGL
              */
             StyleSheet(const char* code = "");
 
+            static void applyProperty(PropertySet* propertySet, const PropertySet& inherit, const Property::Index property, const Value* value);
+
             /**
              * Apply the stylesheet to specified element (where applicable)
              * param[in] element The element to apply the stylesheet to
              */
-            void apply(Element* element) const;
+            void apply(CSSElement* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const;
 
             /**
              * Add new CSS code to the style sheet

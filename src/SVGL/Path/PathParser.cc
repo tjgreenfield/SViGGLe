@@ -24,12 +24,12 @@ namespace SVGL
 {
     namespace PathCommand
     {
-        PathCommandSet Parser::readPathCommandSet()
+        CommandSet Parser::readPathCommandSet()
         {
             commandSet.clear();
-            
+
             char letter('M');
-            
+
             readWSP();
             if (!readChar('M'))
             {

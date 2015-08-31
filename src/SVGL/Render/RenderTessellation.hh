@@ -20,12 +20,29 @@
 
 #pragma once
 
-#include <SVGL/Buffer/BufferPolygon.hh>
+#include <SVGL/Path/Buffer/PathPolygon.hh>
+#include <SVGL/GL/gl.h>
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define CALLBACK __stdcall
+#else
+#define CALLBACK
+#endif // WIN32
+
 
 namespace SVGL
 {
     namespace Render
     {
-        void gluTessPointsSet(Buffer::Polygon* src, Buffer::Polygon* dst);
+        GLvoid CALLBACK callbackBegin(GLint type);
+
+        GLvoid CALLBACK callbackVertex(GLvoid *vertex_data);
+
+        GLvoid CALLBACK callbackCombine(GLdouble coords[3], void *vertex_data[4],
+                                         GLfloat weight[4], void **outData);
+
+        GLvoid CALLBACK callbackEnd();
+
+        void gluTessPointsSet(PathCommand::Polygon* src, PathCommand::Polygon* dst);
     }
 }

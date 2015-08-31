@@ -19,23 +19,22 @@
  */
 
 #include "PathMoveTo.hh"
-#include <SVGL/Stroke/StrokeCap.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void MoveTo::buffer(Buffer::BufferingState* state) const
+        void MoveTo::buffer(Stroker* stroker) const
         {
-            state->pointBuffer.newSet();
-            state->pointBuffer.pushPoint(this);
+            stroker->pointBuffer.newSet();
+            stroker->pointBuffer.pushPoint(this);
 
-            if (!state->strokeBuffer.lastSetEmpty())
+            if (!stroker->strokeBuffer.lastSetEmpty())
             {
-                Stroke::bufferEndCap(state);
+                stroker->bufferEndCap();
             }
-            state->strokeBuffer.newSet();
-            state->at = *this;
+            stroker->strokeBuffer.newSet();
+            stroker->at = *this;
         }
     }
 }

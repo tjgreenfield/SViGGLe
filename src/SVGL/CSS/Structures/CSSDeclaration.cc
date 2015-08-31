@@ -29,12 +29,12 @@ namespace SVGL
          */
         /**
          * Constructor
-         * @param[in] _name The name of the attribute
+         * @param[in] _name The name of the property
          * @param[in] _value The value to be assigned
          * @param[in] _important Important flag
          */
-        Declaration::Declaration(std::string&& _name, Value_uptr _value, bool _important) :
-            name(std::move(_name)),
+        Declaration::Declaration(std::string& _name, Value_uptr _value, bool _important) :
+            property(Property::map.lookup(_name)),
             value(std::move(_value)),
             important(_important)
         {
@@ -43,12 +43,12 @@ namespace SVGL
 
         /**
          * Constructor
-         * @param[in] _name The name of the attribute
+         * @param[in] _name The name of the property
          * @param[in] _value The value to be assigned
          * @param[in] _important Important flag
          */
         Declaration::Declaration(SubString _name, Value_uptr _value, bool _important) :
-            name(_name),
+            property(Property::map.lookup(_name)),
             value(std::move(_value)),
             important(_important)
         {
@@ -57,12 +57,26 @@ namespace SVGL
 
         /**
          * Constructor
-         * @param[in] _name The name of the attribute
+         * @param[in] _name The name of the property
          * @param[in] _value The value to be assigned
          * @param[in] _important Important flag
          */
         Declaration::Declaration(const char* _name, Value_uptr _value, bool _important) :
-            name(_name),
+            property(Property::map.lookup(_name)),
+            value(std::move(_value)),
+            important(_important)
+        {
+
+        }
+
+        /**
+         * Constructor
+         * @param[in] _property The index of the property
+         * @param[in] _value The value to be assigned
+         * @param[in] _important Important flag
+         */
+        Declaration::Declaration(Property::Index _property, Value_uptr _value, bool _important) :
+            property(_property),
             value(std::move(_value)),
             important(_important)
         {
@@ -74,7 +88,7 @@ namespace SVGL
          */
         std::ostream& operator<<(std::ostream& out, const Declaration& declaration)
         {
-            out << declaration.name;
+            out << Property::map.lookup(declaration.property);
             out << ":";
             out << *declaration.value;
             return out;

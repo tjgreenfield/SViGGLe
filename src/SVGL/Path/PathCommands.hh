@@ -26,3 +26,4 @@
 #include "PathCubicTo.hh"
 #include "PathEllipticalTo.hh"
 #include "PathClosePath.hh"
+#include "PathCommandSet.hh"

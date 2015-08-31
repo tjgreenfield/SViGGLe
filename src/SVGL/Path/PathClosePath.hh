@@ -22,7 +22,7 @@
 
 #include "PathCommand.hh"
 #include "PathLineTo.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
+#include <SVGL/Path/Buffer/PathPolygon.hh>
 
 namespace SVGL
 {
@@ -31,7 +31,7 @@ namespace SVGL
         class ClosePath : public LineTo
         {
         public:
-            void buffer(Buffer::BufferingState* state) const override;
+            void buffer(Stroker* stroker) const override;
         };
     }
 }

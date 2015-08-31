@@ -112,22 +112,22 @@ namespace std
     {
         typedef SVGL::SubString argument_type;
         typedef std::size_t result_type;
- 
+
         /**
          * BJD hash algorithm
          * @param[in] s SubString to hash
-         */ 
+         */
         inline result_type operator()(argument_type const& subString) const
         {
-            unsigned int hash = 5381;
+            unsigned int hashValue = 5381;
             const char* s = subString.start;
             const char* e = subString.start + subString.count;
             while ( (*s) && (s < e))
             {
-                hash += (hash << 5) + (*s);
+                hashValue += (hashValue << 5) + (*s);
                 ++s;
             }
-            return hash;
+            return hashValue;
         }
     };
 }

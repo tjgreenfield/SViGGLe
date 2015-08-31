@@ -83,9 +83,9 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool Selector::match(const Element* element) const
+        bool Selector::match(const CSSElement* element) const
         {
-            unsigned int i(combinators.size() - 1);
+            int i(combinators.size() - 1);
             while ((element && i >= 0) ? combinators[i].selector->match(element) : false)
             {
                 switch (combinators[i].type)

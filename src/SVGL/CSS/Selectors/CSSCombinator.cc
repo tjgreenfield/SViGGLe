@@ -35,7 +35,7 @@ namespace SVGL
             type(std::move(_move.type)),
             selector(std::move(_move.selector))
         {
-        
+
         }
 
         /**
@@ -57,6 +57,7 @@ namespace SVGL
             switch (combinator.type)
             {
             default:
+            case Combinator::INVALID:
             case Combinator::FIRST:
                 break;
             case Combinator::DECENDANT:

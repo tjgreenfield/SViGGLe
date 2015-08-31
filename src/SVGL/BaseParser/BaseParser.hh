@@ -53,6 +53,8 @@ namespace SVGL
 
         public:
 
+            virtual ~Parser();
+
             /**
              * Constructor
              *
@@ -71,11 +73,14 @@ namespace SVGL
              * @param[in] _data The data to parse.
              */
             inline Parser(Data&& _data) :
-                s(data.get()),
+                s(_data.get()),
 				data(std::move(_data))
             {
 
             }
+
+            Parser(const Parser& parser) = default;
+            Parser& operator=(const Parser& parser) = default;
 
             /**
              * Load data from file

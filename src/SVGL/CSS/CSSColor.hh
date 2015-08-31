@@ -22,25 +22,23 @@
 
 #include "CSSValues.hh"
 #include <SVGL/Types/Color.hh>
+
 #include <string>
-#include <map>
 
 namespace SVGL
 {
     namespace CSS
     {
-        typedef std::map<std::string, int> ColorMap;
         enum ColorState { COLOR, INHERIT, NONE };
 
         class Hash;
         class Function;
-        Color colorFromHash(const Hash* hash, unsigned char alpha = 255);
-        Color colorFromRGBFunc(const Function* function, unsigned char alpha = 255);
-        Color colorFromValue(const Value* value, ColorState* state, unsigned char alpha = 255);
+        bool colorFromHash(Color* color, const Hash* hash, unsigned char alpha = 255);
+        bool colorFromRGBFunc(Color* color, const Function* function, unsigned char alpha = 255);
+        bool colorFromValue(Color* color, const Value* value, unsigned char alpha = 255);
 
-        extern ColorMap colorMap;
     }
 
-    
+
 }
 

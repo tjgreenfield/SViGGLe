@@ -19,20 +19,19 @@
  */
 
 #include "PathLineTo.hh"
-#include <SVGL/Stroke/StrokeDash.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        void LineTo::buffer(Buffer::BufferingState* state) const
+        void LineTo::buffer(Stroker* stroker) const
         {
             // fill
-            state->pointBuffer.pushPoint(this);
+            stroker->pointBuffer.pushPoint(this);
 
-            Stroke::bufferJoin(state, *this);
+            stroker->bufferJoin(*this);
 
-            Stroke::bufferDash(state, *this);
+            stroker->bufferDash(*this);
         }
     }
 }

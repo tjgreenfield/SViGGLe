@@ -19,22 +19,17 @@
  */
 
 #include "RenderTessellation.hh"
-#include <SVGL/GL/gl.h>
 
 #include <vector>
 #include <list>
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#define CALLBACK __stdcall
-#else
-#define CALLBACK
-#endif // WIN32
+
 
 namespace SVGL
 {
     namespace Render
     {
-        Buffer::Polygon* gDst;
+        PathCommand::Polygon* gDst;
 
         struct GluVertex
         {
@@ -71,8 +66,8 @@ namespace SVGL
             gDst->pushPoint(&p);
         }
 
-        GLvoid CALLBACK callbackCombine(GLdouble coords[3], void *vertex_data[4],
-                                         GLfloat weight[4], void **outData)
+        GLvoid CALLBACK callbackCombine(GLdouble coords[3], void *[4],
+                                         GLfloat [4], void **outData)
         {
             GluVertex v(coords[0], coords[1], coords[2]);
             gluCombineData.push_back(v);
@@ -82,7 +77,7 @@ namespace SVGL
 
         typedef void(CALLBACK *_GLUfuncptr)();
 
-        void gluTessPointsSet(Buffer::Polygon* src, Buffer::Polygon* dst)
+        void gluTessPointsSet(PathCommand::Polygon* src, PathCommand::Polygon* dst)
         {
             gDst = dst;
             GLUtesselator* tess = gluNewTess();
@@ -99,11 +94,11 @@ namespace SVGL
             }
             gluRawData.reserve(rawSize);
 
-            gluTessBeginPolygon(tess, NULL);
+            gluTessBeginPolygon(tess, nullptr);
 
             for (unsigned int i = 0; i < src->size(); ++i)
             {
-                Buffer::Contour& contour = (*src)[i];
+                PathCommand::Contour& contour = (*src)[i];
                 gluTessBeginContour(tess);
 
                 for (unsigned int j = 0; j < contour.size(); ++j)

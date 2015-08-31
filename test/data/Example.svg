@@ -47,32 +47,61 @@
         inkscape:window-x="483"
         inkscape:window-y="101"
         inkscape:current-layer="svg2" />
+    <style>
+    * {
+        fill:none;
+    }
+
+    path.eightway {
+        fill:maroon;
+        stroke-width:9;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        stroke-dasharray:30,30;
+        stroke-opacity:0.5;
+    }
+    path.eightway2 {
+        fill:none;
+        stroke-width:5;
+        stroke-linecap:butt;
+        stroke-linejoin:bevel;
+        stroke-dasharray:40,40;
+        stroke-opacity:0.5;
+    }
+    </style>
     <g>
-        <g transform="rotate(45)">
-            <apath style="fill:none;stroke:blue;stroke-width:0.1;stroke-dasharray:0.1,0.1" d="M0,0 l1,0 0,1 0.5,0" />
-            <path style="fill:none;stroke:purple;stroke-opacity:0.5;stroke-width:10" d="M0,0 l100,0 0,100 50,0 c 0,-50 100,-50, 100,0 l100,0 0,-100 100,0" />
-            <path style="fill:none;stroke:blue;stroke-opacity:0.5;stroke-width:10" d="M0,100 l100,0 0,100 50,0 c 0,200 100,200, 100,0 l100,0 0,-100 100,0" />
+
+        <arect id="bluerect" stroke-width="5" fill="darkgrey" stroke="blue" rx="5%" ry="5%" x="0" y="0" width="50%" height="50%" />
+        <arect id="redrect" stroke-width="5" fill="grey" stroke="red" rx="5%" ry="5%" x="-25%" y="-25%" width="50%" height="50%" />
+        <arect id="green" style="stroke-linecap:butt" stroke-width="5" fill="none" stroke="green" rx="5%" ry="2%" x="-55%" y="-55%" width="5%" height="5%" />
 
 
-            <path style="fill:none;stroke:pink;stroke-opacity:0.5;stroke-width:9;" d="M0,0 l0,50 12,50 50,50 0,-50 50,50 50,12" />
+        <ag transform="rotate(45)">
+            <apath style="stroke:blue;stroke-width:0.1;stroke-dasharray:0.1,0.1" d="M0,0 l1,0 0,1 0.5,0" />
+            <g transform="translate(300)">
+                <path style="stroke:white;stroke-opacity:0.5;stroke-width:10" d="M0,0 l100,0 0,100 50,0 c 0,-50 100,-50, 100,0 l100,0 0,-100 100,0" />
+                <path style="stroke:grey;stroke-opacity:0.5;stroke-width:10" d="M0,100 l100,0 0,100 50,0 c 0,200 100,200, 100,0 l100,0 0,-100 100,0" />
+            </g>
+
+            <path style="stroke:pink;stroke-opacity:0.5;stroke-width:9;" d="M0,0 l0,50 12,50 50,50 0,-50 50,50 50,12" />
 
 
-            <apath style="fill:none;stroke:blue;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 1,0 -1,0 l-1,0 0,-1 -1,0" />
-            <apath style="fill:none;stroke:green;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 1,1 -1,0 l-1,0 0,-1 -1,0" />
-            <apath style="fill:none;stroke:yellow;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0 0,-1 -1,0" />
-            <apath style="fill:none;stroke:red;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0 0,-1 -1,0" />
+            <apath style="stroke:blue;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 1,0 -1,0 l-1,0 0,-1 -1,0" />
+            <apath style="stroke:green;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 1,1 -1,0 l-1,0 0,-1 -1,0" />
+            <apath style="stroke:yellow;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0 0,-1 -1,0" />
+            <apath style="stroke:red;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0 0,-1 -1,0" />
 
-            <path style="fill:none;stroke:lime;stroke-width:9;stroke-opacity:0.5;stroke-linecap:round;stroke-dasharray:40,30" d="M-100,0 l-100,0 0,100 -100,0 a 70,170 0 0,0 -100,0 l-100,0 0,-100 -100,0" />
-            <path style="fill:none;stroke:blue;stroke-opacity:0.5;stroke-width:9;" d="M-100,0 l-100,0 0,-100 -100,0 a 70,170 0 0,100 -100,0 l-100,0 0,100 -100,0" />
+            <path id="eightwaylime" class="eightway" stroke="lime" d="M-100,0 l-100,0 0,100 -100,0 a 70,170 0 0,0 -100,0 l-100,0 0,-100 -100,0" />
+            <path class="eightway2" style="stroke:blue;" d="M-100,0 l-100,0 0,-100 -100,0 a 70,170 0 0,100 -100,0 l-100,0 0,100 -100,0" />
 
-            <path style="fill:none;stroke:green;stroke-width:9;stroke-linecap:square;stroke-dasharray:40,25,25,25" d="M100,0 l100,0 0,100 100,0 a 70,170 0 0,100 100,0 l100,0 0,-100 100,0" />
-            <path style="fill:none;stroke:yellow;stroke-opacity:0.5;stroke-width:9" d="M100,0 l100,0 0,-100 100,0 a 70,170 0 0,0 100,0 l100,0 0,100 100,0" />
+            <path class="eightway" style="stroke:green;" d="M100,0 l100,0 0,100 100,0 a 70,170 0 0,100 100,0 l100,0 0,-100 100,0" />
+            <path class="eightway2" style="stroke:yellow;" d="M100,0 l100,0 0,-100 100,0 a 70,170 0 0,0 100,0 l100,0 0,100 100,0" />
 
-            <path style="fill:none;stroke:orange;stroke-width:9;stroke-dasharray:40,25,25,25" d="M0,-100 l0,-100 100,0 0,-100 a 170,70 0 0,100 0,-100 l0,-100 -100,0 0,-100" />
-            <path style="fill:none;stroke:magenta;stroke-opacity:0.5;stroke-linejoin:bevel;stroke-width:9" d="M0,-100 l0,-100 -100,0 0,-100 a 170,70 0 0,0 0,-100 l0,-100 100,0 0,-100" />
+            <path class="eightway" style="stroke:orange;" d="M0,-100 l0,-100 100,0 0,-100 a 170,70 0 0,100 0,-100 l0,-100 -100,0 0,-100" />
+            <path class="eightway2" style="stroke:magenta;" d="M0,-100 l0,-100 -100,0 0,-100 a 170,70 0 0,0 0,-100 l0,-100 100,0 0,-100" />
 
-            <path style="fill:none;stroke:cyan;stroke-width:9;stroke-dasharray:40,25,25,25" d="M0,100 l0,100 100,0 0,100 a 170,70 0 0,0 0,100 l0,100 -100,0 0,100" />
-            <path style="fill:none;stroke:red;stroke-width:9;stroke-opacity:0.5;stroke-linejoin:round" d="M0,100 l0,100 -100,0 0,100 a 170,70 0 0,100 0,100 l0,100 100,0 0,100" />
+            <path id="eightwaycyan" class="eightway" style="stroke:cyan;" d="M0,100 l0,100 100,0 0,100 a 170,70 0 0,0 0,100 l0,100 -100,0 0,100" />
+            <path class="eightway2" style="stroke:red;" d="M0,100 l0,100 -100,0 0,100 a 170,70 0 0,100 0,100 l0,100 100,0 0,100" />
 
             <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-1 a 0.7,1.7 0 1,0 1,0 l1,0 a 0.7,1.7 0 1,0 1,0 l1,0" />
             <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-2 a 0.7,1.7 0 1,1 1,0 l1,0 a 0.7,1.7 0 1,1 1,0 l1,0" />
@@ -81,13 +110,13 @@
             <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M0,-2 a 0.7,1.7 0 0,0 -1,0 l-1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0" />
 
             <apath style="fill:red;opacity:0.5;stroke-width:0.01" stroke="cyan" d="M0,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0 Z" />
-        </g>
-        <g transform="scale(0.5, 0.7) rotate(45)" stroke-width="20">
+        </ag>
+        <ag transform="scale(0.5, 0.7) rotate(45)" stroke-width="20">
             <apath fill="none" stroke="lime" d="M-0.5,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0" />
-        </g>
+        </ag>
 
-        <g transform="translate(500, 0) scale(4, 4)">
-            <rect fill="darkgrey" stroke="red" rx="10" ry="20" x="-100" y="-100" width="200" height="200" />
+        <ag transform="translate(500, 0) scale(4, 4)">
+            <rect id="greyredrect" fill="darkgrey" stroke="red" rx="10" ry="20" x="-100" y="-100" width="200" height="200" />
             <circle fill="magenta" stroke="pink" style="stroke-width:3; stroke-dasharray:3,8; stroke-linecap:round" cx="25" cy="25" r="50"/>
             <ellipse fill="lime" stroke="yellow" style="stroke-width:1.5; stroke-dasharray:6,4; stroke-linecap:square" cx="25" cy="25" rx="15" ry="25"/>
             <line fill="none" stroke="white" x1="-0.5" y1="-50" x2="50" y2="10" />
@@ -102,8 +131,8 @@
                 <path fill="none" stroke="pink" d="M40,0 q50,25 0,50 z" />
                 <path fill="none" stroke="yellow" d="M50,0 a 15,25 10 1 1 10,0 z" />
             </g>
-        </g>
-        <g
+        </ag>
+        <ag
             id="g2161"
             transform="translate(-700, 0) scale(2, 2)">
             <path
@@ -126,17 +155,20 @@
                 nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccccc"
                 id="flowRoot1898"
                 d="M 17.026327,63.789847 C 0.7506376,64.058469 13.88279,66.387154 13.113883,69.323258 C 8.0472417,70.287093 3.5936285,63.565714 6.8090451,59.370548 C 8.7591553,55.717791 15.269922,55.198361 16.902068,59.393261 C 17.532581,60.758947 17.628237,62.396589 17.026327,63.789847 z M 15.306463,62.656109 C 18.852566,58.713773 7.6543584,56.609143 10.765803,61.304742 C 12.124789,62.217715 13.961359,61.705342 15.306463,62.656109 z M 31.307931,62.391383 C 27.130518,63.524026 24.669863,68.663004 27.470717,72.229472 C 25.946657,74.052316 24.253697,71.076237 24.857281,69.636909 C 23.737444,67.038428 17.399862,72.254246 19.386636,68.888657 C 23.159719,67.551193 22.398496,63.711301 22.06067,60.848671 C 24.064085,60.375294 24.370376,65.772689 27.167918,63.326048 C 28.350126,62.546369 29.927362,61.067531 31.307931,62.391383 z M 37.66875,70.598623 C 33.467314,66.62264 32.517064,77.972723 37.30626,74.466636 C 38.742523,73.853608 40.55904,70.38932 37.66875,70.598623 z M 41.677321,70.973131 C 42.340669,75.308182 36.926157,78.361257 33.331921,76.223155 C 29.43435,74.893988 30.618698,67.677232 35.003806,68.567885 C 37.137393,70.592854 42.140265,67.002221 37.656192,66.290007 C 35.242233,65.914214 35.166503,62.640757 38.036954,63.926404 C 40.847923,64.744926 43.227838,68.124735 41.677321,70.973131 z M 62.379099,76.647079 C 62.007404,78.560417 61.161437,84.034535 58.890565,82.010019 C 59.769679,79.039958 62.536382,72.229115 56.947899,72.765789 C 53.790416,73.570863 54.908257,80.968388 51.529286,79.496859 C 51.707831,76.559817 55.858125,71.896837 50.8321,70.678504 C 45.898113,69.907818 47.485944,75.735824 45.286883,78.034703 C 42.916393,76.333396 45.470823,71.647155 46.624124,69.414735 C 50.919507,67.906486 63.618534,70.878704 62.379099,76.647079 z M 66.426447,83.84905 C 67.616398,85.777591 62.114624,94.492698 62.351124,90.31711 C 63.791684,86.581961 65.730376,78.000636 67.391891,74.85575 C 71.027815,73.781175 76.383067,75.350289 76.591972,79.751898 C 77.048545,83.793048 73.066803,88.429945 68.842187,86.765936 C 67.624386,86.282034 66.56741,85.195132 66.426447,83.84905 z M 74.086569,81.803435 C 76.851893,78.050524 69.264402,74.310256 67.560734,78.378191 C 65.893402,80.594099 67.255719,83.775746 69.700555,84.718558 C 72.028708,85.902224 73.688639,83.888662 74.086569,81.803435 z M 82.318799,73.124577 C 84.30523,75.487059 81.655015,88.448086 78.247183,87.275736 C 78.991935,82.387828 81.291029,77.949394 82.318799,73.124577 z M 95.001985,87.684695 C 78.726298,87.953319 91.858449,90.281999 91.089542,93.218107 C 86.0229,94.18194 81.569287,87.460562 84.784701,83.265394 C 86.734814,79.612637 93.245582,79.09321 94.877729,83.28811 C 95.508245,84.653796 95.603892,86.291438 95.001985,87.684695 z M 93.282122,86.550957 C 96.828223,82.608621 85.630017,80.503993 88.741461,85.199592 C 90.100447,86.112565 91.937018,85.600192 93.282122,86.550957 z " />
-        </g>
+        </ag>
+
     </g>
 
-    <texta>The quick brown <tspan font-weight="bold" fill="red" >fox</tspan> jumped over the lazy dog.</texta>
-    <g transform="translate(0.5, 0) scale(-0.005, -0.005)">
-        <text font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="15pt">1234abcdefghijklmnopqrstuvwxyz.</text>
+    <text stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</text>
+    <g stroke="red" fill="blue" transform="scale(10, 10)">
+        <rect fill="white" stroke="none" x="0" y="0" width="10" height="-10"/>
+        <text style="stroke-dasharray:10,1;stroke-width:0.1" fill="purple" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="30">XQLI</text>
+        <atext font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="15pt">1234abcdefghijklmnopqrstuvwxyz.</atext>
     </g>
-    <g transform="translate(0.5, 0.05) scale(-0.005, -0.005)">
+    <ag transform="translate(0.5, 0.05) scale(-0.005, -0.005)">
         <text id="changeme" font-family="Arial, sans-serif" font-style="normal" font-weight="bold" font-size="12pt">changme:abcdefghijklmnopqrstuvwxyz.</text>
-    </g>
-    <g transform="translate(0.5, -0.05) scale(-0.005, -0.005)">
+    </ag>
+    <ag transform="translate(0.5, -0.05) scale(-0.005, -0.005)">
         <text font-family="sans-serif" font-style="regular" font-weight="700" font-size="15pt">ABCDEFGHIJKLMNOPQRSTUVWXYZ.</text>
-    </g>
+    </ag>
 </svg>

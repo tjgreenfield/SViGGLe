@@ -19,6 +19,7 @@
  */
 
 #include "CSSAttributeSelector.hh"
+#include <SVGL/CSS/CSSValues.hh>
 
 namespace SVGL
 {
@@ -51,13 +52,13 @@ namespace SVGL
         {
 
         }
-        
+
         /**
          * Destructor
          */
         AttributeSelector::~AttributeSelector()
         {
-        
+
         }
 
         /**
@@ -67,21 +68,23 @@ namespace SVGL
         {
             switch (mode)
             {
-                case EMPTY:
-                    out << "[" << name << "]";
-                    break;
-                case CLASS:
-                    out << "." << value;
-                    break;
-                case MATCH:
-                    out << "[" << name << "='" << value << "']";
-                    break;
-                case LIST_MATCH:
-                    out << "[" << name << "~='" << value << "']";
-                    break;
-                case STARTS_WITH:
-                    out << "[" << name << "|='" << value << "']";
-                    break;
+            default:
+                out << "[]";
+            case EMPTY:
+                out << "[" << name << "]";
+                break;
+            case CLASS:
+                out << "." << value;
+                break;
+            case MATCH:
+                out << "[" << name << "='" << value << "']";
+                break;
+            case LIST_MATCH:
+                out << "[" << name << "~='" << value << "']";
+                break;
+            case STARTS_WITH:
+                out << "[" << name << "|='" << value << "']";
+                break;
             }
             return out;
         }
@@ -92,13 +95,13 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool AttributeSelector::match(const Element* element) const
+        bool AttributeSelector::match(const CSSElement* element) const
         {
-            const char* attrValue = element->getAttributeValue(name.c_str());
             switch (mode)
             {
+                case CLASS:
                 case MATCH:
-                    return value == attrValue;
+                    return element->testAttributeValue(name.c_str(), value.c_str());
 
                 case LIST_MATCH:
                     return false; // TODO
@@ -108,7 +111,7 @@ namespace SVGL
 
                 case EMPTY:
                 default:
-                    return attrValue != nullptr;
+                    return element->testAttributeValue(name.c_str(), nullptr);
             }
         }
     }

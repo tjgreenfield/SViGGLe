@@ -29,11 +29,9 @@ namespace SVGL
         {
         }
 
-        void Style::setProperty(const char* name, const char* valueStr)
+        void Style::updateSizeContext(SizeContext*)
         {
-            Parser p(valueStr);
-            Value_uptr value = p.readPropertyValue();
-            setProperty(name, value.get());
+
         }
     }
 }

@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include "Elements/ElementsViewPort.hh"
+#include <SVGL/Element/Structure/ElementViewPort.hh>
+#include <SVGL/Element/Structure/ElementStyle.hh>
 #include <SVGL/XML/XML.hh>
 #include <memory>
 #include <iostream>
@@ -28,13 +29,30 @@
 
 namespace SVGL
 {
-    class Document : public ViewPort
+    class Document : public Element::ViewPort
     {
+    protected:
+        std::vector<Element::Style_uptr> styles;
+
     public:
+        Document();
+
         /**
          * Output to stream
          */
         std::ostream& stream(std::ostream& out) const override;
+
+        const Document* getDocument() const override;
+
+        /* From XML::Node */
+
+        void appendChild(XML::Node_uptr&& child) override;
+
+        /* From Element::Group */
+
+        //void applyStyleSheet(CSS::StyleSheet* styleSheet) override;
+
+        void applyStyleSheets();
     };
 
     typedef std::unique_ptr<Document> Document_uptr;

@@ -30,375 +30,178 @@ namespace SVGL
         /**
          * Constructor
          */
-        Vector::Vector(SVG* _parent) :
-            Graphic(_parent),
-            fill(defaultFill),
-            stroke(defaultStroke),
-            strokeWidth(defaultStrokeWidth),
-            strokeMiterLimit(defaultStrokeMiterLimit),
-            strokeLineJoin(defaultStrokeLineJoin),
+        Vector::Vector() :
+            Graphic(),
+            fill(0xFF000000),
+            stroke(0x00000000),
+            strokeWidth(1),
+            strokeMiterLimit(4),
+            strokeDashOffset(0),
             strokeDashArray({std::numeric_limits<double>::max(), 0})
         {
-
+            hasStroke() = 0;
+            hasFill() = 1;
         }
 
-        /**
-         * Test if the fill is none
-         * @retval true There is a fill
-         * @retval false There is no fill
-         */
-        bool Vector::hasFill() const
+        void Vector::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            if (flags[Inherit::FILL])
+            using namespace CSS;
+            using namespace CSS::Property;
+
+            constexpr auto keywordFromValue = &Keyword::keywordFromValue;
+
+            // fill
+            if (colorFromValue(&fill, propertySet[Property::FILL]))
             {
-                return parent ? parent->hasFill() : false;
+                hasFill() = 1;
             }
             else
             {
-                return !flags[Flags::FILL_NONE];
-            }
-        }
-
-
-        /**
-         * Get the value of the fill color property
-         * @return The color property
-         */
-        Color Vector::getFill() const
-        {
-            if (flags[Inherit::FILL])
-            {
-                return parent ? parent->getFill() : defaultFill;
-            }
-            else
-            {
-                return fill;
-            }
-        }
-
-        /**
-         * Test if the stroke is none
-         * @retval true There is a stroke
-         * @retval false There is no stroke
-         */
-        bool Vector::hasStroke() const
-        {
-            if (flags[Inherit::STROKE])
-            {
-                return parent ? parent->hasStroke() : false;
-            }
-            else
-            {
-                return !flags[Flags::STROKE_NONE];
-            }
-        }
-
-        /**
-         * Get the value of the stroke color property, including alpha
-         * @return The color property
-         */
-        Color Vector::getStroke() const
-        {
-            unsigned int strokeColor;
-            unsigned int strokeOpacity;
-            if (flags[Inherit::STROKE])
-            {
-                strokeColor = parent ? parent->getStroke() : defaultStroke;
-            }
-            else
-            {
-                strokeColor = stroke;
-            }
-            if (flags[Inherit::STROKE_OPACITY])
-            {
-                strokeOpacity = parent ? parent->getStroke() : defaultStroke;
-            }
-            else
-            {
-                strokeOpacity = stroke;
-            }
-            return (strokeColor & 0x00FFFFFF) + (strokeOpacity & 0xFF000000);
-        }
-
-        /**
-         * Get the value of the stroke width property
-         * @return The stroke width
-         */
-        double Vector::getStrokeWidth() const
-        {
-            if (flags[Inherit::STROKE_WIDTH])
-            {
-                return parent ? parent->getStrokeWidth() : defaultStrokeWidth;
-            }
-            else
-            {
-                return strokeWidth;
-            }
-        }
-
-        /**
-         * Get the line join type for the stroke
-         * @return The stroke line join type
-         */
-        LineJoin Vector::getStrokeLineJoin() const
-        {
-            if (flags[Inherit::STROKE_LINEJOIN])
-            {
-                return parent ? parent->getStrokeLineJoin() : defaultStrokeLineJoin;
-            }
-            else
-            {
-                return strokeLineJoin;
-            }
-        }
-
-        /**
-         * Get the limit for the miter joins
-         * @return The limit for the miter joins
-         */
-        double Vector::getStrokeMiterLimit() const
-        {
-            if (flags[Inherit::STROKE_MITERLIMIT])
-            {
-                return parent ? parent->getStrokeMiterLimit() : defaultStrokeMiterLimit;
-            }
-            else
-            {
-                return strokeMiterLimit;
-            }
-        }
-
-        /**
-         * Get the line cap type for the stroke
-         * @return The stroke line cap type
-         */
-        LineCap Vector::getStrokeLineCap() const
-        {
-            if (flags[Inherit::STROKE_LINECAP])
-            {
-                return parent ? parent->getStrokeLineCap() : defaultStrokeLineCap;
-            }
-            else
-            {
-                return strokeLineCap;
-            }
-        }
-
-        /**
-         * Get the stroke dash array
-         * @return A pointer to the dash array
-         */
-        const DashArray* Vector::getStrokeDashArray() const
-        {
-            if (flags[Inherit::STROKE_DASHARRAY])
-            {
-                return parent ? parent->getStrokeDashArray() : nullptr;
-            }
-            else
-            {
-                return &strokeDashArray;
-            }
-        }
-
-        /**
-         * Get the stroke dash offset
-         * @return The offset length to start into the dash array
-         */
-        double Vector::getStrokeDashOffset() const
-        {
-            if (flags[Inherit::STROKE_DASHOFFSET])
-            {
-                return parent ? parent->getStrokeDashOffset() : defaultStrokeDashOffset;
-            }
-            else
-            {
-                return strokeDashOffset;
-            }
-        }
-
-        /**
-         * Set the style property of the style object.
-         *
-         * @param[in] index The index of the style property to set.
-         * @param[in] value The value to assign to the property.
-         */
-        void Vector::setProperty(unsigned int index, const CSS::Value* value)
-        {
-            CSS::ColorState state;
-            switch (index)
-            {
-            case Inherit::FILL:
-                fill = colorFromValue(value, &state);
-                switch (state)
+                if (keywordFromValue(propertySet[Property::FILL]) == Keyword::NONE)
                 {
-                case CSS::INHERIT:
-                    flags[Inherit::FILL] = true;
-                    flags[Flags::FILL_NONE] = false;
-                    break;
-                case CSS::NONE:
-                    flags[Flags::FILL_NONE] = true;
-                    flags[Inherit::FILL] = false;
-                    break;
-                case CSS::COLOR:
-                default:
-                    flags[Flags::FILL_NONE] = false;
-                    flags[Inherit::FILL] = false;
-                    break;
+                    hasFill() = 0;
                 }
-                break;
-            case Inherit::STROKE:
-                stroke = colorFromValue(value, &state, (stroke & 0xFF000000) >> 24);
-                switch (state)
+                else
                 {
-                case CSS::INHERIT:
-                    flags[Inherit::STROKE] = true;
-                    flags[Flags::STROKE_NONE] = false;
-                    break;
-                case CSS::NONE:
-                    flags[Inherit::STROKE] = false;
-                    flags[Flags::STROKE_NONE] = true;
-                    break;
-                case CSS::COLOR:
-                default:
-                    flags[Inherit::STROKE] = false;
-                    flags[Flags::STROKE_NONE] = false;
-                    break;
+                    fill = RGBA(0, 0, 0, (fill >> 24) & 0xFF);
+                    hasFill() = 1;
                 }
-                break;
-            case Inherit::STROKE_OPACITY:
-                if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
+            }
+
+
+            // fill-rule
+            if (keywordFromValue(propertySet[Property::FILL_RULE]) == Keyword::NONZERO)
+            {
+                fillRule() = CR_NONZERO;
+            }
+            else
+            {
+                fillRule() = CR_EVENODD;
+            }
+
+            // fill-opacity
+            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::FILL_OPACITY]))
+            {
+                fill = RGBA(fill, 255 * dimension->calculate(sizeContext));
+            }
+            else
+            {
+                fill = RGBA(fill, 255);
+            }
+
+            // stroke
+            if (colorFromValue(&stroke, propertySet[Property::STROKE]))
+            {
+                hasStroke() = 1;
+            }
+            else
+            {
+                if (keywordFromValue(propertySet[Property::STROKE]) == Keyword::NONE)
                 {
-                    stroke = (stroke & 0x00FFFFFF) + (((int)(dimension->get() * 255)) << 24);
-                    flags[Inherit::STROKE_OPACITY] = false;
+                    hasStroke() = 0;
                 }
-                else if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
+                else
                 {
-                    if (ident->ident == "inherit")
-                    {
-                        flags[Inherit::STROKE_OPACITY] = true;
-                    }
+                    stroke = RGBA(0, 0, 0, (stroke >> 24) & 0xFF);
+                    hasStroke() = 1;
                 }
-                break;
-            case Inherit::STROKE_WIDTH:
-                if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
-                {
-                    // Internally stroke width is distance from centre to edge, so half what SVG uses as stroke width
-                    strokeWidth = dimension->get() * 0.5;
-                    flags[Inherit::STROKE_WIDTH] = false;
-                }
-                else if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
-                {
-                    if (ident->ident == "inherit")
-                    {
-                        flags[Inherit::STROKE_WIDTH] = true;
-                    }
-                }
-                break;
-            case Inherit::STROKE_LINEJOIN:
-                if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
-                {
-                    if (ident->ident == "inherit")
-                    {
-                        flags[Inherit::STROKE_LINEJOIN] = true;
-                    }
-                    else if (ident->ident == "miter")
-                    {
-                        flags[Inherit::STROKE_LINEJOIN] = false;
-                        strokeLineJoin = LJ_MITER;
-                    }
-                    else if (ident->ident == "round")
-                    {
-                        flags[Inherit::STROKE_LINEJOIN] = false;
-                        strokeLineJoin = LJ_ROUND;
-                    }
-                    else if (ident->ident == "bevel")
-                    {
-                        flags[Inherit::STROKE_LINEJOIN] = false;
-                        strokeLineJoin = LJ_BEVEL;
-                    }
-                }
-                break;
-            case Inherit::STROKE_MITERLIMIT:
-                if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
-                {
-                    if (ident->ident == "inherit")
-                    {
-                        flags[Inherit::STROKE_LINEJOIN] = true;
-                    }
-                }
-                else if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
-                {
-                    flags[Inherit::STROKE_LINEJOIN] = false;
-                    strokeMiterLimit = dimension->get();
-                }
-                break;
-            case Inherit::STROKE_LINECAP:
-                if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
-                {
-                    if (ident->ident == "inherit")
-                    {
-                        flags[Inherit::STROKE_LINECAP] = true;
-                    }
-                    else if (ident->ident == "butt")
-                    {
-                        flags[Inherit::STROKE_LINECAP] = false;
-                        strokeLineCap = LC_BUTT;
-                    }
-                    else if (ident->ident == "round")
-                    {
-                        flags[Inherit::STROKE_LINECAP] = false;
-                        strokeLineCap = LC_ROUND;
-                    }
-                    else if (ident->ident == "square")
-                    {
-                        flags[Inherit::STROKE_LINECAP] = false;
-                        strokeLineCap = LC_SQUARE;
-                    }
-                }
-                break;
-            case Inherit::STROKE_DASHARRAY:
+            }
+
+            // stroke-dasharray
+            if (auto list = dynamic_cast<const CSS::ValueList*>(propertySet[Property::STROKE_DASHARRAY]))
+            {
                 strokeDashArray.clear();
-                if (const CSS::ValueList* list = dynamic_cast<const CSS::ValueList*>(value))
+                strokeDashArray.reserve(list->vector.size());
+                for (const CSS::Value_uptr& v : list->vector)
                 {
-                    for (const CSS::Value_uptr& item : list->vector)
+                    if (auto dimension = dynamic_cast<const CSS::Dimension*>(v.get()))
                     {
-                        if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(item.get()))
-                        {
-                            strokeDashArray.push_back(dimension->get());
-                        }
+                        strokeDashArray.push_back(dimension->calculate(sizeContext));
                     }
                 }
-                if (strokeDashArray.size() == 0)
-                {
-                    strokeDashArray.push_back(std::numeric_limits<double>::max());
-                    strokeDashArray.push_back(0);
-                }
-                else if (strokeDashArray.size() % 2 == 1)
-                {
-                    unsigned int size(strokeDashArray.size());
-                    for (unsigned int i=0; i < size; ++i)
-                    {
-                        strokeDashArray.push_back(strokeDashArray[i]);
-                    }
-                }
+                strokeDashArray.shrink_to_fit();
+            }
+            else
+            {
+                strokeDashArray.clear();
+            }
+
+            // stroke-dashoffset
+            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::STROKE_DASHOFFSET]))
+            {
+                strokeDashOffset = dimension->calculate(sizeContext);
+            }
+            else
+            {
+                strokeDashOffset = 0;
+            }
+
+            // stroke-linecap
+            switch (keywordFromValue(propertySet[Property::STROKE_LINECAP]))
+            {
+            case Keyword::BUTT:
+                strokeLineCap() = LC_BUTT;
                 break;
-            case Inherit::STROKE_DASHOFFSET:
-                if (const CSS::Dimension* dimension = dynamic_cast<const CSS::Dimension*>(value))
-                {
-                    flags[Inherit::STROKE_DASHOFFSET] = false;
-                    strokeDashOffset = dimension->get();
-                }
-                else if (const CSS::Ident* ident = dynamic_cast<const CSS::Ident*>(value))
-                {
-                    if (ident->ident == "inherit")
-                    {
-                        flags[Inherit::STROKE_DASHOFFSET] = true;
-                    }
-                }
+            case Keyword::ROUND:
+                strokeLineCap() = LC_ROUND;
+                break;
+            case Keyword::SQUARE:
+                strokeLineCap() = LC_SQUARE;
                 break;
             default:
-                Graphic::setProperty(index, value);
+                strokeLineCap() = LC_BUTT;
+                break;
             }
+
+            // stroke-linejoin
+            switch (keywordFromValue(propertySet[Property::STROKE_LINEJOIN]))
+            {
+            case Keyword::MITER:
+                strokeLineJoin() = LJ_MITER;
+                break;
+            case Keyword::ROUND:
+                strokeLineJoin() = LJ_ROUND;
+                break;
+            case Keyword::BEVEL:
+                strokeLineJoin() = LJ_BEVEL;
+                break;
+            default:
+                strokeLineJoin() = LJ_BEVEL;
+                break;
+            }
+
+            // stroke-miterlimit
+            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::STROKE_MITERLIMIT]))
+            {
+                strokeMiterLimit = dimension->calculate(sizeContext);
+            }
+            else
+            {
+                strokeMiterLimit = 1;
+            }
+
+
+            // stroke-opacity
+            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::STROKE_OPACITY]))
+            {
+                stroke = RGBA(stroke, 255 * dimension->calculate(sizeContext));
+            }
+            else
+            {
+                stroke = RGBA(stroke, 255);
+            }
+
+            // stroke-width
+            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::STROKE_WIDTH]))
+            {
+                strokeWidth = dimension->calculate(sizeContext);
+            }
+            else
+            {
+                strokeWidth = 1;
+            }
+
+            Graphic::applyPropertySet(propertySet, inherit, sizeContext);
         }
     }
 }

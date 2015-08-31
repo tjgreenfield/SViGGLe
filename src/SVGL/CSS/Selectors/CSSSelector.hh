@@ -71,7 +71,7 @@ namespace SVGL
              * @retval true Selector matches element.
              * @retval false Selector doesn't match element.
              */
-            bool match(const Element* element) const;
+            bool match(const CSSElement* element) const;
         };
 
         typedef std::unique_ptr<Selector> Selector_uptr;

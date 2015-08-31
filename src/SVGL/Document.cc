@@ -19,9 +19,15 @@
  */
 
 #include "Document.hh"
+#include <SVGL/CSS/CSSSizeContext.hh>
 
 namespace SVGL
 {
+
+    Document::Document() :
+        ViewPort(1280, 720)
+    {
+    }
 
     std::ostream& Document::stream(std::ostream& out) const
     {
@@ -29,5 +35,32 @@ namespace SVGL
         streamChildren(out);
         out << "}";
         return out;
+    }
+
+    const Document* Document::getDocument() const
+    {
+        return this;
+    }
+
+    void Document::appendChild(XML::Node_uptr&& child)
+    {
+        if (Element::Style* childStyle = dynamic_cast<Element::Style*>(child.get()))
+        {
+            child.release();
+            styles.emplace_back(childStyle);
+            childStyle->setParent(this);
+        }
+        else
+        {
+            Group::appendChild(std::move(child));
+        }
+    }
+
+    void Document::applyStyleSheets()
+    {
+        // TODO: merge and apply all?
+        CSS::PropertySet inherit;
+        CSS::SizeContext sizeContext(width, height, 10);
+        Group::applyStyleSheet(&styles.front()->styleSheet, inherit, sizeContext);
     }
 }

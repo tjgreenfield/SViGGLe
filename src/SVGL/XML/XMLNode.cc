@@ -24,21 +24,17 @@ namespace SVGL
 {
     namespace XML
     {
-        Node::~Node()
-        {
-        }
-
-        void Node::setAttribute(SubString name, SubString value)
+        void Node::setAttribute(SubString, SubString)
         {
 
         }
 
-        void Node::appendChild(Node_uptr&& child)
+        void Node::appendChild(Node_uptr&&)
         {
 
         }
 
-        void Node::appendText(SubString data)
+        void Node::appendText(SubString)
         {
 
         }

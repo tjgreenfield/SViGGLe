@@ -19,6 +19,8 @@
  */
 
 #include "CSSParser.hh"
+#include "CSSProperty.hh"
+#include "Values/CSSKeyword.hh"
 
 namespace SVGL
 {
@@ -91,7 +93,7 @@ namespace SVGL
                 }
                 else
                 {
-                    return Dimension(value, SubString(s - 1 ,0));
+                    return Dimension(value, Dimension::Unit::USER);
                 }
             }
             return Dimension();
@@ -157,16 +159,16 @@ namespace SVGL
             return SubString();
         }
 
-        bool Parser::readTypeSelector(TypeSelector* type)
+        bool Parser::readTypeSelector(std::string* type)
         {
             if (SubString subString = readIdent())
             {
-                type->type.assign(subString.start, subString.count);
+                type->assign(subString.start, subString.count);
                 return true;
             }
             else if (readChar('*'))
             {
-                type->type = "*";
+                (*type) = "*";
                 return true;
             }
             return false;
@@ -296,26 +298,28 @@ namespace SVGL
         {
             bool loop = true;
 
-            SimpleSelector_uptr simpleSelector(new SimpleSelector());
-            if (readTypeSelector(&simpleSelector->type))
+            std::string type;
+            if (readTypeSelector(&type))
             {
+                SimpleSelector_uptr simpleSelector(new SimpleSelector(std::move(type)));
+
                 while (loop)
                 {
-                    if (SubSelector_uptr subSelector = readIDSelector())
+                    if (SubSelector_uptr idSelector = readIDSelector())
                     {
-                        simpleSelector->subSelectors.push_back(std::move(subSelector));
+                        simpleSelector->subSelectors.push_back(std::move(idSelector));
                     }
-                    else if (SubSelector_uptr subSelector = readClassSelector())
+                    else if (SubSelector_uptr classSelector = readClassSelector())
                     {
-                        simpleSelector->subSelectors.push_back(std::move(subSelector));
+                        simpleSelector->subSelectors.push_back(std::move(classSelector));
                     }
-                    else if (SubSelector_uptr subSelector = readAttributeSelector())
+                    else if (SubSelector_uptr attributeSelector = readAttributeSelector())
                     {
-                        simpleSelector->subSelectors.push_back(std::move(subSelector));
+                        simpleSelector->subSelectors.push_back(std::move(attributeSelector));
                     }
-                    else if (SubSelector_uptr subSelector = readPseudoSelector())
+                    else if (SubSelector_uptr pseudoSelector = readPseudoSelector())
                     {
-                        simpleSelector->subSelectors.push_back(std::move(subSelector));
+                        simpleSelector->subSelectors.push_back(std::move(pseudoSelector));
                     }
                     else
                     {
@@ -506,9 +510,13 @@ namespace SVGL
 
             if ((subString = readIdent()))
             {
-                if (Value_uptr func = readFunctionParams(subString))
+                if (Value_uptr funcValue = readFunctionParams(subString))
                 {
-                    return func;
+                    return funcValue;
+                }
+                if (Keyword::Index keyword = Keyword::map.lookup(subString) )
+                {
+                    return Value_uptr(new Keyword(keyword));
                 }
                 return Value_uptr(new Ident(subString));
             }
@@ -538,10 +546,10 @@ namespace SVGL
             SubString ident;
             if ((ident = readIdent()))
             {
-                Declaration_uptr decl(new Declaration(ident));
                 readWSP();
                 if (readChar(':'))
                 {
+                    Declaration_uptr decl(new Declaration(ident));
                     readWSP();
                     if (decl->value = readPropertyValue())
                     {
@@ -580,6 +588,7 @@ namespace SVGL
 
         DeclarationBlock_uptr Parser::readDeclarationBlock()
         {
+            readWSP();
             if (Declaration_uptr declaration = readDeclaration())
             {
                 DeclarationBlock_uptr declarationBlock(new DeclarationBlock());
@@ -605,6 +614,7 @@ namespace SVGL
 
         Ruleset_uptr Parser::readRuleset()
         {
+            readWSP();
             State save(s);
             if (Selector_uptr selector = readSelector())
             {
@@ -646,6 +656,7 @@ namespace SVGL
 
         StyleSheet_uptr Parser::readStyleSheet()
         {
+            readWSP();
             if (Ruleset_uptr ruleset = readRuleset())
             {
                 StyleSheet_uptr styleSheet(new StyleSheet());

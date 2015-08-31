@@ -35,11 +35,11 @@ namespace SVGL
         {
             if (declaration->important)
             {
-                importantMap[declaration->name.c_str()] = std::move(declaration);
+                importantMap[declaration->property] = std::move(declaration);
             }
             else
             {
-                map[declaration->name.c_str()] = std::move(declaration);
+                map[declaration->property] = std::move(declaration);
             }
         }
 
@@ -53,10 +53,12 @@ namespace SVGL
             {
                 map[i.first] = std::move(i.second);
             }
+            declarationBlock->map.clear();
             for (auto&i : declarationBlock->importantMap)
             {
                 importantMap[i.first] = std::move(i.second);
             }
+            declarationBlock->importantMap.clear();
         }
 
         /**

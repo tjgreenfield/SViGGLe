@@ -26,6 +26,7 @@
 #include "PathLineTo.hh"
 #include "PathMoveTo.hh"
 #include "PathCommand.hh"
+#include "PathCommandSet.hh"
 #include <SVGL/BaseParser/BaseParser.hh>
 #include <SVGL/Types/SubString.hh>
 #include <SVGL/Types/Consts.hh>
@@ -38,16 +39,16 @@ namespace SVGL
         class Parser : public BaseParser::Parser
         {
         protected:
-            PathCommandSet commandSet;
+            CommandSet commandSet;
 
-            PathCommand* prev;
+            Command* prev;
             Point p1, p2, pend, flags;
             double rx, ry, xAxisRotation, largeArcFlag, sweepFlag;
 
 
         public:
-            inline Parser(const char* s = nullptr) :
-                BaseParser::Parser(s),
+            inline Parser(const char* _s = nullptr) :
+                BaseParser::Parser(_s),
                 prev(nullptr)
             {}
 
@@ -322,8 +323,8 @@ namespace SVGL
                 return false;
             }
 
-            PathCommandSet readPathCommandSet();
+            CommandSet readPathCommandSet();
         };
     }
- 
+
 }

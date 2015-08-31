@@ -21,28 +21,29 @@
 #pragma once
 
 #include "PathCommand.hh"
-#include <SVGL/Buffer/BufferPolygon.hh>
+
+#include <SVGL/Path/Buffer/PathPolygon.hh>
 
 namespace SVGL
 {
     namespace PathCommand
     {
-        class MoveTo : public PathCommand
+        class MoveTo : public Command
         {
         public:
             inline MoveTo() :
-                PathCommand(Point(0, 0))
+                Command(Point(0, 0))
             {}
 
             inline MoveTo(Point _p) :
-                PathCommand(_p)
+                Command(_p)
             {}
 
             MoveTo(double _x, double _y) :
-                PathCommand(_x, _y)
+                Command(_x, _y)
             {}
 
-            void buffer(Buffer::BufferingState* state) const override;
+            void buffer(Stroker* stroker) const override;
         };
     }
 }

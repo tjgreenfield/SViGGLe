@@ -287,7 +287,7 @@ namespace SVGL
                         return std::move(node);
                     }
                     set(save);
-                    return false;
+                    return nullptr;
                 }
                 else if (readStatic("/>"))
                 {
@@ -303,9 +303,9 @@ namespace SVGL
         {
             readCharData(node);
             while (readElement(node)
-                   || readReference() 
-                   || readCDSect() 
-                   || readPI() 
+                   || readReference()
+                   || readCDSect()
+                   || readPI()
                    || readComment()
                    )
             {

@@ -21,6 +21,7 @@
 #pragma once
 
 #include "CSSValue.hh"
+#include <SVGL/CSS/CSSCalculable.hh>
 #include <SVGL/Types/SubString.hh>
 #include <string>
 
@@ -32,17 +33,9 @@ namespace SVGL
         /**
          * An numeric value with optional unit specifier.
          */
-        class Dimension : public Value
+        class Dimension : public Value, public Calculable
         {
         public:
-
-            /**
-             * List of units that can be used by this class.
-             */
-            enum Unit { UNIT_USER, UNIT_PT, UNIT_PC, UNIT_MM, UNIT_CM, UNIT_IN, UNIT_EM, UNIT_EX, UNIT_PERCENT, UNIT_INVALID };
-
-            double value; //!< The raw numeric value.
-            Unit unit; //!< The unit of the value.
 
             /**
              * Default Constructor. Results in UNIT_INVALID unit
@@ -54,7 +47,7 @@ namespace SVGL
              * param[in] _value The initial numeric value.
              * param[in] _unit The code of the unit.
              */
-            Dimension(const double _value, const Unit _unit = UNIT_USER);
+            Dimension(const double _value, const Unit _unit = Unit::USER);
 
             /**
              * Constructor with specified values
@@ -77,7 +70,7 @@ namespace SVGL
              */
             inline operator bool() const
             {
-                return unit != UNIT_INVALID;
+                return unit != Unit::INVALID;
             }
 
             /**
@@ -89,12 +82,6 @@ namespace SVGL
              * Set the unit based on a string
              */
             void setUnit(const char* _unit);
-
-            /**
-             * Get the dimensions in display units
-             */
-            double get() const;
-
         };
     }
 }

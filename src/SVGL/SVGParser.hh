@@ -21,7 +21,7 @@
 #pragma once
 
 #include <SVGL/Document.hh>
-#include <SVGL/Elements/ElementsTypes.hh>
+#include <SVGL/Types/ElementsTypes.hh>
 #include <SVGL/XML/XMLParser.hh>
 #include <SVGL/XML/XMLNode.hh>
 #include <SVGL/Types/SubString.hh>
@@ -38,8 +38,8 @@ namespace SVGL
     class Parser : public XML::Parser
     {
     public:
-        inline Parser(const char* s = nullptr) :
-            XML::Parser(s)
+        inline Parser(const char* _s = nullptr) :
+            XML::Parser(_s)
         {
 
         }
@@ -56,5 +56,5 @@ namespace SVGL
 
         virtual XML::Node_uptr createElement(SubString tag);
     };
- 
+
 }

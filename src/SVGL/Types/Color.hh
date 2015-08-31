@@ -27,15 +27,23 @@ namespace SVGL
     /**
      * Create color from r, g & b values.
      */
-    inline Color rgb(unsigned int r, unsigned int g, unsigned int b)
+    constexpr Color RGB(unsigned int r, unsigned int g, unsigned int b)
     {
         return (255 << 24) + (r << 16) + (g << 8) + b;
     }
 
     /**
+     * Create color from rgb & a values.
+     */
+    constexpr Color RGBA(unsigned int rgb, unsigned int a)
+    {
+        return (a << 24) + (0xFFFFFF & rgb);
+    }
+
+    /**
      * Create color from r, g, b & a values.
      */
-    inline Color rgba(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+    constexpr Color RGBA(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
     {
         return (a << 24) + (r << 16) + (g << 8) + b;
     }

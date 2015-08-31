@@ -41,7 +41,7 @@ namespace SVGL
 
             Node& operator=(Node& _node) = delete;
 
-            virtual ~Node();
+            virtual ~Node() = default;
 
             virtual void setAttribute(SubString name, SubString value);
 

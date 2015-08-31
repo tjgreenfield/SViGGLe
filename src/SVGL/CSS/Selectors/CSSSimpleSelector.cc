@@ -36,7 +36,7 @@ namespace SVGL
         SimpleSelector::SimpleSelector(std::string&& _type) :
             type(std::move(_type))
         {
-        
+
         }
 
         /**
@@ -46,7 +46,7 @@ namespace SVGL
         SimpleSelector::SimpleSelector(SubString _type) :
             type(_type)
         {
-        
+
         }
 
         /**
@@ -68,7 +68,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool SimpleSelector::match(const Element* element) const
+        bool SimpleSelector::match(const CSSElement* element) const
         {
             if (!type.match(element)) return false;
             for (const SubSelector_uptr& i : subSelectors)

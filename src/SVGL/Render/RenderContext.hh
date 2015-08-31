@@ -31,6 +31,8 @@ namespace SVGL
         class Context
         {
         protected:
+        public:
+
             typedef std::vector<Transform> TransformStack;
             TransformStack transformStack;
 
@@ -43,18 +45,22 @@ namespace SVGL
             Transform worldTransform;
             Color color;
 
-            inline Context() :
-                depth(0)
-            {}
+            Context();
+
+            void update();
 
             void updateTransform();
             void pushTransform(Transform* t);
             void popTransform();
 
+            void updateColor();
             void pushColor(unsigned int c);
             void popColor();
 
+
+            void updateDepth();
             void incrementDepth();
+
         };
     }
 }

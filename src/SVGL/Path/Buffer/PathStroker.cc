@@ -19,6 +19,7 @@
  */
 
 #include "PathStroker.hh"
+#include <SVGL/Transform/Transform.hh>
 #include <SVGL/Types/Consts.hh>
 
 namespace SVGL
@@ -179,49 +180,51 @@ namespace SVGL
 
         void Stroker::bufferStartCapRound(const Point& dir)
         {
-            double strokeWidth = style.strokeWidth;
+            double ratio = 1 - (tolerance / style.strokeWidth);
+            double deltaT = (ratio > SQRT2_2) ? acos(ratio) : PI_4;
+            int vertexCount = PI_2 / deltaT;
+            deltaT = PI_2 / (vertexCount);
 
-            // this might need adjusting
-            int vertexCount = std::max(abs(int(4 * strokeWidth / tolerance)), 2);
+            Transform current;
+            RotateTransform rotate(deltaT);
 
-            Point step(-strokeWidth * dir.normalise());
-            Point offset(strokeWidth * dir.normal());
+            Point step(-style.strokeWidth * dir.normalise());
+            Point offset(style.strokeWidth * dir.normal());
 
             for (int i = vertexCount; i >= 0; --i)
             {
-                double t = ((double)i) / ((double)vertexCount) * PI / 2;
-                double cost = cos(t);
-                double sint = sin(t);
-
-                Point m(at + (cost * offset) + (sint * step));
-                Point n(at - (cost * offset) + (sint * step));
+                Point m(at + (current.a * step) + (current.b * offset));
+                Point n(at + (current.c * offset) + (current.d * step));
 
                 strokeBuffer.pushPoint(m);
                 strokeBuffer.pushPoint(n);
+
+                current *= rotate;
             }
         }
 
         void Stroker::bufferEndCapRound(const Point& dir)
         {
-            double strokeWidth = style.strokeWidth;
+            double ratio = 1 - (tolerance / style.strokeWidth);
+            double deltaT = (ratio > SQRT2_2) ? acos(ratio) : PI_4;
+            int vertexCount = PI_2 / deltaT;
+            deltaT = PI_2 / (vertexCount);
 
-            // this might need adjusting
-            int vertexCount = std::max(abs(int(4 * strokeWidth / tolerance)), 2);
+            Transform current;
+            RotateTransform rotate(deltaT);
 
-            Point step(strokeWidth * dir.normalise());
-            Point offset(strokeWidth * dir.normal());
+            Point step(style.strokeWidth * dir.normalise());
+            Point offset(style.strokeWidth * dir.normal());
 
             for (int i = 0; i <= vertexCount; ++i)
             {
-                double t = ((double)i) / ((double)vertexCount) * PI / 2;
-                double cost = cos(t);
-                double sint = sin(t);
+                Point m(at + (current.a * step) + (current.b * offset));
+                Point n(at + (current.c * offset) + (current.d * step));
 
-                Point m(at + (cost * offset) + (sint * step));
-                Point n(at - (cost * offset) + (sint * step));
-
-                strokeBuffer.pushPoint(m);
                 strokeBuffer.pushPoint(n);
+                strokeBuffer.pushPoint(m);
+
+                current *= rotate;
             }
         }
 
@@ -282,15 +285,14 @@ namespace SVGL
             Point z(strokeBuffer.getLastPoint());
             Point zy(z - y);
             Point zyNorm(zy.normal());
-            Point ba(b - a);
 
-            double angle(ba.angle(zy));
+            double angle(offset.angle(zy));
 
             angle = angle / 2;
             // TODO: this isn't the correct comparision for strokeMiterLimit
             double miter(std::min(tan(angle), strokeMiterLimit) * style.strokeWidth);
 
-            if (angle > 0)
+            if (angle < 0)
             {
                 Point m(y + miter * zyNorm);
                 Point n(z);
@@ -324,25 +326,40 @@ namespace SVGL
             Point y(strokeBuffer.getSecondLastPoint());
 
             Point cy(y - at);
-            Point u(1, 0);
 
-            Point ca(a - at);
+            double dt = cy.angle(offset);
 
-            double t0(u.angle(cy));
-            double dt = cy.angle(ca);
+            double ratio = 1 - (tolerance / style.strokeWidth);
+            double deltaT = (ratio > SQRT2_2) ? acos(ratio) : PI_4;
+            int vertexCount = std::abs(dt / deltaT);
+            deltaT = dt / (vertexCount);
 
-            // this might need adjusting
-            int vertexCount = std::max(abs(style.strokeWidth * dt / tolerance), 2);
+            Transform current;
+            RotateTransform rotate(deltaT);
 
-            for (int i = 0; i <= vertexCount; ++i)
+            Point step(style.strokeWidth * offset.normal());
+
+            if (dt > 0)
             {
-                double t = t0 + (((double)i) / ((double)vertexCount)) * dt;
-                double sint = sin(t);
-                double cost = cos(t);
-                Point m(at.x + cost * style.strokeWidth, at.y + sint * style.strokeWidth);
-                Point n(at.x - cost * style.strokeWidth, at.y - sint * style.strokeWidth);
-                strokeBuffer.pushPoint(m);
-                strokeBuffer.pushPoint(n);
+                for (int i = 0; i <= vertexCount; ++i)
+                {
+                    Point m(at + (-current.a * offset) + (-current.b * step));
+                    strokeBuffer.pushPoint(m);
+                    strokeBuffer.pushPoint(at);
+
+                    current *= rotate;
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= vertexCount; ++i)
+                {
+                    Point m(at + (current.a * offset) + (current.b * step));
+                    strokeBuffer.pushPoint(m);
+                    strokeBuffer.pushPoint(at);
+
+                    current *= rotate;
+                }
             }
             strokeBuffer.pushPoint(a);
             strokeBuffer.pushPoint(b);

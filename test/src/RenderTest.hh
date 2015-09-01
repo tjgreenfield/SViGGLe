@@ -47,7 +47,7 @@ float viewY = 0.0f;
 float scale = 1.0f / 720.f; //0.0008f;
 float rotate = 0.0f;
 float prevRotate = 0.0f;
-double tolerance = 2000.0 / 720.f;
+double tolerance = 2.0f;
 bool wireframe = false;
 bool needScreenshot = false;
 

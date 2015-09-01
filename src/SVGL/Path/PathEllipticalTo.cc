@@ -19,6 +19,7 @@
  */
 
 #include "PathEllipticalTo.hh"
+#include <SVGL/Transform/Transform.hh>
 #include <SVGL/Types/Consts.hh>
 #include <algorithm>
 #include <cstdlib>
@@ -127,17 +128,22 @@ namespace SVGL
         void EllipticalTo::buffer(Stroker* stroker) const
         {
             // this might need adjusting
-            int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / stroker->tolerance)), 4);
+            //int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / stroker->tolerance)), 4);
+            //double deltaT = (dt / (vertexCount - 1));
+
+            double ratio = 1 - (stroker->tolerance / std::max(std::abs(rx), std::abs(ry)));
+            double deltaT = (ratio > SQRT2_2) ? acos(ratio) : PI_4;
+            int vertexCount = dt / deltaT;
+            deltaT = (dt / (vertexCount - 1));
+
+            RotateTransform current(t1);
+            RotateTransform rotate(deltaT);
 
             for (int i = 1; i < vertexCount; i++)
             {
-                // fill
-                double t = (((double)i) / ((double)(vertexCount - 1))) * dt + t1;
-                double cost = cos(t);
-                double sint = sin(t);
-
-                Point pCentre((cosp * rx * cost) - (sinp * ry * sint) + cx, //x
-                              (sinp * rx * cost) + (cosp * ry * sint) + cy); //y
+                current *= rotate;
+                Point pCentre((cosp * rx * current.a) + (sinp * ry * current.b) + cx, //x
+                              (cosp * ry * current.c) + (sinp * rx * current.d) + cy); //y
 
                 stroker->pointBuffer.pushPoint(pCentre);
 

@@ -23,4 +23,9 @@
 namespace SVGL
 {
     const double PI = 3.141592653589793;
+    const double PI_2 = PI / 2;
+    const double PI_4 = PI / 4;
+    const double PI2 = PI * 2;
+
+    const double SQRT2_2 = 0.70710678118654752440084436210485;
 }

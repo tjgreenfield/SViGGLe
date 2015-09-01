@@ -103,7 +103,6 @@ namespace SVGL
             context->pushTransform(&transform);
             renderBuffer.render(context, style);
             context->popTransform();
-            context->incrementDepth();
         }
     }
 }

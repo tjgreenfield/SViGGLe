@@ -115,8 +115,6 @@ namespace SVGL
             }
             context->popColor();
             context->popTransform();
-
-            context->incrementDepth();
         }
     }
 }

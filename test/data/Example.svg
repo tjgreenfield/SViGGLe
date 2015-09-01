@@ -54,10 +54,10 @@
 
     path.eightway {
         fill:maroon;
+        fill-opacity:0.2;
         stroke-width:9;
-        stroke-linecap:round;
+        stroke-linecap:butt;
         stroke-linejoin:round;
-        stroke-dasharray:30,30;
         stroke-opacity:0.5;
     }
     path.eightway2 {
@@ -76,14 +76,14 @@
         <arect id="green" style="stroke-linecap:butt" stroke-width="5" fill="none" stroke="green" rx="5%" ry="2%" x="-55%" y="-55%" width="5%" height="5%" />
 
 
-        <ag transform="rotate(45)">
+        <g transform="rotate(45)">
             <apath style="stroke:blue;stroke-width:0.1;stroke-dasharray:0.1,0.1" d="M0,0 l1,0 0,1 0.5,0" />
             <g transform="translate(300)">
                 <path style="stroke:white;stroke-opacity:0.5;stroke-width:10" d="M0,0 l100,0 0,100 50,0 c 0,-50 100,-50, 100,0 l100,0 0,-100 100,0" />
                 <path style="stroke:grey;stroke-opacity:0.5;stroke-width:10" d="M0,100 l100,0 0,100 50,0 c 0,200 100,200, 100,0 l100,0 0,-100 100,0" />
             </g>
 
-            <path style="stroke:pink;stroke-opacity:0.5;stroke-width:9;" d="M0,0 l0,50 12,50 50,50 0,-50 50,50 50,12" />
+            <path style="stroke:pink;stroke-opacity:0.5;stroke-width:9;stroke-linejoin:round" d="M0,0 l0,50 12,50 50,50 0,-50 50,50 50,12" />
 
 
             <apath style="stroke:blue;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 1,0 -1,0 l-1,0 0,-1 -1,0" />
@@ -92,16 +92,16 @@
             <apath style="stroke:red;stroke-width:0.09" d="M0,0 l-1,0 0,1 -1,0 a 0.7,1.7 0 0,1 -1,0 l-1,0 0,-1 -1,0" />
 
             <path id="eightwaylime" class="eightway" stroke="lime" d="M-100,0 l-100,0 0,100 -100,0 a 70,170 0 0,0 -100,0 l-100,0 0,-100 -100,0" />
-            <path class="eightway2" style="stroke:blue;" d="M-100,0 l-100,0 0,-100 -100,0 a 70,170 0 0,100 -100,0 l-100,0 0,100 -100,0" />
+            <path class="eightway" style="stroke:blue;" d="M-100,0 l-100,0 0,-100 -100,0 a 70,170 0 0,100 -100,0 l-100,0 0,100 -100,0" />
 
             <path class="eightway" style="stroke:green;" d="M100,0 l100,0 0,100 100,0 a 70,170 0 0,100 100,0 l100,0 0,-100 100,0" />
-            <path class="eightway2" style="stroke:yellow;" d="M100,0 l100,0 0,-100 100,0 a 70,170 0 0,0 100,0 l100,0 0,100 100,0" />
+            <path class="eightway" style="stroke:yellow;" d="M100,0 l100,0 0,-100 100,0 a 70,170 0 0,0 100,0 l100,0 0,100 100,0" />
 
             <path class="eightway" style="stroke:orange;" d="M0,-100 l0,-100 100,0 0,-100 a 170,70 0 0,100 0,-100 l0,-100 -100,0 0,-100" />
-            <path class="eightway2" style="stroke:magenta;" d="M0,-100 l0,-100 -100,0 0,-100 a 170,70 0 0,0 0,-100 l0,-100 100,0 0,-100" />
+            <path class="eightway" style="stroke:magenta;" d="M0,-100 l0,-100 -100,0 0,-100 a 170,70 0 0,0 0,-100 l0,-100 100,0 0,-100" />
 
             <path id="eightwaycyan" class="eightway" style="stroke:cyan;" d="M0,100 l0,100 100,0 0,100 a 170,70 0 0,0 0,100 l0,100 -100,0 0,100" />
-            <path class="eightway2" style="stroke:red;" d="M0,100 l0,100 -100,0 0,100 a 170,70 0 0,100 0,100 l0,100 100,0 0,100" />
+            <path class="eightway" style="stroke:red;" d="M0,100 l0,100 -100,0 0,100 a 170,70 0 0,100 0,100 l0,100 100,0 0,100" />
 
             <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-1 a 0.7,1.7 0 1,0 1,0 l1,0 a 0.7,1.7 0 1,0 1,0 l1,0" />
             <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M1,-2 a 0.7,1.7 0 1,1 1,0 l1,0 a 0.7,1.7 0 1,1 1,0 l1,0" />
@@ -110,28 +110,28 @@
             <apath style="fill:none;stroke:grey;stroke-width:0.09" d="M0,-2 a 0.7,1.7 0 0,0 -1,0 l-1,0 a 0.7,1.7 0 0,0 -1,0 l-1,0" />
 
             <apath style="fill:red;opacity:0.5;stroke-width:0.01" stroke="cyan" d="M0,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0 Z" />
-        </ag>
+        </g>
         <ag transform="scale(0.5, 0.7) rotate(45)" stroke-width="20">
             <apath fill="none" stroke="lime" d="M-0.5,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0" />
         </ag>
 
-        <ag transform="translate(500, 0) scale(4, 4)">
-            <rect id="greyredrect" fill="darkgrey" stroke="red" rx="10" ry="20" x="-100" y="-100" width="200" height="200" />
+        <g>
+            <arect id="greyredrect" fill="darkgrey" stroke="red" rx="10" ry="20" x="-100" y="-100" width="200" height="200" />
             <circle fill="magenta" stroke="pink" style="stroke-width:3; stroke-dasharray:3,8; stroke-linecap:round" cx="25" cy="25" r="50"/>
-            <ellipse fill="lime" stroke="yellow" style="stroke-width:1.5; stroke-dasharray:6,4; stroke-linecap:square" cx="25" cy="25" rx="15" ry="25"/>
-            <line fill="none" stroke="white" x1="-0.5" y1="-50" x2="50" y2="10" />
-            <polyline fill="none" stroke="purple" style="stroke-width:4;stroke-linejoin:round" points="-20,-20 -10,20 10,-20 30,30 20,40 0,30 -30,30" />
-            <polygon transform="translate(0, 100)" fill="navy" stroke="cyan" style="stroke-width:4;stroke-linejoin:round" points="-20,-20 -10,20 10,-20 30,30 20,40 0,30 -30,30" />
-            <rect fill="blue" stroke="green" rx="1" ry="1" x="10" y="10" width="60" height="10" />
-            <g transform="translate(0, -100)">
+            <ellipse fill="lime" stroke="yellow" style="stroke-width:1.5; stroke-dasharray:6,4; stroke-linecap:round" cx="25" cy="25" rx="15" ry="25"/>
+            <aline fill="none" stroke="white" x1="-0.5" y1="-50" x2="50" y2="10" />
+            <apolyline fill="none" stroke="purple" style="stroke-width:4;stroke-linejoin:round" points="-20,-20 -10,20 10,-20 30,30 20,40 0,30 -30,30" />
+            <apolygon transform="translate(0, 100)" fill="navy" stroke="cyan" style="stroke-width:4;stroke-linejoin:round" points="-20,-20 -10,20 10,-20 30,30 20,40 0,30 -30,30" />
+            <arect fill="blue" stroke="green" rx="1" ry="1" x="10" y="10" width="60" height="10" />
+            <ag transform="translate(0, -100)">
                 <path fill="none" stroke="cyan" d="M50,0 h2 v-2 l4,3  -2,3  4,3  -2,3 c 5,0 0,5 5,5 z"  />
                 <path fill="none" stroke="white" d="M50,0 h2 v-2 l4,3 l-2,3 l4,3 l-2,3 c 5,0 0,5 5,5 z"  />
                 <path fill="none" stroke="red" d="M50,0 c50,0 50,50 0,50 z" />
                 <path fill="none" stroke="cyan" d="M50,0 c50,0 50,50 0,50 z" />
                 <path fill="none" stroke="pink" d="M40,0 q50,25 0,50 z" />
                 <path fill="none" stroke="yellow" d="M50,0 a 15,25 10 1 1 10,0 z" />
-            </g>
-        </ag>
+            </ag>
+        </g>
         <ag
             id="g2161"
             transform="translate(-700, 0) scale(2, 2)">
@@ -159,12 +159,12 @@
 
     </g>
 
-    <text stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</text>
-    <g stroke="red" fill="blue" transform="scale(10, 10)">
+    <atext stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</atext>
+    <ag stroke="red" fill="blue" transform="scale(10, 10)">
         <rect fill="white" stroke="none" x="0" y="0" width="10" height="-10"/>
         <text style="stroke-dasharray:10,1;stroke-width:0.1" fill="purple" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="30">XQLI</text>
         <atext font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="15pt">1234abcdefghijklmnopqrstuvwxyz.</atext>
-    </g>
+    </ag>
     <ag transform="translate(0.5, 0.05) scale(-0.005, -0.005)">
         <text id="changeme" font-family="Arial, sans-serif" font-style="normal" font-weight="bold" font-size="12pt">changme:abcdefghijklmnopqrstuvwxyz.</text>
     </ag>

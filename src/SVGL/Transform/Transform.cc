@@ -137,7 +137,7 @@ namespace SVGL
         double cosr = cos(r);
         double sinr = sin(r);
         double _a(a), _b(b), _c(c), _d(d), _e(e), _f(f);
-        // c -s  0    a c e 
+        // c -s  0    a c e
         // s  c  0    b d f
         // 0  0  1    0 0 1
 
@@ -168,6 +168,44 @@ namespace SVGL
     {
         os << "(" << t.a << "," << t.b << "," << t.c << "," << t.d << "," << t.e << "," << t.f << ")";
         return os;
+    }
+
+    ScaleTransform::ScaleTransform(double s) :
+        Transform(s, 0,
+                  0, s,
+                  0, 0)
+    {
+
+    }
+
+    ScaleTransform::ScaleTransform(double x, double y) :
+        Transform(x, 0,
+                  0, y,
+                  0, 0)
+    {
+
+    }
+
+    TranslateTransform::TranslateTransform(double x, double y) :
+        Transform(1, 0,
+                  0, 1,
+                  x, y)
+    {
+
+    }
+
+    RotatedTransform::RotatedTransform(double cosr, double sinr) :
+        Transform(cosr, -sinr,
+                  sinr,  cosr,
+                     0,     0)
+    {
+
+    }
+
+    RotateTransform::RotateTransform(double r) :
+        RotatedTransform(cos(r), sin(r))
+    {
+
     }
 
 }

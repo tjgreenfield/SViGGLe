@@ -132,18 +132,20 @@ namespace SVGL
 
         void PathBuffer::render(Render::Context* context, const Styles::Vector& style) const
         {
-            if (style.hasStroke())
-            {
-                context->pushColor(style.stroke);
-                renderStroke();
-                context->popColor();
-            }
             if (style.hasFill())
             {
                 context->pushColor(style.fill);
                 renderFill();
                 context->popColor();
             }
+            context->incrementDepth();
+            if (style.hasStroke())
+            {
+                context->pushColor(style.stroke);
+                renderStroke();
+                context->popColor();
+            }
+            context->incrementDepth();
         }
 
         void PathBuffer::renderFill() const

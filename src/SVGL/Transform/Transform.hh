@@ -48,7 +48,35 @@ namespace SVGL
         void rotateR(double r);
 
         friend std::ostream& operator<<(std::ostream& out, const Transform& transform);
+
     };
+
+    class ScaleTransform : public Transform
+    {
+    public:
+        ScaleTransform(double s);
+
+        ScaleTransform(double x, double y);
+    };
+
+    class TranslateTransform : public Transform
+    {
+    public:
+        TranslateTransform(double x, double y);
+    };
+
+    class RotatedTransform : public Transform
+    {
+    public:
+        RotatedTransform(double cosr, double sinr);
+    };
+
+    class RotateTransform : public RotatedTransform
+    {
+    public:
+        RotateTransform(double r);
+    };
+
 
     std::ostream& operator<<(std::ostream& out, const Transform& transform);
 }

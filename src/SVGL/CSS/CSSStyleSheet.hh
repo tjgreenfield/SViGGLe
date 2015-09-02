@@ -50,7 +50,7 @@ namespace SVGL
              * Apply the stylesheet to specified element (where applicable)
              * param[in] element The element to apply the stylesheet to
              */
-            void apply(CSSElement* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const;
+            void apply(Element* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const;
 
             /**
              * Add new CSS code to the style sheet

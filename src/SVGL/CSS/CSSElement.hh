@@ -33,10 +33,8 @@ namespace SVGL
 {
     namespace CSS
     {
-        class Element;
-        class StyleSheet;
         class Style;
-        class Value;
+        class StyleSheet;
         class DeclarationBlock;
 
         /**
@@ -45,14 +43,14 @@ namespace SVGL
          * @details
          *   Specifies an interface through which the selectors can get the tag name, attributes, parent/sibling and style interface of the element.
          */
-        class CSSElement
+        class Element
         {
         public:
 
             /**
              * Virtual destructor
              */
-            virtual ~CSSElement() = default;
+            virtual ~Element() = default;
 
             /**
              * Get the StyleSheet object that contains the specified styles for the element.
@@ -95,18 +93,18 @@ namespace SVGL
             /**
              * Get the parent element.
              *
-             * @return A pointer to the CSSElement object that is the parent of this object.
+             * @return A pointer to the ElementInterface object that is the parent of this object.
              * @retval nullptr Indicates there is no parent object.
              */
-            virtual const CSSElement* getParent() const = 0;
+            virtual const Element* getParent() const = 0;
 
             /**
              * Get the previous sibling element.
              *
-             * @return A pointer to the CSSElement object that is the previous sibling of this object.
+             * @return A pointer to the ElementInterface object that is the previous sibling of this object.
              * @retval nullptr Indicates there is no previous sibling object.
              */
-            virtual const CSSElement* getPrevSibling() const = 0;
+            virtual const Element* getPrevSibling() const = 0;
         };
     }
 }

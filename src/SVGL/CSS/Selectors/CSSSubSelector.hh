@@ -48,7 +48,7 @@ namespace SVGL
              * @retval true Selector matches element.
              * @retval false Selector doesn't match element.
              */
-            virtual bool match(const CSSElement* element) const = 0;
+            virtual bool match(const Element* element) const = 0;
 
             virtual std::ostream& stream(std::ostream& out) const = 0;
         };

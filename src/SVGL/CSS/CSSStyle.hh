@@ -37,7 +37,7 @@ namespace SVGL
             /**
              * Virtualised destructor
              */
-            virtual ~Style();
+            virtual ~Style() = default;
 
             /**
              * Set the style properties of the style object using the values in the property set

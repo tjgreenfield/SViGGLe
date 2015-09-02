@@ -20,33 +20,33 @@
 
 #include "RenderPathBuffer.hh"
 
-#include <SVGL/Path/PathClosePath.hh>
-#include <SVGL/Path/Buffer/PathStroker.hh>
+#include <SVGL/PathCommands/PathCommandsClosePath.hh>
+#include <SVGL/PathCommands/Buffer/PathCommandsStroker.hh>
 #include <SVGL/Render/RenderTessellation.hh>
 
 namespace SVGL
 {
     namespace Render
     {
-        PathBuffer::PathBuffer(const PathCommand::CommandSet& commandSet, const Styles::Vector& style, double tolerance)
+        PathBuffer::PathBuffer(const PathCommands::List& commandList, const Styles::Vector& style, double tolerance)
         {
-            buffer(commandSet, style, tolerance);
+            buffer(commandList, style, tolerance);
         }
 
-        void PathBuffer::buffer(const PathCommand::CommandSet& commandSet, const Styles::Vector& style, double tolerance)
+        void PathBuffer::buffer(const PathCommands::List& commandList, const Styles::Vector& style, double tolerance)
         {
-            if (commandSet.size() == 0)
+            if (commandList.size() == 0)
             {
                 return;
             }
-            PathCommand::Stroker stroker(tolerance, commandSet[0].get(), style);
+            PathCommands::Stroker stroker(tolerance, commandList[0].get(), style);
 
-            for (const PathCommand::Command_uptr& command : commandSet)
+            for (const PathCommands::Command_uptr& command : commandList)
             {
                 command->buffer(&stroker);
             }
 
-            if (dynamic_cast<PathCommand::ClosePath*>(commandSet.back().get()))
+            if (dynamic_cast<PathCommands::ClosePath*>(commandList.back().get()))
             {
                 // final join is done in close path command
             }
@@ -64,7 +64,7 @@ namespace SVGL
 
             for (unsigned int i = 0; i < stroker.strokeBuffer.size(); ++i)
             {
-                PathCommand::Contour& p = stroker.strokeBuffer[i];
+                PathCommands::Contour& p = stroker.strokeBuffer[i];
 
                 strokeArraySizes[i] = p.size();
 
@@ -77,7 +77,7 @@ namespace SVGL
                 glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
             }
 
-            PathCommand::Polygon fillPointBuffer;
+            PathCommands::Polygon fillPointBuffer;
 
             Render::gluTessPointsSet(&stroker.pointBuffer, &fillPointBuffer);
 
@@ -91,7 +91,7 @@ namespace SVGL
 
             for (unsigned int i = 0; i < fillPointBuffer.size(); ++i)
             {
-                PathCommand::Contour& p = fillPointBuffer[i];
+                PathCommands::Contour& p = fillPointBuffer[i];
 
                 fillArraySizes[i] = p.size();
                 fillArrayTypes[i] = p.type;

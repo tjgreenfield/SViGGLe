@@ -62,7 +62,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool TypeSelector::match(const CSSElement* element) const
+        bool TypeSelector::match(const Element* element) const
         {
             return type.empty() || type == "*" || type == element->getTagName();
         }

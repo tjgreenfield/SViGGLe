@@ -22,11 +22,11 @@
 #include "screenshot.hh"
 
 #include <SVGL/Render/RenderContext.hh>
-#include <SVGL/Transform/Transform.hh>
+#include <SVGL/Transforms/Transforms.hh>
 #include <SVGL/Document.hh>
 #include <SVGL/Types/Point.hh>
 
-#include <SVGL/Font/FontCollection.hh>
+#include <SVGL/Fonts/FontsCollection.hh>
 
 #include <SVGL/GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -422,7 +422,7 @@ void renderTest()
             // Setup SVG rendering
             SVGL::Render::Context context;
 
-            SVGL::Transform t;
+            SVGL::Transforms::Transform t;
             t.scaleR(1, ratio);
             //t.rotateR(glfwGetTime() / 10);
             t.scaleR(scale, -scale);

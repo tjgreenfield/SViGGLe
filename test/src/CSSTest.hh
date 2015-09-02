@@ -28,7 +28,7 @@
 #include <SVGL/CSS/CSSParser.hh>
 #include <SVGL/CSS/CSSStructures.hh>
 #include <SVGL/CSS/CSSSelectors.hh>
-#include <SVGL/Styles/StyleShape.hh>
+#include <SVGL/Styles/StylesShape.hh>
 
 using namespace std;
 using namespace SVGL;
@@ -179,7 +179,7 @@ void testStyleSheet(const char* label, const char* s)
     }
 }
 
-class TestElement : public CSS::CSSElement
+class TestElement : public CSS::Element
 {
 public:
     std::string tag;
@@ -237,12 +237,12 @@ public:
         return false;
     }
 
-    virtual CSSElement* getParent() const
+    virtual Element* getParent() const
     {
         return parent;
     }
 
-    virtual CSSElement* getPrevSibling() const
+    virtual Element* getPrevSibling() const
     {
         return prevSibling;
     }

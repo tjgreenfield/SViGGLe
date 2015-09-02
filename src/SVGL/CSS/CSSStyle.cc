@@ -25,10 +25,6 @@ namespace SVGL
 {
     namespace CSS
     {
-        Style::~Style()
-        {
-        }
-
         void Style::updateSizeContext(SizeContext*)
         {
 

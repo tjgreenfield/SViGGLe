@@ -65,7 +65,7 @@ namespace SVGL
          * Apply the stylesheet to specified element (where applicable)
          * param[in] element The element to apply the stylesheet to
          */
-        void StyleSheet::apply(CSSElement* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const
+        void StyleSheet::apply(Element* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const
         {
             propertySet->inherit(inherit);
             for (SelectorBlock selectorBlock : selectorIndex)

@@ -73,7 +73,7 @@ namespace SVGL
              * @retval true Selector matches element.
              * @retval false Selector doesn't match element.
              */
-            bool match(const CSSElement* element) const;
+            bool match(const Element* element) const;
 
             /**
              * Calculate the specificity of this selector

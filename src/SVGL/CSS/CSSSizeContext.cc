@@ -20,7 +20,7 @@
 
 #include "CSSSizeContext.hh"
 
-#include <SVGL/Styles/StyleText.hh>
+#include <SVGL/Styles/StylesText.hh>
 
 #include <cmath>
 

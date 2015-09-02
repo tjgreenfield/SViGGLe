@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include <SVGL/Element/Structure/ElementViewPort.hh>
-#include <SVGL/Element/Structure/ElementStyle.hh>
+#include <SVGL/Elements/Structure/ElementsViewPort.hh>
+#include <SVGL/Elements/Structure/ElementsStyle.hh>
 #include <SVGL/XML/XML.hh>
 #include <memory>
 #include <iostream>
@@ -29,10 +29,10 @@
 
 namespace SVGL
 {
-    class Document : public Element::ViewPort
+    class Document : public Elements::ViewPort
     {
     protected:
-        std::vector<Element::Style_uptr> styles;
+        std::vector<Elements::Style_uptr> styles;
 
     public:
         Document();

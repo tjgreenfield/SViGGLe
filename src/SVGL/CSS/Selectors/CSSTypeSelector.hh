@@ -28,7 +28,7 @@ namespace SVGL
 {
     namespace CSS
     {
-        class CSSElement;
+        class Element;
 
         /**
           * Selector that represents a specific element type (includes universal selector with empty string)
@@ -66,7 +66,7 @@ namespace SVGL
              * @retval true Selector matches element.
              * @retval false Selector doesn't match element.
              */
-            bool match(const CSSElement* element) const;
+            bool match(const Element* element) const;
         };
 
         std::ostream& operator<<(std::ostream& out, const TypeSelector& typeSelector);

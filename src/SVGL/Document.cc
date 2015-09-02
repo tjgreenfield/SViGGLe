@@ -44,7 +44,7 @@ namespace SVGL
 
     void Document::appendChild(XML::Node_uptr&& child)
     {
-        if (Element::Style* childStyle = dynamic_cast<Element::Style*>(child.get()))
+        if (Elements::Style* childStyle = dynamic_cast<Elements::Style*>(child.get()))
         {
             child.release();
             styles.emplace_back(childStyle);

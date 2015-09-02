@@ -68,7 +68,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool SimpleSelector::match(const CSSElement* element) const
+        bool SimpleSelector::match(const Element* element) const
         {
             if (!type.match(element)) return false;
             for (const SubSelector_uptr& i : subSelectors)

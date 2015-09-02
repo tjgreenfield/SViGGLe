@@ -59,25 +59,25 @@ namespace SVGL
         case ET_SVG:
             return std::move(XML::Node_uptr(new Document()));
         case ET_G:
-            return std::move(XML::Node_uptr(new Element::Group()));
+            return std::move(XML::Node_uptr(new Elements::Group()));
         case ET_PATH:
-            return std::move(XML::Node_uptr(new Element::Path()));
+            return std::move(XML::Node_uptr(new Elements::Path()));
         case ET_RECT:
-            return std::move(XML::Node_uptr(new Element::Rect()));
+            return std::move(XML::Node_uptr(new Elements::Rect()));
         case ET_CIRCLE:
-            return std::move(XML::Node_uptr(new Element::Circle()));
+            return std::move(XML::Node_uptr(new Elements::Circle()));
         case ET_ELLIPSE:
-            return std::move(XML::Node_uptr(new Element::Ellipse()));
+            return std::move(XML::Node_uptr(new Elements::Ellipse()));
         case ET_LINE:
-            return std::move(XML::Node_uptr(new Element::Line()));
+            return std::move(XML::Node_uptr(new Elements::Line()));
         case ET_POLYLINE:
-            return std::move(XML::Node_uptr(new Element::PolyLine()));
+            return std::move(XML::Node_uptr(new Elements::PolyLine()));
         case ET_POLYGON:
-            return std::move(XML::Node_uptr(new Element::Polygon()));
+            return std::move(XML::Node_uptr(new Elements::Polygon()));
         case ET_TEXT:
-            return std::move(XML::Node_uptr(new Element::Text()));
+            return std::move(XML::Node_uptr(new Elements::Text()));
         case ET_STYLE:
-            return std::move(XML::Node_uptr(new Element::Style()));
+            return std::move(XML::Node_uptr(new Elements::Style()));
         }
     }
 }

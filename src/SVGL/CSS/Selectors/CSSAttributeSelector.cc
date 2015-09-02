@@ -95,7 +95,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool AttributeSelector::match(const CSSElement* element) const
+        bool AttributeSelector::match(const Element* element) const
         {
             switch (mode)
             {

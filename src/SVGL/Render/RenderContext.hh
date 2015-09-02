@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <SVGL/Transform/Transform.hh>
+#include <SVGL/Transforms/Transforms.hh>
 #include <SVGL/Types/Color.hh>
 #include <vector>
 
@@ -33,7 +33,7 @@ namespace SVGL
         protected:
         public:
 
-            typedef std::vector<Transform> TransformStack;
+            typedef std::vector<Transforms::Transform> TransformStack;
             TransformStack transformStack;
 
             typedef std::vector<Color> ColorStack;
@@ -42,7 +42,7 @@ namespace SVGL
             int depth;
 
         public:
-            Transform worldTransform;
+            Transforms::Transform worldTransform;
             Color color;
 
             Context();
@@ -50,7 +50,7 @@ namespace SVGL
             void update();
 
             void updateTransform();
-            void pushTransform(Transform* t);
+            void pushTransform(Transforms::Transform* t);
             void popTransform();
 
             void updateColor();

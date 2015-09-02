@@ -29,7 +29,7 @@ namespace SVGL
 {
     namespace Render
     {
-        PathCommand::Polygon* gDst;
+        PathCommands::Polygon* gDst;
 
         struct GluVertex
         {
@@ -77,7 +77,7 @@ namespace SVGL
 
         typedef void(CALLBACK *_GLUfuncptr)();
 
-        void gluTessPointsSet(PathCommand::Polygon* src, PathCommand::Polygon* dst)
+        void gluTessPointsSet(PathCommands::Polygon* src, PathCommands::Polygon* dst)
         {
             gDst = dst;
             GLUtesselator* tess = gluNewTess();
@@ -98,7 +98,7 @@ namespace SVGL
 
             for (unsigned int i = 0; i < src->size(); ++i)
             {
-                PathCommand::Contour& contour = (*src)[i];
+                PathCommands::Contour& contour = (*src)[i];
                 gluTessBeginContour(tess);
 
                 for (unsigned int j = 0; j < contour.size(); ++j)

@@ -80,7 +80,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool PseudoSelector::match(const CSSElement*) const
+        bool PseudoSelector::match(const Element*) const
         {
             // TODO
             return false;

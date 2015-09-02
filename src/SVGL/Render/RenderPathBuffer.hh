@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <SVGL/Path/PathCommand.hh>
-#include <SVGL/Path/PathCommandSet.hh>
-#include <SVGL/Path/Buffer/PathPolygon.hh>
+#include <SVGL/PathCommands/PathCommands.hh>
+#include <SVGL/PathCommands/PathCommandsList.hh>
+#include <SVGL/PathCommands/Buffer/PathCommandsPolygon.hh>
 #include "RenderContext.hh"
 #include <SVGL/GL/gl.h>
 
@@ -54,9 +54,9 @@ namespace SVGL
             PathBuffer& operator=(PathBuffer&&) = default;
             ~PathBuffer() = default;
 
-            PathBuffer(const PathCommand::CommandSet& commandSet, const Styles::Vector& style, double tolerance);
+            PathBuffer(const PathCommands::List& commandList, const Styles::Vector& style, double tolerance);
 
-            void buffer(const PathCommand::CommandSet& commandSet, const Styles::Vector& style, double tolerance);
+            void buffer(const PathCommands::List& commandList, const Styles::Vector& style, double tolerance);
 
             void clear();
 

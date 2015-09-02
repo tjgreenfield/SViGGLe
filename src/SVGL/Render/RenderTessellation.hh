@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <SVGL/Path/Buffer/PathPolygon.hh>
+#include <SVGL/PathCommands/Buffer/PathCommandsPolygon.hh>
 #include <SVGL/GL/gl.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -43,6 +43,6 @@ namespace SVGL
 
         GLvoid CALLBACK callbackEnd();
 
-        void gluTessPointsSet(PathCommand::Polygon* src, PathCommand::Polygon* dst);
+        void gluTessPointsSet(PathCommands::Polygon* src, PathCommands::Polygon* dst);
     }
 }

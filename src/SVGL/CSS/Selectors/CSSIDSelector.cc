@@ -71,7 +71,7 @@ namespace SVGL
          * @retval true Selector matches element.
          * @retval false Selector doesn't match element.
          */
-        bool IDSelector::match(const CSSElement* element) const
+        bool IDSelector::match(const Element* element) const
         {
             return id == element->getID();
         }

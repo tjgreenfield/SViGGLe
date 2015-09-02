@@ -62,6 +62,7 @@ void screenshot(unsigned char* data, int width, int height)
     png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)nullptr, nullptr, nullptr);
     if (!png_ptr)
     {
+        fclose(fp);
         std::cerr << "png write error!";
         return;
     }
@@ -70,6 +71,7 @@ void screenshot(unsigned char* data, int width, int height)
     if (!info_ptr)
     {
         png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
+        fclose(fp);
         std::cerr << "png write error!";
         return;
     }

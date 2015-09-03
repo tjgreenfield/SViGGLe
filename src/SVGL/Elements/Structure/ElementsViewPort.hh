@@ -32,7 +32,7 @@ namespace SVGL
 
             double width, height;
         public:
-            ViewPort(double _width, double _height);
+            ViewPort(Root* _parent = nullptr);
 
             /*virtual double getWidth();
 

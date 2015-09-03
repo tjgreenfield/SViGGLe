@@ -40,6 +40,7 @@ namespace SVGL
 
         public:
 
+            Path(Root* _parent = nullptr);
             ~Path();
 
             /* From CSS::Element */

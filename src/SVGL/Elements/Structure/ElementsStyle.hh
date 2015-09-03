@@ -57,6 +57,8 @@ namespace SVGL
 
         public:
 
+            Style(Root* _parent = nullptr);
+
             void appendText(SubString data) override;
 
             void setAttribute(SubString name, SubString value) override;

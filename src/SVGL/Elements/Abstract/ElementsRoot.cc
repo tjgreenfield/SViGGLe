@@ -19,7 +19,7 @@
  */
 
 #include "ElementsRoot.hh"
-
+#include <SVGL/SVGLDocument.hh>
 #include <SVGL/Transforms/TransformsParser.hh>
 
 #include <utility>
@@ -29,12 +29,41 @@ namespace SVGL
 {
     namespace Elements
     {
+        Root::Root(Root* _parent) :
+            parent(_parent)
+        {
+
+        }
+
+        /**
+         * Virtual Destructor
+         */
+        Root::~Root()
+        {
+            if (!id.empty())
+            {
+                Document* document = getDocument();
+                if (document)
+                {
+                    document->removeElementID(id, this);
+                }
+            }
+        }
+
         /**
          * Get the element id
          */
         const char* Root::getID() const
         {
             return id.c_str();
+        }
+
+        /**
+         * Set the parent
+         */
+        void Root::setParent(Root* _parent)
+        {
+            parent = _parent;
         }
 
         /**
@@ -48,7 +77,7 @@ namespace SVGL
             return parent;
         }
 
-        const Document* Root::getDocument() const
+        Document* Root::getDocument()
         {
             return parent ? parent->getDocument() : nullptr;
         }
@@ -58,6 +87,14 @@ namespace SVGL
             if (strncmp(name.start, "id", 3) == 0)
             {
                 id.assign(value.start, value.count);
+            }
+        }
+
+        void Root::submitElementIDs(Document* document)
+        {
+            if (!id.empty())
+            {
+                document->submitElementID(id, this);
             }
         }
 
@@ -73,6 +110,5 @@ namespace SVGL
                 return nullptr;
             }
         }
-
     }
 }

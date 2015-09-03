@@ -37,6 +37,8 @@ namespace SVGL
 
         public:
 
+            Group(Root* _parent = nullptr);
+
             /* From CSS::Element */
 
             /**
@@ -68,6 +70,8 @@ namespace SVGL
             /* From Root */
 
             Root* findElementByID(const char* _id) override;
+
+            void submitElementIDs(Document* document) override;
 
             virtual void applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext);
 

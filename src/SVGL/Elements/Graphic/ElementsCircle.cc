@@ -27,7 +27,8 @@ namespace SVGL
 {
     namespace Elements
     {
-        Circle::Circle() :
+        Circle::Circle(Root* _parent) :
+            Path(_parent),
             cx(0),
             cy(0),
             r(0)

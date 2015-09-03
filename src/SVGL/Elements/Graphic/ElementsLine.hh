@@ -35,7 +35,7 @@ namespace SVGL
             CSS::CalculableCache y2;
 
         public:
-            Line();
+            Line(Root* _parent = nullptr);
 
             /**
              * Get the tag name of the element.

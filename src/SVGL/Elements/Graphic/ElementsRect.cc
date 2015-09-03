@@ -27,7 +27,8 @@ namespace SVGL
 {
     namespace Elements
     {
-        Rect::Rect() :
+        Rect::Rect(Root* _parent) :
+            Path(_parent),
             x(0),
             y(0),
             width(0),

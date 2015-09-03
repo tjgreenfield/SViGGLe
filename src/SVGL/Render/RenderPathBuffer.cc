@@ -33,6 +33,39 @@ namespace SVGL
             buffer(commandList, style, tolerance);
         }
 
+        PathBuffer::~PathBuffer()
+        {
+            clear();
+        }
+
+        PathBuffer::PathBuffer(PathBuffer&& _pathBuffer)
+        {
+            strokeGLBuffers = std::move(_pathBuffer.strokeGLBuffers);
+            strokeVertexArrays = std::move(_pathBuffer.strokeVertexArrays);
+            strokeArraySizes = std::move(_pathBuffer.strokeArraySizes);
+
+            fillBuffers = std::move(_pathBuffer.fillBuffers);
+            fillVertexArrays = std::move(_pathBuffer.fillVertexArrays);
+            fillArraySizes = std::move(_pathBuffer.fillArraySizes);
+            fillArrayTypes = std::move(_pathBuffer.fillArrayTypes);
+            _pathBuffer.clear();
+        }
+
+        PathBuffer& PathBuffer::operator=(PathBuffer&& _pathBuffer)
+        {
+            clear();
+            strokeGLBuffers = std::move(_pathBuffer.strokeGLBuffers);
+            strokeVertexArrays = std::move(_pathBuffer.strokeVertexArrays);
+            strokeArraySizes = std::move(_pathBuffer.strokeArraySizes);
+
+            fillBuffers = std::move(_pathBuffer.fillBuffers);
+            fillVertexArrays = std::move(_pathBuffer.fillVertexArrays);
+            fillArraySizes = std::move(_pathBuffer.fillArraySizes);
+            fillArrayTypes = std::move(_pathBuffer.fillArrayTypes);
+            _pathBuffer.clear();
+            return *this;
+        }
+
         void PathBuffer::buffer(const PathCommands::List& commandList, const Styles::Vector& style, double tolerance)
         {
             if (commandList.size() == 0)
@@ -118,6 +151,7 @@ namespace SVGL
                 glDeleteBuffers(strokeVertexArrays.size(), &strokeVertexArrays[0]);
                 strokeVertexArrays.clear();
             }
+            strokeArraySizes.clear();
             if (!fillBuffers.empty())
             {
                 glDeleteBuffers(fillBuffers.size(), &fillBuffers[0]);
@@ -128,6 +162,9 @@ namespace SVGL
                 glDeleteBuffers(fillVertexArrays.size(), &fillVertexArrays[0]);
                 fillVertexArrays.clear();
             }
+            fillArraySizes.clear();
+            fillArrayTypes.clear();
+
         }
 
         void PathBuffer::render(Render::Context* context, const Styles::Vector& style) const
@@ -152,8 +189,11 @@ namespace SVGL
         {
             for (unsigned int i = 0; i < fillVertexArrays.size(); ++i)
             {
-                glBindVertexArray(fillVertexArrays[i]);
-                glDrawArrays(fillArrayTypes[i], 0, fillArraySizes[i]);
+                if (glIsBuffer(fillBuffers[i]))
+                {
+                    glBindVertexArray(fillVertexArrays[i]);
+                    glDrawArrays(fillArrayTypes[i], 0, fillArraySizes[i]);
+                }
             }
         }
 
@@ -161,8 +201,11 @@ namespace SVGL
         {
             for (unsigned int i = 0; i < strokeVertexArrays.size(); ++i)
             {
-                glBindVertexArray(strokeVertexArrays[i]);
-                glDrawArrays(GL_TRIANGLE_STRIP, 0, strokeArraySizes[i]);
+                if (glIsBuffer(strokeGLBuffers[i]))
+                {
+                    glBindVertexArray(strokeVertexArrays[i]);
+                    glDrawArrays(GL_TRIANGLE_STRIP, 0, strokeArraySizes[i]);
+                }
             }
         }
     }

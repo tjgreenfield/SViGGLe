@@ -27,7 +27,8 @@ namespace SVGL
 {
     namespace Elements
     {
-        Line::Line() :
+        Line::Line(Root* _parent) :
+            Path(_parent),
             x1(0),
             y1(0),
             x2(0),

@@ -28,9 +28,9 @@ namespace SVGL
 {
     namespace Elements
     {
-        PolyLine::PolyLine()
+        PolyLine::PolyLine(Root* _parent) :
+            Path(_parent)
         {
-
         }
 
         /**

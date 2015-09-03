@@ -63,6 +63,7 @@ namespace SVGL
                     CY,
                     R,
                     POINTS,
+                    XLINK_HREF,
                     //...
 
                     // Include "event" attributes
@@ -172,9 +173,7 @@ namespace SVGL
 
             virtual void buffer(double tolerance);
 
-            virtual void draw();
-
-            virtual void render(Render::Context* context);
+            virtual void render(Render::Context* context) = 0;
 
         };
 

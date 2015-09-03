@@ -34,7 +34,7 @@ namespace SVGL
             std::vector<Point> points;
 
         public:
-            Polygon();
+            Polygon(Root* _parent = nullptr);
 
             /**
              * Get the tag name of the element.

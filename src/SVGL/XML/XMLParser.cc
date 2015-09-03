@@ -25,12 +25,12 @@ namespace SVGL
 {
     namespace XML
     {
-        Node_uptr Parser::createElement(SubString tag)
+        Node_uptr Parser::createElement(SubString tag, Node*)
         {
             return std::move(Node_uptr(new XMLElement(tag)));
         }
 
-        Node_uptr Parser::readXML()
+        Node_uptr Parser::readXML(Node *parent)
         {
             State save(s);
             if (!readProlog())
@@ -39,7 +39,7 @@ namespace SVGL
                 return nullptr;
             }
             readWSP();
-            if (Node_uptr node = readElement())
+            if (Node_uptr node = readElement(parent))
             {
                 while (readMisc());
                 return std::move(node);
@@ -245,9 +245,9 @@ namespace SVGL
             return false;
         }
 
-        bool Parser::readElement(Node* parent)
+        bool Parser::readElementForParent(Node* parent)
         {
-            if (Node_uptr node = readElement())
+            if (Node_uptr node = readElement(parent))
             {
                 parent->appendChild(std::move(node));
                 return true;
@@ -255,7 +255,7 @@ namespace SVGL
             return false;
         }
 
-        Node_uptr Parser::readElement()
+        Node_uptr Parser::readElement(Node* parent)
         {
             State save(s);
             if (readChar('<'))
@@ -271,7 +271,7 @@ namespace SVGL
                     set(save);
                     return nullptr;
                 }
-                Node_uptr node = createElement(tag);
+                Node_uptr node = createElement(tag, parent);
 
                 readWSP();
                 while (readAttribute(node.get()))
@@ -302,7 +302,7 @@ namespace SVGL
         bool Parser::readContent(Node* node)
         {
             readCharData(node);
-            while (readElement(node)
+            while (readElementForParent(node)
                    || readReference()
                    || readCDSect()
                    || readPI()

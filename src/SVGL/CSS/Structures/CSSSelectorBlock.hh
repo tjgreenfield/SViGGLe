@@ -42,7 +42,7 @@ namespace SVGL
              * param[in] _selector Pointer to the Selector
              * param[in] _block Pointer to the declaration block
              */
-            inline SelectorBlock(Selector* _selector, DeclarationBlock* _block) :
+            inline SelectorBlock(Selector* _selector = nullptr, DeclarationBlock* _block = nullptr) :
                 selector(_selector),
                 block(_block)
             {

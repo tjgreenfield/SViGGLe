@@ -53,6 +53,11 @@ namespace SVGL
             void apply(Element* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const;
 
             /**
+             * Merge in another stylesheet object
+             */
+            StyleSheet& operator+=(StyleSheet& _styleSheet);
+
+            /**
              * Add new CSS code to the style sheet
              * param[in] code The string containing the CSS code to add.
              */

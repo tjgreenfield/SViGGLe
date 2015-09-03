@@ -32,7 +32,7 @@ namespace SVGL
             std::vector<Point> points;
 
         public:
-            PolyLine();
+            PolyLine(Root* _parent = nullptr);
 
             /**
              * Get the tag name of the element.

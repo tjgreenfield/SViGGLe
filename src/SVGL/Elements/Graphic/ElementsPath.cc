@@ -25,6 +25,11 @@ namespace SVGL
 {
     namespace Elements
     {
+        Path::Path(Root* _parent) :
+            Graphic(_parent)
+        {
+        }
+
         Path::~Path()
         {
             clearBuffers();

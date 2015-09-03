@@ -133,7 +133,7 @@ namespace SVGL
 
             double ratio = 1 - (stroker->tolerance / std::max(std::abs(rx), std::abs(ry)));
             double deltaT = (ratio > SQRT2_2) ? acos(ratio) : PI_4;
-            int vertexCount = dt / deltaT;
+            int vertexCount = std::abs(dt / deltaT);
             deltaT = (dt / (vertexCount - 1));
 
             Transforms::Rotate current(t1);

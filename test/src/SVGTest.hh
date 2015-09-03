@@ -18,8 +18,8 @@
  *
  */
 
-#include <SVGL/SVGParser.hh>
-#include <SVGL/Document.hh>
+#include <SVGL/SVGLParser.hh>
+#include <SVGL/SVGLDocument.hh>
 
 #include <string>
 #include <iostream>
@@ -35,7 +35,7 @@ void svgParserTest(const char* title, const char* xml)
     cout << title << endl;
     cout << xml << endl;
     Parser p(xml);
-    XML::Node_uptr node = p.readElement();
+    XML::Node_uptr node = p.readElement(nullptr);
     if (node)
     {
         cout << *node << endl;

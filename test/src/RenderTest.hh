@@ -23,7 +23,7 @@
 
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Transforms/Transforms.hh>
-#include <SVGL/Document.hh>
+#include <SVGL/SVGLDocument.hh>
 #include <SVGL/Types/Point.hh>
 
 #include <SVGL/Fonts/FontsCollection.hh>
@@ -64,6 +64,7 @@ static void windowSizeCallback(GLFWwindow* window, int width, int height)
 {
     windowWidth = width;
     windowHeight = height;
+    dirty = true;
 }
 
 double mouseX = 0.0f;
@@ -98,8 +99,8 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
         double cosr(cos(rotate));
         double sinr(sin(rotate));
 
-        viewX += deltaX * cosr + deltaY * sinr;
-        viewY += -deltaX * sinr + deltaY * cosr;
+        viewX += deltaX * cosr - deltaY * sinr;
+        viewY += -deltaX * sinr - deltaY * cosr;
 
         mouseX = x;
         mouseY = y;
@@ -113,7 +114,7 @@ static void mouseMoveCallback(GLFWwindow* window, double x, double y)
         SVGL::Point now(x, y);
         SVGL::Point a(prev - centre);
         SVGL::Point b(now - centre);
-        double angle = a.angle(b);
+        double angle = b.angle(a);
 
         rotate = prevRotate + angle;
         dirty = true;
@@ -158,14 +159,14 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
     case GLFW_KEY_LEFT:
         if (action == GLFW_PRESS)
         {
-            viewX += 0.05 / scale;
+            viewX -= 0.05 / scale;
             dirty = true;
         }
         break;
     case GLFW_KEY_RIGHT:
         if (action == GLFW_PRESS)
         {
-            viewX -= 0.05 / scale;
+            viewX += 0.05 / scale;
             dirty = true;
         }
         break;
@@ -281,54 +282,6 @@ static GLFWwindow* initGL()
     return window;
 }
 
-static int initShaders()
-{
-    const char* vertexShader =
-        "#version 400\n"
-        "uniform dmat3x2 transform;"
-        "uniform float depth;"
-        "in vec2 vp;"
-        "void main () {"
-        "  gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],"
-        "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],"
-        "                      depth,"
-        "                      1.0);"
-        "}";
-
-    const char* fragmentShader =
-        "#version 400\n"
-        "uniform vec4 pen;"
-        "out vec4 frag_colour;"
-        "void main () {"
-        "  frag_colour = vec4 (pen);"
-        "}";
-
-
-    unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vs, 1, &vertexShader, NULL);
-    glCompileShader(vs);
-    GLchar buffer[4096];
-    GLsizei len;
-    GLint status;
-    glGetShaderiv(vs, GL_COMPILE_STATUS, &status);
-    glGetShaderInfoLog(vs, 4095, &len, buffer);
-    cout << "Vertex Shader Log: (" << status << ") " << buffer << endl;
-
-    unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fs, 1, &fragmentShader, NULL);
-    glCompileShader(fs);
-    glGetShaderiv(fs, GL_COMPILE_STATUS, &status);
-    glGetShaderInfoLog(fs, 4095, &len, buffer);
-    cout << "Fragment Shader Log: (" << status << ") " << buffer << endl;
-
-    unsigned int shaderProgramme = glCreateProgram();
-    glAttachShader(shaderProgramme, fs);
-    glAttachShader(shaderProgramme, vs);
-    glLinkProgram(shaderProgramme);
-
-    return shaderProgramme;
-}
-
 void renderTest()
 {
     Font::Collection::ftInit();
@@ -344,7 +297,7 @@ void renderTest()
 
 
     GLFWwindow* window = initGL();
-    int shaderProgramme = initShaders();
+    //int shaderProgramme = initShaders();
 
 
     SVGL::Parser parser;
@@ -364,7 +317,7 @@ void renderTest()
     document->buffer(tolerance);
 
 
-    const unsigned int size(5);
+    /*const unsigned int size(5);
     GLuint buffer;
     GLuint vertexArray;
     double points[] = {
@@ -383,23 +336,13 @@ void renderTest()
     glBindVertexArray(vertexArray);
     glEnableVertexAttribArray(0); // ??
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
+    glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);*/
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glEnable(GL_BLEND);
-    glEnable (GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glLineWidth(1.0);
 
-    glHint(GL_POINT_SMOOTH, GL_NICEST);
-    glHint(GL_LINE_SMOOTH, GL_NICEST);
-    glHint(GL_POLYGON_SMOOTH, GL_NICEST);
-
-    glEnable(GL_POINT_SMOOTH);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
 
     int frameCount = 0;
+    SVGL::Render::Context context;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -417,15 +360,16 @@ void renderTest()
             glClearColor(0.25, 0.25, 0.25, 1);
             glClear(GL_COLOR_BUFFER_BIT);
             glClear(GL_DEPTH_BUFFER_BIT);
-            glUseProgram(shaderProgramme);
+            //glUseProgram(shaderProgramme);
 
             // Setup SVG rendering
-            SVGL::Render::Context context;
+
+            context.begin();
 
             SVGL::Transforms::Transform t;
             t.scaleR(1, ratio);
             //t.rotateR(glfwGetTime() / 10);
-            t.scaleR(scale, -scale);
+            t.scaleR(scale, scale);
             t.rotateR(rotate);
             t.translateR(viewX, viewY);
             context.pushTransform(&t);
@@ -465,3 +409,4 @@ void renderTest()
         glfwPollEvents();
     }
 }
+

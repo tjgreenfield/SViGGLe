@@ -43,19 +43,18 @@ namespace SVGL
             /**
              * Constructor
              */
-            inline Root(Root* _parent = nullptr) :
-                parent(_parent)
-            {
+            Root(Root* _parent = nullptr);
 
-            }
+            /**
+             * Virtual Destructor
+             */
+            ~Root() override;
+
 
             /**
              * Set the parent
              */
-            inline void setParent(Root* _parent)
-            {
-                parent = _parent;
-            }
+            void setParent(Root* _parent);
 
             /* Common interface for all SVG Elements */
 
@@ -72,7 +71,9 @@ namespace SVGL
              */
             const Root* getParent() const;
 
-            virtual const Document* getDocument() const;
+            virtual Document* getDocument();
+
+            virtual void submitElementIDs(Document* document);
 
             virtual Root* findElementByID(const char* _id);
 

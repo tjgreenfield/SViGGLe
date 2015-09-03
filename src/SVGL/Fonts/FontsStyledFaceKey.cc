@@ -25,7 +25,10 @@ namespace SVGL
     namespace Font
     {
         StyledFaceKey::StyledFaceKey() :
-            bits(0)
+            bits(0),
+            strokeWidth(0),
+            strokeMiterLimit(0),
+            effectiveFontSize(0)
         {
 
         }
@@ -33,6 +36,7 @@ namespace SVGL
         StyledFaceKey::StyledFaceKey(const Styles::Text& style)
         {
             /* TODO, do lookups to the collection to confirm font family, style & size */
+            bits = 0;
             valid() = 1;
             strokeLineCap() = style.strokeLineCap();
             strokeLineJoin() = style.strokeLineJoin();

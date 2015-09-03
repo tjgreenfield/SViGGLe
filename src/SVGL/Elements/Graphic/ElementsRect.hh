@@ -37,7 +37,7 @@ namespace SVGL
             CSS::CalculableCache ry;
 
         public:
-            Rect();
+            Rect(Root* _parent = nullptr);
 
             /**
              * Get the tag name of the element.

@@ -26,6 +26,11 @@ namespace SVGL
     {
         /* From CSS::Element */
 
+        Group::Group(Root* _parent) :
+            Graphic(_parent)
+        {
+        }
+
         /**
          * Get the Style object for the current element.
          *
@@ -86,6 +91,15 @@ namespace SVGL
             }
 
             return nullptr;
+        }
+
+        void Group::submitElementIDs(Document* document)
+        {
+            Root::submitElementIDs(document);
+            for (const Graphic_uptr& child : children)
+            {
+                child->submitElementIDs(document);
+            }
         }
 
         void Group::applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext)

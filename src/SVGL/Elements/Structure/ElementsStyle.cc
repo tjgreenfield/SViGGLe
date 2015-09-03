@@ -32,6 +32,11 @@ namespace SVGL
             { "title", Attribute::TITLE },
         };
 
+        Style::Style(Root* _parent) :
+            Root(_parent)
+        {
+        }
+
         void Style::appendText(SubString data)
         {
             styleSheet.add(data.start);

@@ -59,6 +59,15 @@ namespace SVGL
         }
 
         /**
+         * Constructor
+         */
+        inline SubString(const std::string& _str) :
+            start(_str.c_str()),
+            count(_str.size())
+        {
+        }
+
+        /**
          * Default Constructor
          */
         inline SubString() :

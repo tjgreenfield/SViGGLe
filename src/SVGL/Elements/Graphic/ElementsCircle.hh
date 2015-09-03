@@ -34,7 +34,7 @@ namespace SVGL
             CSS::CalculableCache r;
 
         public:
-            Circle();
+            Circle(Root* _parent = nullptr);
 
             /**
              * Get the tag name of the element.

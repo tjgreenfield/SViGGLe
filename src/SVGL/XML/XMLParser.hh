@@ -35,7 +35,7 @@ namespace SVGL
             {
             }
 
-            virtual Node_uptr createElement(SubString tag);
+            virtual Node_uptr createElement(SubString tag, Node* parent);
 
             inline char readNameStartChar()
             {
@@ -64,7 +64,7 @@ namespace SVGL
                 return 0;
             }
 
-            Node_uptr readXML();
+            Node_uptr readXML(Node* parent = nullptr);
 
             SubString readName();
 
@@ -79,8 +79,8 @@ namespace SVGL
 
             bool readCharData(Node* node);
 
-            bool readElement(Node* parent);
-            Node_uptr readElement();
+            bool readElementForParent(Node* parent);
+            Node_uptr readElement(Node* parent);
             bool readETag(SubString tag);
 
             bool readContent(Node* node);

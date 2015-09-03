@@ -146,6 +146,17 @@ namespace SVGL
         }
 
         /**
+         * Merge in another stylesheet object
+         */
+        StyleSheet& StyleSheet::operator+=(StyleSheet& _styleSheet)
+        {
+            std::copy(_styleSheet.selectorIndex.begin(), _styleSheet.selectorIndex.end(), std::back_inserter(selectorIndex));
+
+            std::copy(_styleSheet.importantSelectorIndex.begin(), _styleSheet.importantSelectorIndex.end(), std::back_inserter(importantSelectorIndex));
+            return *this;
+        }
+
+        /**
          * Output StyleSheet to a stream
          */
         std::ostream& operator<<(std::ostream &out, StyleSheet const &styleSheet)

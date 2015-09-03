@@ -35,7 +35,7 @@ namespace SVGL
             CSS::CalculableCache ry;
 
         public:
-            Ellipse();
+            Ellipse(Root* _parent = nullptr);
 
             /**
              * Get the tag name of the element.

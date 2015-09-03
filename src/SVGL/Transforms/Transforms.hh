@@ -42,6 +42,8 @@ namespace SVGL
 
             double transformTolerance(double t);
 
+            void identity();
+
             void scaleR(double x, double y = NAN);
             void scaleL(double x, double y = NAN);
             void translateL(double x, double y);

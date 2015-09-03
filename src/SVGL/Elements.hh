@@ -20,17 +20,20 @@
 
 #pragma once
 
-#include "Types/ElementsTypes.hh"
-#include "Elements/Abstract/ElementsRoot.hh"
-#include "Elements/Abstract/ElementsGraphic.hh"
-#include "Elements/Structure/ElementsGroup.hh"
-#include "Elements/Structure/ElementsViewPort.hh"
-#include "Elements/Structure/ElementsStyle.hh"
-#include "Elements/Graphic/ElementsPath.hh"
-#include "Elements/Graphic/ElementsRect.hh"
-#include "Elements/Graphic/ElementsCircle.hh"
-#include "Elements/Graphic/ElementsEllipse.hh"
-#include "Elements/Graphic/ElementsLine.hh"
-#include "Elements/Graphic/ElementsPolyLine.hh"
-#include "Elements/Graphic/ElementsPolygon.hh"
-#include "Elements/Graphic/ElementsText.hh"
+#include <SVGL/Elements/Abstract/ElementsGraphic.hh>
+#include <SVGL/Elements/Abstract/ElementsRoot.hh>
+
+#include <SVGL/Elements/Graphic/ElementsCircle.hh>
+#include <SVGL/Elements/Graphic/ElementsEllipse.hh>
+#include <SVGL/Elements/Graphic/ElementsImage.hh>
+#include <SVGL/Elements/Graphic/ElementsLine.hh>
+#include <SVGL/Elements/Graphic/ElementsPath.hh>
+#include <SVGL/Elements/Graphic/ElementsPolygon.hh>
+#include <SVGL/Elements/Graphic/ElementsPolyLine.hh>
+#include <SVGL/Elements/Graphic/ElementsRect.hh>
+#include <SVGL/Elements/Graphic/ElementsText.hh>
+
+#include <SVGL/Elements/Structure/ElementsGroup.hh>
+#include <SVGL/Elements/Structure/ElementsStyle.hh>
+#include <SVGL/Elements/Structure/ElementsSVG.hh>
+#include <SVGL/Elements/Structure/ElementsViewPort.hh>

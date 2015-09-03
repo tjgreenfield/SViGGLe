@@ -27,7 +27,8 @@ namespace SVGL
 {
     namespace Elements
     {
-        Ellipse::Ellipse() :
+        Ellipse::Ellipse(Root* _parent) :
+            Path(_parent),
             cx(0),
             cy(0),
             rx(0),

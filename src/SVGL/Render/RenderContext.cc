@@ -32,6 +32,117 @@ namespace SVGL
             depth(0),
             color(RGBA(255,255,255,255))
         {
+            initShaders();
+            update();
+        }
+
+        GLuint Context::compileShaders(const char* vertexShader, const char* fragmentShader)
+        {
+            unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+            glShaderSource(vs, 1, &vertexShader, nullptr);
+            glCompileShader(vs);
+            GLchar buffer[4096];
+            GLsizei len;
+            GLint status;
+            glGetShaderiv(vs, GL_COMPILE_STATUS, &status);
+            glGetShaderInfoLog(vs, 4095, &len, buffer);
+            if (status != GL_TRUE )
+            {
+                std::cout << "Vertex Shader Log: (" << status << ") " << buffer << std::endl;
+                std::cout << vertexShader << std::endl;
+            }
+
+
+
+            unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
+            glShaderSource(fs, 1, &fragmentShader, nullptr);
+            glCompileShader(fs);
+            glGetShaderiv(fs, GL_COMPILE_STATUS, &status);
+            glGetShaderInfoLog(fs, 4095, &len, buffer);
+            if (status != GL_TRUE )
+            {
+                std::cout << "Fragment Shader Log: (" << status << ") " << buffer << std::endl;
+                std::cout << fragmentShader << std::endl;
+            }
+
+            unsigned int shaderProgramme = glCreateProgram();
+            glAttachShader(shaderProgramme, fs);
+            glAttachShader(shaderProgramme, vs);
+            glLinkProgram(shaderProgramme);
+
+            return shaderProgramme;
+        }
+
+        void Context::initShaders()
+        {
+            colorShaderProgramme = compileShaders(
+                "#version 400\n"
+                "uniform dmat3x2 transform;\n"
+                "uniform float depth;\n"
+                "in vec2 vp;\n"
+                "void main () {\n"
+                "   gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],\n"
+                "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],\n"
+                "                      depth,\n"
+                "                      1.0);\n"
+                "}",
+
+                "#version 400\n"
+                "uniform sampler2D imageMap;"
+                "uniform vec4 pen;"
+                "uniform int mode;"
+                "out vec4 frag_colour;"
+                "void main () {"
+                "    frag_colour = pen;"
+                "}");
+
+            textureShaderProgramme = compileShaders(
+                "#version 400\n"
+                "uniform dmat3x2 transform;\n"
+                "uniform float depth;\n"
+                "in vec2 vp;\n"
+                "void main () {\n"
+                "   gl_TexCoord[0] = vec4(vp.x, 1 - vp.y, 0, 0);\n"
+                "   gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],\n"
+                "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],\n"
+                "                      depth,\n"
+                "                      1.0);\n"
+                "}",
+
+                "#version 400\n"
+                "uniform sampler2D imageMap;"
+                "uniform vec4 pen;"
+                "uniform int mode;"
+                "out vec4 frag_colour;"
+                "void main () {"
+                "    frag_colour = texture2D(imageMap, gl_TexCoord[0].st);"
+                "}");
+
+        }
+
+        void Context::begin()
+        {
+            transformStack.clear();
+            colorStack.clear();
+            depth = 0;
+            worldTransform = Transforms::Scale(1, 1); // -1); // opengl y is negative
+            color = RGBA(255, 255, 255, 255);
+
+            glEnable(GL_BLEND);
+            glEnable(GL_DEPTH_TEST);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glLineWidth(1.0);
+
+            glHint(GL_POINT_SMOOTH, GL_NICEST);
+            glHint(GL_LINE_SMOOTH, GL_NICEST);
+            glHint(GL_POLYGON_SMOOTH, GL_NICEST);
+
+            glEnable(GL_POINT_SMOOTH);
+            glEnable(GL_LINE_SMOOTH);
+            glEnable(GL_POLYGON_SMOOTH);
+
+            glUseProgram(colorShaderProgramme);
+
             update();
         }
 
@@ -128,5 +239,16 @@ namespace SVGL
             updateDepth();
         }
 
+        void Context::setTextureShader()
+        {
+            glUseProgram(textureShaderProgramme);
+            update();
+        }
+
+        void Context::setColorShader()
+        {
+            glUseProgram(colorShaderProgramme);
+            update();
+        }
     }
 }

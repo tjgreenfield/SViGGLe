@@ -50,9 +50,9 @@ namespace SVGL
             PathBuffer() = default;
             PathBuffer(const PathBuffer&) = delete;
             PathBuffer& operator=(const PathBuffer&) = delete;
-            PathBuffer(PathBuffer&&) = default;
-            PathBuffer& operator=(PathBuffer&&) = default;
-            ~PathBuffer() = default;
+            PathBuffer(PathBuffer&&);
+            PathBuffer& operator=(PathBuffer&&);
+            ~PathBuffer();
 
             PathBuffer(const PathCommands::List& commandList, const Styles::Vector& style, double tolerance);
 

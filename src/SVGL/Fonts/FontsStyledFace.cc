@@ -46,7 +46,7 @@ namespace SVGL
         {
             while (*text)
             {
-                if (glyphBuffers.count(*text) == 0)
+                if (glyphBuffers.find(*text) == glyphBuffers.end())
                 {
                     Glyph* glyph = face->getGlyph(*text);
 
@@ -61,8 +61,8 @@ namespace SVGL
         {
             double scale = 1.0 / (face->ftFace->units_per_EM);
             Transforms::Transform t;
-            // opengl y is inverted
-            t.scaleR(scale, -scale);
+
+            t.scaleR(scale, scale);
             context->pushTransform(&t);
 
             while (*text)

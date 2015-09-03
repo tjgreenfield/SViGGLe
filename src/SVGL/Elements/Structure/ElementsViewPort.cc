@@ -24,9 +24,8 @@ namespace SVGL
 {
     namespace Elements
     {
-        ViewPort::ViewPort(double _width, double _height) :
-            width(_width),
-            height(_height)
+        ViewPort::ViewPort(Root* _parent) :
+            Group(_parent)
         {
         }
 

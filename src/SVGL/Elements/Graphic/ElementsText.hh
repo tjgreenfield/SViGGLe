@@ -40,6 +40,8 @@ namespace SVGL
             std::string text;
 
         public:
+            Text(Root* _parent = nullptr);
+
             /* From CSS::Element */
 
             /**

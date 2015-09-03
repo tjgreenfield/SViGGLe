@@ -28,9 +28,9 @@ namespace SVGL
 {
     namespace Elements
     {
-        Polygon::Polygon()
+        Polygon::Polygon(Root* _parent) :
+            Path(_parent)
         {
-
         }
 
         /**

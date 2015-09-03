@@ -49,7 +49,8 @@ namespace SVGL
             { "cx", Attribute::CX },
             { "cy", Attribute::CY },
             { "r", Attribute::R },
-            { "points", Attribute::POINTS }
+            { "points", Attribute::POINTS },
+            { "xlink:href", Attribute::XLINK_HREF }
         };
 
         /**
@@ -217,15 +218,6 @@ namespace SVGL
         void Graphic::buffer(double)
         {
             dirty = false;
-        }
-
-        void Graphic::draw()
-        {
-        }
-
-
-        void Graphic::render(Render::Context*)
-        {
         }
     }
 }

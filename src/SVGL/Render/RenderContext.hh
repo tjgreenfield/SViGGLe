@@ -22,6 +22,7 @@
 
 #include <SVGL/Transforms/Transforms.hh>
 #include <SVGL/Types/Color.hh>
+#include <SVGL/GL/gl.h>
 #include <vector>
 
 namespace SVGL
@@ -31,7 +32,6 @@ namespace SVGL
         class Context
         {
         protected:
-        public:
 
             typedef std::vector<Transforms::Transform> TransformStack;
             TransformStack transformStack;
@@ -41,11 +41,19 @@ namespace SVGL
 
             int depth;
 
+            GLuint colorShaderProgramme;
+            GLuint textureShaderProgramme;
+
+            GLuint compileShaders(const char* vertexShader, const char* fragmentShader);
+            void initShaders();
+
         public:
             Transforms::Transform worldTransform;
             Color color;
 
             Context();
+
+            void begin();
 
             void update();
 
@@ -57,9 +65,11 @@ namespace SVGL
             void pushColor(unsigned int c);
             void popColor();
 
-
             void updateDepth();
             void incrementDepth();
+
+            void setTextureShader();
+            void setColorShader();
 
         };
     }

@@ -34,6 +34,7 @@ namespace SVGL
         ET_POLYLINE,
         ET_POLYGON,
         ET_TEXT,
-        ET_STYLE
+        ET_STYLE,
+        ET_IMAGE
     };
 }

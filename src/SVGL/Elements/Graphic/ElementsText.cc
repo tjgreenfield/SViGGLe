@@ -24,7 +24,10 @@ namespace SVGL
 {
     namespace Elements
     {
-
+        Text::Text(Root* _parent) :
+            Graphic(_parent)
+        {
+        }
 
         /**
          * Get the tag name of the element.

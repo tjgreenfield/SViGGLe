@@ -32,7 +32,7 @@ namespace SVGL
             Point op = stroker->pointBuffer.getLastPoint();
 
             // this might need adjusting
-            unsigned int vertexCount = std::max(2.0, (p1.distance() + p2.distance(p1) + distance(p2)) / (3 * stroker->tolerance));
+            unsigned int vertexCount = std::max(4.0, (p1.distance() + p2.distance(p1) + distance(p2)) / (3 * stroker->tolerance));
 
             for (unsigned int i = 1; i <= vertexCount; ++i)
             {

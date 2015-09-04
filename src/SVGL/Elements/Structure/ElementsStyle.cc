@@ -66,5 +66,10 @@ namespace SVGL
                 }
             }
         }
+
+        Instance_uptr Style::calculateInstance(const CSS::PropertySet& , const CSS::SizeContext& )
+        {
+            return std::move(Instance_uptr(nullptr));
+        }
     }
 }

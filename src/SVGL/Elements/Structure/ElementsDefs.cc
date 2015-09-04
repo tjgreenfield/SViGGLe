@@ -18,22 +18,31 @@
  *
  */
 
-#pragma once
-
-#include "StylesVector.hh"
+#include "ElementsDefs.hh"
+#include "ElementsStyle.hh"
+#include <SVGL/SVGLDocument.hh>
 
 namespace SVGL
 {
-    namespace Styles
+    namespace Elements
     {
-        class Image : public CSS::Style// doesn't inherit? need generic Style base class?
+        Defs::Defs(Root* _parent) :
+            Group(_parent)
         {
-            /*
-            `color-profile'
-            */
-        public:
+        }
 
-            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext) override;
-        };
+        /***** From XML::Node *****/
+        void Defs::setAttribute(SubString name, SubString value)
+        {
+            Group::setAttribute(name, value);
+        }
+
+        /***** From Elements::Root *****/
+        Instance_uptr Defs::calculateInstance(const CSS::PropertySet& , const CSS::SizeContext& )
+        {
+            // we don't wany to draw anything under the defs element directly.
+            // they are accessed/drawn only by reference, e.g. use element
+            return Instance_uptr(nullptr);
+        }
     }
 }

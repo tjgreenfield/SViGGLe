@@ -32,38 +32,22 @@ namespace SVGL
 
         Path::~Path()
         {
-            clearBuffers();
+            // TODO clean up instances?
         }
 
-        /**
-         * Get the Style object for the current element.
-         *
-         * @details The style object is used to apply styles from the stylesheets.
-         * @return A pointer to the Style object.
-         */
-        CSS::Style* Path::getStyle()
-        {
-            return &style;
-        }
-
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Element *****/
         const char* Path::getTagName() const
         {
             return "path";
         }
 
-        /**
-         * Test the value of the specified attribute.
-         *
-         * @param[in] index The attribute index of the attribute to test.
-         * @param[in] attributeValue The value of the attribute to test.
-         */
+        // TODO: testAttributeValue() for all elements
         bool Path::testAttributeValue(unsigned int index, const char* attributeValue) const
         {
             return Graphic::testAttributeValue(index, attributeValue);
         }
+
+        /***** XML::Node *****/
 
         void Path::setAttribute(unsigned int index, SubString name, SubString value)
         {
@@ -84,28 +68,31 @@ namespace SVGL
             return out;
         }
 
-        void Path::clearBuffers()
+        /***** Elements::Root *****/
+
+        Instance_uptr Path::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+        {
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
+        }
+
+        /***** Path::Instance *****/
+
+        Path::Instance::Instance(const Path* _path, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            path(_path)
+        {
+            style.applyPropertySets(path->cascadedStyles, inherit, sizeContext);
+        }
+
+        void Path::Instance::buffer(double tolerance)
         {
             renderBuffer.clear();
-            dirty = true;
+            tolerance = path->transform.transformTolerance(tolerance);
+            renderBuffer.buffer(path->commandList, style, tolerance);
         }
 
-        void Path::buffer(double tolerance)
+        void Path::Instance::render(Render::Context* context)
         {
-            if (!dirty)
-            {
-                return;
-            }
-            Path::clearBuffers();
-            tolerance = transform.transformTolerance(tolerance);
-            renderBuffer.buffer(commandList, style, tolerance);
-
-            dirty = false;
-        }
-
-        void Path::render(Render::Context* context)
-        {
-            context->pushTransform(&transform);
+            context->pushTransform(&path->transform);
             renderBuffer.render(context, style);
             context->popTransform();
         }

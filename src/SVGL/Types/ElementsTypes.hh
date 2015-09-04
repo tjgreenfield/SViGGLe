@@ -35,6 +35,8 @@ namespace SVGL
         ET_POLYGON,
         ET_TEXT,
         ET_STYLE,
-        ET_IMAGE
+        ET_IMAGE,
+        ET_DEFS,
+        ET_USE
     };
 }

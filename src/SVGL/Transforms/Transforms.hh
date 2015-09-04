@@ -40,7 +40,7 @@ namespace SVGL
             Transform& operator*=(const Transform& t);
             Point operator*(const Point& p);
 
-            double transformTolerance(double t);
+            double transformTolerance(double t) const;
 
             void identity();
 

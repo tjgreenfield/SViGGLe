@@ -27,7 +27,7 @@ namespace SVGL
 {
     namespace Styles
     {
-        void Text::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+        void Text::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext)
         {
             using namespace CSS;
             using namespace CSS::Property;
@@ -603,7 +603,7 @@ namespace SVGL
                 break;
             }
 
-            Vector::applyPropertySet(propertySet, inherit, sizeContext);
+            Vector::applyPropertySet(propertySet, sizeContext);
 
             /* Scale stroke properties by font size */
             Font::Face* face(nullptr);

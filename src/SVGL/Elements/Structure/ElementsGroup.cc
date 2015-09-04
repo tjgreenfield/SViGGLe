@@ -19,59 +19,62 @@
  */
 
 #include "ElementsGroup.hh"
+#include "ElementsDefs.hh"
+#include "ElementsStyle.hh"
+#include <SVGL/SVGLDocument.hh>
+
+#include <SVGL/CSS/Values/CSSKeyword.hh>
 
 namespace SVGL
 {
     namespace Elements
     {
-        /* From CSS::Element */
-
         Group::Group(Root* _parent) :
             Graphic(_parent)
         {
         }
 
-        /**
-         * Get the Style object for the current element.
-         *
-         * @details The style object is used to apply styles from the stylesheets.
-         * @return A pointer to the Style object.
-         */
-        CSS::Style* Group::getStyle()
-        {
-            return &style;
-        }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** From CSS::Element *****/
+
         const char* Group::getTagName() const
         {
             return "g";
         }
 
-        /**
-         * Test the value of the specified attribute.
-         *
-         * @param[in] index The attribute index of the attribute to test.
-         * @param[in] attributeValue The value of the attribute to test.
-         */
-        bool Group::testAttributeValue(unsigned int index, const char* attributeValue) const
-        {
-            return Graphic::testAttributeValue(index, attributeValue);
-        }
-
-        /* From XML::Node */
+        /***** From XML::Node *****/
 
         void Group::appendChild(XML::Node_uptr&& child)
         {
-            if (Graphic* element = dynamic_cast<Graphic*>(child.get()))
+            if (auto defsChild = dynamic_cast<Defs*>(child.get()))
             {
                 child.release();
-                children.emplace_back(element);
-                element->setParent(this);
+                otherChildren.emplace_back(defsChild);
+            }
+            else if (auto graphicChild = dynamic_cast<Graphic*>(child.get()))
+            {
+                child.release();
+                graphicChildren.emplace_back(graphicChild);
+            }
+            else if (auto styleChlid = dynamic_cast<Style*>(child.get()))
+            {
+                child.release();
+                otherChildren.emplace_back(styleChlid);
+
+                Document* document = getDocument();
+                if (document)
+                {
+                    document->addStyleSheet(styleChlid->styleSheet);
+                }
+            }
+            else if (auto rootChild = dynamic_cast<Root*>(child.get()))
+            {
+                child.release();
+                otherChildren.emplace_back(rootChild);
             }
         }
+
+        /***** From Elements::Root *****/
 
         Root* Group::findElementByID(const char* _id)
         {
@@ -81,7 +84,14 @@ namespace SVGL
             }
             else
             {
-                for (const Graphic_uptr& child : children)
+                for (const Graphic_uptr& child : graphicChildren)
+                {
+                    if (Root* result = child->findElementByID(_id))
+                    {
+                        return result;
+                    }
+                }
+                for (const Root_uptr& child : otherChildren)
                 {
                     if (Root* result = child->findElementByID(_id))
                     {
@@ -96,28 +106,13 @@ namespace SVGL
         void Group::submitElementIDs(Document* document)
         {
             Root::submitElementIDs(document);
-            for (const Graphic_uptr& child : children)
+            for (const Graphic_uptr& child : graphicChildren)
             {
                 child->submitElementIDs(document);
             }
-        }
-
-        void Group::applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext)
-        {
-            CSS::PropertySet propertySet;
-            styleSheet->apply(this, &propertySet, inherit, sizeContext);
-
-            CSS::SizeContext mySizeContext(sizeContext);
-            style.updateSizeContext(&mySizeContext);
-
-            if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[CSS::Property::FONT_SIZE]))
+            for (const Root_uptr& child : otherChildren)
             {
-                mySizeContext.setFontSize(dimension->calculate(sizeContext));
-            }
-
-            for (const Graphic_uptr& child : children)
-            {
-                child->applyStyleSheet(styleSheet, propertySet, mySizeContext);
+                child->submitElementIDs(document);
             }
         }
 
@@ -125,7 +120,7 @@ namespace SVGL
         {
             bool first(true);
 
-            for (const Graphic_uptr& child : children)
+            for (const Graphic_uptr& child : graphicChildren)
             {
                 if (first)
                 {
@@ -150,45 +145,66 @@ namespace SVGL
             return out;
         }
 
-        /**
-         * Clear children buffers
-         */
-        void Group::clearBuffers()
+        void Group::cascadeStyle(const CSS::StyleSheetIndex& styleSheetIndex)
         {
-            for (const Graphic_uptr& child : children)
+            Graphic::cascadeStyle(styleSheetIndex);
+            for (const auto& i : graphicChildren)
             {
-                child->clearBuffers();
+                i->cascadeStyle(styleSheetIndex);
             }
-
-            dirty = true;
-        }
-
-        /**
-         * Get children to setup buffers
-         */
-        void Group::buffer(double tolerance)
-        {
-            double t = transform.transformTolerance(tolerance);
-
-            for (const Graphic_uptr& child : children)
+            for (const auto& i : otherChildren)
             {
-                child->buffer(t);
+                i->cascadeStyle(styleSheetIndex);
             }
         }
 
-        /**
-         * Draw children
-         */
-        void Group::render(Render::Context* context)
+        Instance_uptr Group::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            context->pushTransform(&transform);
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
+        }
 
-            for (const Graphic_uptr& child : children)
+        /***** Elements::Group::Instance *****/
+
+        Group::Instance::Instance(const Group* _group, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            group(_group)
+        {
+            CSS::PropertySet propertySet(group->cascadedStyles);
+            propertySet.set(group->getSpecifiedStyle());
+            propertySet.inherit(inherit);
+
+            style.applyPropertySet(propertySet, sizeContext);
+
+            for (const auto& i : group->graphicChildren)
             {
-                child->render(context);
+                children.emplace_back(std::move(i->calculateInstance(propertySet, sizeContext)));
             }
+        }
 
+        void Group::Instance::buffer(double tolerance)
+        {
+            double t(group->transform.transformTolerance(tolerance));
+            for (const auto& i : children)
+            {
+                if (i)
+                {
+                    i->buffer(t);
+                }
+            }
+        }
+
+        void Group::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&group->transform);
+            for (const auto& i : children)
+            {
+                if (i)
+                {
+                    i->render(context);
+                }
+            }
             context->popTransform();
         }
+
+
     }
 }

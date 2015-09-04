@@ -194,15 +194,10 @@ namespace SVGL
             }
         }
 
-        void Graphic::applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext)
+        void Graphic::cascadeStyle(const CSS::StyleSheetIndex& styleSheetIndex)
         {
-            CSS::PropertySet propertySet;
-            styleSheet->apply(this, &propertySet, inherit, sizeContext);
-        }
-
-        void Graphic::clearBuffers()
-        {
-            dirty = true;
+            cascadedStyles.clear();
+            styleSheetIndex.apply(this, &cascadedStyles);
         }
 
         void Graphic::setDirty()
@@ -213,11 +208,6 @@ namespace SVGL
             {
                 parentGraphic->setDirty();
             }
-        }
-
-        void Graphic::buffer(double)
-        {
-            dirty = false;
         }
     }
 }

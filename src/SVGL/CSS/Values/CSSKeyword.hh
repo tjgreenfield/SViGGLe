@@ -24,12 +24,16 @@
 #include <SVGL/Types/Color.hh>
 #include <SVGL/Types/SubString.hh>
 #include <SVGL/Types/KeywordMapper.hh>
+#include <SVGL/CSS/CSSProperty.hh>
+#include <SVGL/CSS/CSSPropertySet.hh>
 #include <string>
 
 namespace SVGL
 {
     namespace CSS
     {
+        class PropertySet;
+
         /**
          * An keyword value.
          */

@@ -22,19 +22,24 @@
 
 #include "CSSValues.hh"
 #include "CSSProperty.hh"
-
 #include <vector>
 
 namespace SVGL
 {
     namespace CSS
     {
+        class DeclarationBlock;
+
         class PropertySet : private std::vector<const Value*>
         {
         public:
             using std::vector<const Value*>::operator[];
+            using std::vector<const Value*>::clear;
 
             PropertySet();
+            PropertySet(const PropertySet& _propertySet);
+
+            void set(const DeclarationBlock* specifiedStyle);
 
             void inherit(const PropertySet& inherit);
         };

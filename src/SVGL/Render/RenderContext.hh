@@ -58,7 +58,7 @@ namespace SVGL
             void update();
 
             void updateTransform();
-            void pushTransform(Transforms::Transform* t);
+            void pushTransform(const Transforms::Transform* t);
             void popTransform();
 
             void updateColor();

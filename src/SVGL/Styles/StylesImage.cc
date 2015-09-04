@@ -24,7 +24,7 @@ namespace SVGL
 {
     namespace Styles
     {
-        void Image::applyPropertySet(const CSS::PropertySet& , const CSS::PropertySet& , const CSS::SizeContext& )
+        void Image::applyPropertySet(const CSS::PropertySet& , const CSS::SizeContext& )
         {
 
         }

@@ -26,24 +26,40 @@ namespace SVGL
 {
     namespace Elements
     {
-        class PolyLine : public Path
+        class PolyLine : public Graphic
         {
         protected:
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const PolyLine* polyline;
+                Styles::Shape style;
+                Render::PathBuffer renderBuffer;
+
+            public:
+                Instance(const PolyLine* _polyline, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
             std::vector<Point> points;
 
         public:
             PolyLine(Root* _parent = nullptr);
 
-            /**
-             * Get the tag name of the element.
-             */
+            /***** CSS::Element *****/
+
             const char* getTagName() const override;
+
+            /***** XML::Node *****/
 
             void setAttribute(unsigned int index, SubString name, SubString value);
 
-            void clearBuffers() override;
+            /***** Elements::Root *****/
 
-            void buffer(double tolerance) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

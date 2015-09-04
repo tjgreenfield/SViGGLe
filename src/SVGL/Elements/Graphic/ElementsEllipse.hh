@@ -26,32 +26,47 @@ namespace SVGL
 {
     namespace Elements
     {
-        class Ellipse : public Path
+        class Ellipse : public Graphic
         {
         protected:
-            CSS::CalculableCache cx;
-            CSS::CalculableCache cy;
-            CSS::CalculableCache rx;
-            CSS::CalculableCache ry;
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Ellipse* ellipse;
+                Styles::Shape style;
+                Render::PathBuffer renderBuffer;
+                double cx;
+                double cy;
+                double rx;
+                double ry;
+
+            public:
+                Instance(const Ellipse* _ellipse, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
+            CSS::Calculable cx;
+            CSS::Calculable cy;
+            CSS::Calculable rx;
+            CSS::Calculable ry;
 
         public:
             Ellipse(Root* _parent = nullptr);
 
-            /**
-             * Get the tag name of the element.
-             */
+            /***** CSS::Element *****/
+
             const char* getTagName() const override;
 
-            /**
-             * Calculate the relative units
-             */
-            void calculate(const CSS::SizeContext& sizeContext) override;
+            /***** XML::Node *****/
 
             void setAttribute(unsigned int index, SubString name, SubString value);
 
-            void clearBuffers() override;
+            /***** Elements::Root *****/
 
-            void buffer(double tolerance) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

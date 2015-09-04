@@ -24,7 +24,7 @@ namespace SVGL
 {
     namespace Styles
     {
-        void Shape::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+        void Shape::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext)
         {
             /*
             ‘marker’
@@ -35,7 +35,7 @@ namespace SVGL
             */
             using namespace CSS::Property;
 
-            Vector::applyPropertySet(propertySet, inherit, sizeContext);
+            Vector::applyPropertySet(propertySet, sizeContext);
         }
     }
 }

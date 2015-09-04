@@ -22,6 +22,7 @@
 
 #include <SVGL/Elements/Structure/ElementsSVG.hh>
 #include <SVGL/Elements/Abstract/ElementsRoot.hh>
+#include <SVGL/Elements/Abstract/ElementsInstance.hh>
 #include <SVGL/CSS/CSSStyleSheet.hh>
 #include <SVGL/XML/XML.hh>
 #include <SVGL/Types/SubString.hh>
@@ -39,7 +40,8 @@ namespace SVGL
         IDMap idMap;
 
         Elements::SVG_uptr svg;
-        CSS::StyleSheet styleSheet;
+        CSS::StyleSheetIndex styleSheetIndex;
+        Elements::Instance_uptr instance;
 
     public:
         Document();
@@ -53,11 +55,13 @@ namespace SVGL
 
         Document* getDocument();
 
+        Elements::Root* getElementByID(const char* _id);
+
         void submitElementID(const SubString _id, Elements::Root* element);
 
         void removeElementID(const SubString _id, Elements::Root* element);
 
-        void addStyleSheet(CSS::StyleSheet& _styleSheet);
+        void addStyleSheet(CSS::StyleSheet& styleSheet);
 
         void applyStyleSheets();
 
@@ -68,6 +72,8 @@ namespace SVGL
         void buffer(double tolerance);
 
         void render(Render::Context* context);
+
+        Elements::Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
 
     };
 

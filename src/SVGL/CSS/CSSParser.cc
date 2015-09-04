@@ -667,7 +667,7 @@ namespace SVGL
                     readWSP();
                     styleSheet->rulesets.push_back(std::move(ruleset2));
                 }
-                styleSheet->buildIndex();
+                //styleSheet->buildIndex();
                 return styleSheet;
             }
             return nullptr;

@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "ElementsViewPort.hh"
+#include "ElementsGroup.hh"
 #include "ElementsStyle.hh"
 #include <SVGL/CSS/CSSStyleSheet.hh>
 #include <SVGL/XML/XML.hh>
@@ -32,12 +32,13 @@ namespace SVGL
 {
     namespace Elements
     {
-        class SVG : public ViewPort
+        class SVG : public Group
         {
         protected:
-            std::vector<Style_uptr> styles;
-            CSS::StyleSheet styleSheet;
-
+            CSS::Calculable x;
+            CSS::Calculable y;
+            CSS::Calculable width;
+            CSS::Calculable height;
         public:
             SVG(Root* _parent = nullptr);
 
@@ -46,15 +47,9 @@ namespace SVGL
              */
             std::ostream& stream(std::ostream& out) const override;
 
-            /* From XML::Node */
+            /***** From Elements::Root *****/
 
-            void appendChild(XML::Node_uptr&& child) override;
-
-            /* From Element::Group */
-
-            //void applyStyleSheet(CSS::StyleSheet* styleSheet) override;
-
-            void applyStyleSheets();
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
 
         typedef std::unique_ptr<SVG> SVG_uptr;

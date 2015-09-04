@@ -29,7 +29,11 @@ namespace SVGL
     {
 
         SVG::SVG(Root* _parent) :
-            ViewPort(_parent)
+            Group(_parent),
+            x(0),
+            y(0),
+            width(1280),
+            height(720)
         {
         }
 
@@ -41,29 +45,13 @@ namespace SVGL
             return out;
         }
 
-        void SVG::appendChild(XML::Node_uptr&& child)
+        Instance_uptr SVG::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            if (Elements::Style* childStyle = dynamic_cast<Elements::Style*>(child.get()))
-            {
-                Document* document = getDocument();
-                if (document)
-                {
-                    document->addStyleSheet(childStyle->styleSheet);
-                }
-                child.release();
-                styles.emplace_back(childStyle);
-            }
-            else
-            {
-                Group::appendChild(std::move(child));
-            }
-        }
-
-        void SVG::applyStyleSheets()
-        {
-            CSS::PropertySet inherit;
-            CSS::SizeContext sizeContext(width, height, 10);
-            ViewPort::applyStyleSheet(&styleSheet, inherit, sizeContext);
+            CSS::SizeContext viewport(sizeContext);
+            viewport.setViewport(width.calculate(sizeContext), height.calculate(sizeContext));
+            transform.identity();
+            transform.translateR(x.calculate(sizeContext), y.calculate(sizeContext));
+            return Group::calculateInstance(inherit, viewport);
         }
     }
 }

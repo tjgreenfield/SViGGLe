@@ -145,7 +145,7 @@ class StyleSheetTester : public CSS::StyleSheet
 {
 public:
 
-    void dumpIndex()
+    /*void dumpIndex()
     {
         int i(0);
         for (CSS::SelectorBlock sb : selectorIndex)
@@ -154,7 +154,7 @@ public:
             ++i;
         }
         cout << endl;
-    }
+    }*/
 };
 
 

@@ -35,7 +35,9 @@ namespace SVGL
         { "polygon", ET_POLYGON},
         { "text", ET_TEXT},
         { "style", ET_STYLE},
-        { "image", ET_IMAGE}
+        { "image", ET_IMAGE},
+        { "defs", ET_DEFS},
+        { "use", ET_USE}
     };
 
     ElementType getElementType(SubString tag)
@@ -81,6 +83,10 @@ namespace SVGL
             return std::move(XML::Node_uptr(new Elements::Style(parent)));
         case ET_IMAGE:
             return std::move(XML::Node_uptr(new Elements::Image(parent)));
+        case ET_DEFS:
+            return std::move(XML::Node_uptr(new Elements::Defs(parent)));
+        case ET_USE:
+            return std::move(XML::Node_uptr(new Elements::Use(parent)));
         }
     }
 

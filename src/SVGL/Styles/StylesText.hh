@@ -226,7 +226,7 @@ namespace SVGL
             };};
             BITRANGE_IMPL(textRendering, textBits, 30, 2);
 
-            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
+            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext) override;
 
             void updateSizeContext(CSS::SizeContext* sizeContext) override;
         };

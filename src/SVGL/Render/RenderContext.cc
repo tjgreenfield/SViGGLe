@@ -162,7 +162,7 @@ namespace SVGL
             glUniformMatrix3x2dv(location, 1, GL_FALSE, &worldTransform.a);
         }
 
-        void Context::pushTransform(Transforms::Transform* t)
+        void Context::pushTransform(const Transforms::Transform* t)
         {
             transformStack.push_back(worldTransform);
             worldTransform *= *t;

@@ -78,7 +78,7 @@ namespace SVGL
             return Point(a * p.x + c * p.y + e, b * p.x + d * p.y + f);
         }
 
-        double Transform::transformTolerance(double t)
+        double Transform::transformTolerance(double t) const
         {
             return std::min(t / sqrt(a * a + c * c), t / (sqrt(b * b + d * d)));
         }

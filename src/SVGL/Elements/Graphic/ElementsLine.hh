@@ -26,32 +26,47 @@ namespace SVGL
 {
     namespace Elements
     {
-        class Line : public Path
+        class Line : public Graphic
         {
         protected:
-            CSS::CalculableCache x1;
-            CSS::CalculableCache y1;
-            CSS::CalculableCache x2;
-            CSS::CalculableCache y2;
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Line* line;
+                Styles::Shape style;
+                Render::PathBuffer renderBuffer;
+                double x1;
+                double y1;
+                double x2;
+                double y2;
+
+            public:
+                Instance(const Line* _line, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
+            CSS::Calculable x1;
+            CSS::Calculable y1;
+            CSS::Calculable x2;
+            CSS::Calculable y2;
 
         public:
             Line(Root* _parent = nullptr);
 
-            /**
-             * Get the tag name of the element.
-             */
+            /***** CSS::Element *****/
+
             const char* getTagName() const override;
 
-            /**
-             * Calculate the relative units
-             */
-            void calculate(const CSS::SizeContext& sizeContext) override;
+            /***** XML::Node *****/
 
             void setAttribute(unsigned int index, SubString name, SubString value);
 
-            void clearBuffers() override;
+            /***** Elements::Root *****/
 
-            void buffer(double tolerance) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

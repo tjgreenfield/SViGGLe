@@ -20,8 +20,9 @@
 
 #pragma once
 
+#include "ElementsInstance.hh"
 #include <SVGL/XML/XML.hh>
-#include <SVGL/CSS/CSSElement.hh>
+#include <SVGL/CSS/CSS.hh>
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Types/SubString.hh>
 #include <unordered_map>
@@ -50,7 +51,6 @@ namespace SVGL
              */
             ~Root() override;
 
-
             /**
              * Set the parent
              */
@@ -78,6 +78,10 @@ namespace SVGL
             virtual Root* findElementByID(const char* _id);
 
             void setAttribute(SubString name, SubString value) override;
+
+            virtual void cascadeStyle(const CSS::StyleSheetIndex& styleSheetIndex);
+
+            virtual Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) = 0;
         };
 
         typedef std::unique_ptr<Root> Root_uptr;

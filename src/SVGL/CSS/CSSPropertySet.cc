@@ -19,17 +19,39 @@
  */
 
 #include "CSSPropertySet.hh"
+#include <SVGL/CSS/Structures/CSSDeclarationBlock.hh>
+
 
 namespace SVGL
 {
     namespace CSS
     {
-        PropertySet::PropertySet()
+        PropertySet::PropertySet() :
+            std::vector<const Value*>()
         {
             resize(Property::PROPERTY_COUNT, nullptr);
         }
 
-#define INHERIT(x) at(Property::x) = inherit[Property::x]
+        PropertySet::PropertySet(const PropertySet& _propertySet) :
+            std::vector<const Value*>()
+        {
+            resize(Property::PROPERTY_COUNT, nullptr);
+            for (unsigned int i = 0; i < Property::PROPERTY_COUNT; ++i)
+            {
+                at(i) = _propertySet[i];
+            }
+        }
+
+        void PropertySet::set(const DeclarationBlock* specifiedStyle)
+        {
+            for (const auto& i : specifiedStyle->map)
+            {
+                at(i.first) = i.second->value.get();
+            }
+        }
+
+#define INHERIT(x) if (at(Property::x) ? (Keyword::keywordFromValue(at(Property::x)) == Keyword::INHERIT) : true) at(Property::x) = inherit[Property::x]
+#define OTHERINHERIT(x) if (at(Property::x) ? (Keyword::keywordFromValue(at(Property::x)) == Keyword::INHERIT) : false) at(Property::x) = inherit[Property::x]
 
         void PropertySet::inherit(const PropertySet& inherit)
         {
@@ -75,12 +97,12 @@ namespace SVGL
             INHERIT(FONT_WEIGHT);
             INHERIT(DIRECTION);
             INHERIT(LETTER_SPACING);
-            //TEXT_DECORATION,
-            //UNICODE_BIDI,
+            OTHERINHERIT(TEXT_DECORATION);
+            OTHERINHERIT(UNICODE_BIDI);
             INHERIT(WORD_SPACING);
-            //ALIGNMENT_BASELINE,
-            //BASELINE_SHIFT,
-            //DOMINATE_BASELINE,
+            OTHERINHERIT(ALIGNMENT_BASELINE);
+            OTHERINHERIT(BASELINE_SHIFT);
+            OTHERINHERIT(DOMINANT_BASELINE);
             INHERIT(GLYPH_ORIENTATION_HORIZONTAL);
             INHERIT(GLYPH_ORIENTATION_VERTICAL);
             INHERIT(KERNING);
@@ -89,22 +111,24 @@ namespace SVGL
             INHERIT(TEXT_RENDERING);
 
             // viewport
-            //CLIP
-            //OVERFLOW
+            OTHERINHERIT(CLIP);
+            OTHERINHERIT(OVERFLOW);
 
             // filter
-            //ENABLE_BACKGROUND,
+            OTHERINHERIT(ENABLE_BACKGROUND);
 
             // feFlood
-            //FLOOD_COLOR,
-            //FLOOD_OPACITY,
+            OTHERINHERIT(FLOOD_COLOR);
+            OTHERINHERIT(FLOOD_OPACITY);
 
             // lighting
-            //LIGHTING_COLOR,
+            OTHERINHERIT(LIGHTING_COLOR);
 
             // gradient
-            //STOP_COLOR,
-            //STOP_OPACITY,
+            OTHERINHERIT(STOP_COLOR);
+            OTHERINHERIT(STOP_OPACITY);
         }
+
+
     }
 }

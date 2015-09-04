@@ -28,7 +28,7 @@ namespace SVGL
     namespace Elements
     {
         Line::Line(Root* _parent) :
-            Path(_parent),
+            Graphic(_parent),
             x1(0),
             y1(0),
             x2(0),
@@ -37,24 +37,14 @@ namespace SVGL
 
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Elements *****/
+
         const char* Line::getTagName() const
         {
             return "line";
         }
 
-        /**
-         * Calculate the relative units
-         */
-        void Line::calculate(const CSS::SizeContext& sizeContext)
-        {
-            x1.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            y1.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-            x2.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            y2.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-        }
+        /***** XML::Node *****/
 
         void Line::setAttribute(unsigned int index, SubString name, SubString value)
         {
@@ -99,23 +89,45 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Path::setAttribute(index, name, value);
+                Graphic::setAttribute(index, name, value);
                 break;
             }
         }
 
-        void Line::clearBuffers()
+        /***** Elements::Root *****/
+
+        Instance_uptr Line::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            commandList.clear();
-            Path::clearBuffers();
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
         }
 
-        void Line::buffer(double tolerance)
+        /***** Elements::Line::Instance *****/
+
+        Line::Instance::Instance(const Line* _line, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            line(_line)
         {
-            commandList.clear();
+            style.applyPropertySets(line->cascadedStyles, inherit, sizeContext);
+            x1 = _line->x1.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            y1 = _line->y1.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+            x2 = _line->x2.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            y2 = _line->y2.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+        }
+
+        void Line::Instance::buffer(double tolerance)
+        {
+            PathCommands::List commandList;
             commandList.emplace_back(new PathCommands::MoveTo(x1, y1));
             commandList.emplace_back(new PathCommands::LineTo(x2, y2));
-            Path::buffer(tolerance);
+
+            tolerance = line->transform.transformTolerance(tolerance);
+            renderBuffer.clear();
+            renderBuffer.buffer(commandList, style, tolerance);
+        }
+
+        void Line::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&line->transform);
+            renderBuffer.render(context, style);
         }
     }
 }

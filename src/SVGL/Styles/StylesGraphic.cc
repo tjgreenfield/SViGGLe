@@ -38,7 +38,7 @@ namespace SVGL
             clipRule() =CR_NONZERO;
         }
 
-        void Graphic::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet&, const CSS::SizeContext& sizeContext)
+        void Graphic::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext)
         {
             using namespace CSS;
             using namespace CSS::Property;
@@ -46,13 +46,15 @@ namespace SVGL
             constexpr auto keywordFromValue = &Keyword::keywordFromValue;
 
             // display
-            if (keywordFromValue(propertySet[Property::DISPLAY]) == Keyword::NONE)
+            switch (keywordFromValue(propertySet[Property::DISPLAY]))
             {
+            default:
                 display() = 1;
-            }
-            else
-            {
+                break;
+
+            case Keyword::NONE:
                 display() = 0;
+                break;
             }
 
             // color
@@ -64,6 +66,9 @@ namespace SVGL
             // cursor
             switch (keywordFromValue(propertySet[Property::CURSOR]))
             {
+            default:
+                cursor() = CURSOR_DEFAULT;
+                break;
             case Keyword::AUTO:
                 cursor() = CURSOR_AUTO;
                 break;
@@ -111,9 +116,6 @@ namespace SVGL
                 break;
             case Keyword::HELP:
                 cursor() = CURSOR_HELP;
-                break;
-            default:
-                cursor() = CURSOR_DEFAULT;
                 break;
             };
 

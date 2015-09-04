@@ -24,6 +24,7 @@
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Transforms/Transforms.hh>
 #include <SVGL/SVGLDocument.hh>
+#include <SVGL/SVGLParser.hh>
 #include <SVGL/Types/Point.hh>
 
 #include <SVGL/Fonts/FontsCollection.hh>

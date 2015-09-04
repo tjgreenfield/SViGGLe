@@ -47,10 +47,14 @@
         inkscape:window-x="483"
         inkscape:window-y="101"
         inkscape:current-layer="svg2" />
+    <defs>
+        <g id="testuse" stroke="red" fill="green">
+            <rect x="0" y="0" width="100" height="300" />
+        </g>
     <style>
-    * {
-        fill:none;
-    }
+
+    </style>
+    <style>
 
     path.eightway {
         fill:maroon;
@@ -61,26 +65,39 @@
         stroke-opacity:0.5;
     }
     </style>
+
     <style>
     path.eightway2 {
-        fill:none;
-        stroke-width:5;
-        stroke-linecap:butt;
-        stroke-linejoin:bevel;
-        stroke-dasharray:40,40;
-        stroke-opacity:0.5;
+                fill:none;
+                stroke-width:5;
+                stroke-linecap:butt;
+                stroke-linejoin:bevel;
+                stroke-dasharray:40,40;
+                stroke-opacity:0.5;
     }
     </style>
+    </defs>
+    <use x="-150" y="400" xlink:href="#testuse" stroke="yellow" fill="cyan"/>
     <g>
-        <rect id="bluerect" stroke-width="5" fill="darkgrey" stroke="blue" rx="5%" ry="5%" x="0" y="0" width="50%" height="50%" />
 
-        <image x="0" y="0" width="500" height="300" xlink:href="data/images/kitten.png"/>
+        <image x="0" y="300" width="500" height="300" xlink:href="data/images/kitten.png"/>
 
         <arect id="redrect" stroke-width="5" fill="grey" stroke="red" rx="5%" ry="5%" x="-25%" y="-25%" width="50%" height="50%" />
         <arect id="green" style="stroke-linecap:butt" stroke-width="5" fill="none" stroke="green" rx="5%" ry="2%" x="-55%" y="-55%" width="5%" height="5%" />
 
 
         <g transform="rotate(45)">
+                <style>
+                path.eightway2 {
+                    fill:none;
+                    stroke-width:5;
+                    stroke-linecap:butt;
+                    stroke-linejoin:bevel;
+                    stroke-dasharray:40,40;
+                    stroke-opacity:0.5;
+                }
+
+                </style>
             <apath style="stroke:blue;stroke-width:0.1;stroke-dasharray:0.1,0.1" d="M0,0 l1,0 0,1 0.5,0" />
             <g transform="translate(300)">
                 <apath style="stroke:white;stroke-opacity:0.5;stroke-width:10" d="M0,0 l100,0 0,100 50,0 c 0,-50 100,-50, 100,0 l100,0 0,-100 100,0" />
@@ -119,7 +136,7 @@
             <apath fill="none" stroke="lime" d="M-0.5,-0.5 l0.3,0.3 0.3,0 -0.3,0.3 c 0,0.5 0.5,0.5 0.5,0" />
         </ag>
 
-        <ag>
+        <g>
             <arect id="greyredrect" fill="darkgrey" stroke="red" rx="10" ry="20" x="-100" y="-100" width="200" height="200" />
             <circle fill="magenta" stroke="pink" style="stroke-width:3; stroke-dasharray:3,8; stroke-linecap:round" cx="25" cy="25" r="50"/>
             <ellipse fill="lime" stroke="yellow" style="stroke-width:1.5; stroke-dasharray:6,4; stroke-linecap:round" cx="25" cy="25" rx="15" ry="25"/>
@@ -135,7 +152,7 @@
                 <path fill="none" stroke="pink" d="M40,0 q50,25 0,50 z" />
                 <path fill="none" stroke="yellow" d="M50,0 a 15,25 10 1 1 10,0 z" />
             </ag>
-        </ag>
+        </g>
         <ag
             id="g2161"
             transform="translate(-700, 0) scale(2, 2)">
@@ -163,9 +180,9 @@
 
     </g>
 
-    <text stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</text>
-    <g stroke="red" fill="blue" transform="scale(10, 10)">
-        <rect fill="none" stroke="white" stroke-width="0.1" x="0" y="0" width="10" height="10"/>
+    <atext stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</atext>
+    <g style="stroke:red" stroke="red" fill="blue" transform="scale(10, 10)">
+        <rect fill="none" stroke-width="0.1" x="0" y="0" width="10" height="10"/>
         <text style="stroke-dasharray:10,1;stroke-width:0.1" fill="purple" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="30">XQLI</text>
         <atext font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="15pt">1234abcdefghijklmnopqrstuvwxyz.</atext>
     </g>
@@ -175,4 +192,5 @@
     <ag transform="translate(0.5, -0.05) scale(-0.005, -0.005)">
         <text font-family="sans-serif" font-style="regular" font-weight="700" font-size="15pt">ABCDEFGHIJKLMNOPQRSTUVWXYZ.</text>
     </ag>
+
 </svg>

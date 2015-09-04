@@ -47,6 +47,16 @@ namespace SVGL
         return this;
     }
 
+    Elements::Root* Document::getElementByID(const char* _id)
+    {
+        const auto& i = idMap.find(_id);
+        if (i != idMap.end())
+        {
+            return i->second;
+        }
+        return nullptr;
+    }
+
     void Document::submitElementID(const SubString _id, Elements::Root* element)
     {
         idMap.emplace(_id, element);
@@ -65,21 +75,20 @@ namespace SVGL
         }
     }
 
-    void Document::addStyleSheet(CSS::StyleSheet& _styleSheet)
+    void Document::addStyleSheet(CSS::StyleSheet& styleSheet)
     {
-        styleSheet += _styleSheet;
+        styleSheetIndex.add(styleSheet);
     }
 
     void Document::applyStyleSheets()
     {
-        CSS::PropertySet inherit;
-        CSS::SizeContext sizeContext(1280, 720, 10);
-        svg->applyStyleSheet(&styleSheet, inherit, sizeContext);
+        styleSheetIndex.sort();
+        svg->cascadeStyle(styleSheetIndex);
     }
 
     void Document::clearBuffers()
     {
-        svg->clearBuffers();
+        instance = nullptr;
     }
 
     void Document::setDirty()
@@ -89,11 +98,19 @@ namespace SVGL
 
     void Document::buffer(double tolerance)
     {
-        svg->buffer(tolerance);
+        CSS::PropertySet inherit;
+        CSS::SizeContext sizeContext(1280, 720, 10);
+        instance = calculateInstance(inherit, sizeContext);
+        instance->buffer(tolerance);
     }
 
     void Document::render(Render::Context* context)
     {
-        svg->render(context);
+        instance->render(context);
+    }
+
+    Elements::Instance_uptr Document::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+    {
+        return svg->calculateInstance(inherit, sizeContext);
     }
 }

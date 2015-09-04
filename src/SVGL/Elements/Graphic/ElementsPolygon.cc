@@ -29,17 +29,17 @@ namespace SVGL
     namespace Elements
     {
         Polygon::Polygon(Root* _parent) :
-            Path(_parent)
+            Graphic(_parent)
         {
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Elements *****/
         const char* Polygon::getTagName() const
         {
             return "polygon";
         }
+
+        /***** XML::Node *****/
 
         void Polygon::setAttribute(unsigned int index, SubString name, SubString value)
         {
@@ -51,30 +51,49 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Path::setAttribute(index, name, value);
+                Graphic::setAttribute(index, name, value);
                 break;
             }
         }
 
-        void Polygon::clearBuffers()
+        /***** Elements::Root *****/
+
+        Instance_uptr Polygon::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            commandList.clear();
-            Path::clearBuffers();
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
         }
 
-        void Polygon::buffer(double tolerance)
+        /***** Elements::Polygon::Instance *****/
+
+        Polygon::Instance::Instance(const Polygon* _polygon, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            polygon(_polygon)
         {
-            commandList.clear();
-            if (points.size() > 0)
+            style.applyPropertySets(polygon->cascadedStyles, inherit, sizeContext);
+        }
+
+        void Polygon::Instance::buffer(double tolerance)
+        {
+            PathCommands::List commandList;
+            if (polygon->points.size() > 0)
             {
-                commandList.emplace_back(new PathCommands::MoveTo(points.front()));
-                for (unsigned int i = 1; i < points.size(); ++i)
+                commandList.emplace_back(new PathCommands::MoveTo(polygon->points.front()));
+                for (unsigned int i = 1; i < polygon->points.size(); ++i)
                 {
-                    commandList.emplace_back(new PathCommands::LineTo(points[i]));
+                    commandList.emplace_back(new PathCommands::LineTo(polygon->points[i]));
                 }
                 commandList.emplace_back(new PathCommands::ClosePath());
             }
-            Path::buffer(tolerance);
+
+            tolerance = polygon->transform.transformTolerance(tolerance);
+            renderBuffer.clear();
+            renderBuffer.buffer(commandList, style, tolerance);
+        }
+
+        void Polygon::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&polygon->transform);
+            renderBuffer.render(context, style);
+            context->popTransform();
         }
     }
 }

@@ -61,14 +61,6 @@ namespace SVGL
             virtual const DeclarationBlock* getSpecifiedStyle() const = 0;
 
             /**
-             * Get the Style object for the current element.
-             *
-             * @details The style object is used to apply styles from the stylesheets.
-             * @return A pointer to the Style object.
-             */
-            virtual Style* getStyle() = 0;
-
-            /**
              * Calculate any relative units used in the element
              */
             virtual void calculate(const SizeContext& sizeContext) = 0;

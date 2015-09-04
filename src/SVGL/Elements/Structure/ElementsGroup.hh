@@ -30,75 +30,53 @@ namespace SVGL
         class Group : public Graphic
         {
         protected:
-            Styles::Graphic style;
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Group* group;
+                Styles::Graphic style;
+                std::vector<Instance_uptr> children;
 
-            typedef std::vector<Graphic_uptr> Children;
-            Children children;
+            public:
+                Instance(const Group* _group, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
+            typedef std::vector<Graphic_uptr> GraphicChildren;
+            GraphicChildren graphicChildren;
+
+            typedef std::vector<Root_uptr> OtherChildren;
+            OtherChildren otherChildren;
 
         public:
 
             Group(Root* _parent = nullptr);
 
             /* From CSS::Element */
-
-            /**
-             * Get the Style object for the current element.
-             *
-             * @details The style object is used to apply styles from the stylesheets.
-             * @return A pointer to the Style object.
-             */
-            CSS::Style* getStyle() override;
-
-            /**
-             * Get the tag name of the element.
-             */
             const char* getTagName() const override;
 
-            /**
-             * Test the value of the specified attribute.
-             *
-             * @param[in] index The attribute index of the attribute to test.
-             * @param[in] attributeValue The value of the attribute to test.
-             */
-            bool testAttributeValue(unsigned int index, const char* attributeValue) const override;
-
             /* From XML::Node */
-
             void appendChild(XML::Node_uptr&& child) override;
 
 
-            /* From Root */
+            /* From Elements::Root */
 
             Root* findElementByID(const char* _id) override;
 
             void submitElementIDs(Document* document) override;
 
-            virtual void applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext);
-
-            /**
-             * Output to stream
-             */
             std::ostream& stream(std::ostream& out) const override;
 
-            /**
-             * Output children to stream
-             */
             std::ostream& streamChildren(std::ostream& out) const;
 
-            /**
-             * Clear children buffers
-             */
-            void clearBuffers() override;
+            void cascadeStyle(const CSS::StyleSheetIndex& styleSheetIndex) override;
 
-            /**
-             * Get children to setup buffers
-             */
-            void buffer(double tolerance) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
 
-            /**
-             * Draw children
-             */
-            void render(Render::Context* context) override;
+
 
         };
     }

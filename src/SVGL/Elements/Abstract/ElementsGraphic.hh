@@ -72,14 +72,13 @@ namespace SVGL
                 };
             };
 
-
-
             typedef std::unordered_map<SubString, Attribute::Index> AttributeMap;
             static AttributeMap attributeMap;
 
         protected:
             std::string cls;
             CSS::DeclarationBlock styleDeclarations;
+            CSS::PropertySet cascadedStyles;
             Transforms::Transform transform;
             bool dirty;
 
@@ -94,7 +93,7 @@ namespace SVGL
             {
             }
 
-            /* From CSS::Element */
+            /***** From CSS::Element *****/
 
             /**
              * Get the StyleSheet object that contains the specified styles for the element.
@@ -151,29 +150,20 @@ namespace SVGL
              */
             virtual const CSS::Element* getPrevChild(const Graphic* element) const;
 
-            /* From XML::Node */
+            /****** From XML::Node *****/
 
             void setAttribute(SubString name, SubString value) override;
 
             virtual void setAttribute(unsigned int index, SubString name, SubString value);
 
-            /* Common interface for all Graphic Elements */
 
-            virtual void applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext);
+            /****** From Elements::Root *****/
 
-            /*virtual double getWidth();
+            void cascadeStyle(const CSS::StyleSheetIndex& styleSheetIndex) override;
 
-            virtual double getHeight();
-
-            virtual ViewPort* getViewPort();*/
-
-            virtual void clearBuffers();
+            /****** Common interface for all Graphic Elements *****/
 
             virtual void setDirty();
-
-            virtual void buffer(double tolerance);
-
-            virtual void render(Render::Context* context) = 0;
 
         };
 

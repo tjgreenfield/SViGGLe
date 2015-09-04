@@ -20,34 +20,29 @@
 
 #pragma once
 
-#include "ElementsGroup.hh"
+#include <SVGL/Elements/Structure/ElementsGroup.hh>
+#include <SVGL/CSS/CSSStyleSheet.hh>
+
+#include <string>
 
 namespace SVGL
 {
     namespace Elements
     {
-        class ViewPort : public Group
+        class Defs : public Group
         {
-        protected:
-
-            double width, height;
         public:
-            ViewPort(Root* _parent = nullptr);
+            Defs(Root* _parent = nullptr);
 
-            /*virtual double getWidth();
+            /***** From XML::Node *****/
+            void setAttribute(SubString name, SubString value) override;
 
-            virtual double getHeight();
+            /***** From Elements::Root *****/
 
-            virtual double get100Percent();*/
-
-            void applyStyleSheet(CSS::StyleSheet* styleSheet, const CSS::PropertySet& inherit, CSS::SizeContext& sizeContext) override;
-
-            /**
-             * Output to stream
-             */
-            std::ostream& stream(std::ostream& out) const override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
 
+        typedef std::unique_ptr<Defs> Defs_uptr;
     }
 }
 

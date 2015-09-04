@@ -62,6 +62,8 @@ namespace SVGL
             void appendText(SubString data) override;
 
             void setAttribute(SubString name, SubString value) override;
+
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
 
         typedef std::unique_ptr<Style> Style_uptr;

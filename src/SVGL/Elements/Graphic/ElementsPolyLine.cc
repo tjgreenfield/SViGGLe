@@ -29,18 +29,17 @@ namespace SVGL
     namespace Elements
     {
         PolyLine::PolyLine(Root* _parent) :
-            Path(_parent)
+            Graphic(_parent)
         {
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Elements *****/
         const char* PolyLine::getTagName() const
         {
             return "polyline";
         }
 
+        /***** XML::Node *****/
         void PolyLine::setAttribute(unsigned int index, SubString name, SubString value)
         {
             switch (index)
@@ -51,29 +50,48 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Path::setAttribute(index, name, value);
+                Graphic::setAttribute(index, name, value);
                 break;
             }
         }
 
-        void PolyLine::clearBuffers()
+         /***** Elements::Root *****/
+
+        Instance_uptr PolyLine::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            commandList.clear();
-            Path::clearBuffers();
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
         }
 
-        void PolyLine::buffer(double tolerance)
+        /***** Elements::PolyLine::Instance *****/
+
+        PolyLine::Instance::Instance(const PolyLine* _polyline, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            polyline(_polyline)
         {
-            commandList.clear();
-            if (points.size() > 0)
+            style.applyPropertySets(polyline->cascadedStyles, inherit, sizeContext);
+        }
+
+        void PolyLine::Instance::buffer(double tolerance)
+        {
+            PathCommands::List commandList;
+            if (polyline->points.size() > 0)
             {
-                commandList.emplace_back(new PathCommands::MoveTo(points.front()));
-                for (unsigned int i = 1; i < points.size(); ++i)
+                commandList.emplace_back(new PathCommands::MoveTo(polyline->points.front()));
+                for (unsigned int i = 1; i < polyline->points.size(); ++i)
                 {
-                    commandList.emplace_back(new PathCommands::LineTo(points[i]));
+                    commandList.emplace_back(new PathCommands::LineTo(polyline->points[i]));
                 }
             }
-            Path::buffer(tolerance);
+
+            tolerance = polyline->transform.transformTolerance(tolerance);
+            renderBuffer.clear();
+            renderBuffer.buffer(commandList, style, tolerance);
+        }
+
+        void PolyLine::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&polyline->transform);
+            renderBuffer.render(context, style);
+            context->popTransform();
         }
     }
 }

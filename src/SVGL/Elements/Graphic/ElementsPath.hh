@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <SVGL/Elements/Abstract/ElementsInstance.hh>
+
 #include <SVGL/Elements/Abstract/ElementsGraphic.hh>
 #include <SVGL/PathCommands/PathCommandsList.hh>
 #include <SVGL/Render/RenderPathBuffer.hh>
@@ -33,25 +35,29 @@ namespace SVGL
         class Path : public Graphic
         {
         protected:
-            Styles::Shape style;
-
             PathCommands::List commandList;
-            Render::PathBuffer renderBuffer;
+
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Path* path;
+                Styles::Shape style;
+                Render::PathBuffer renderBuffer;
+
+            public:
+                Instance(const Path* _path, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
 
         public:
 
             Path(Root* _parent = nullptr);
             ~Path();
 
-            /* From CSS::Element */
-
-            /**
-             * Get the Style object for the current element.
-             *
-             * @details The style object is used to apply styles from the stylesheets.
-             * @return A pointer to the Style object.
-             */
-            CSS::Style* getStyle() override;
+            /***** From CSS::Element *****/
 
             /**
              * Get the tag name of the element.
@@ -67,7 +73,7 @@ namespace SVGL
             bool testAttributeValue(unsigned int index, const char* attributeValue) const override;
 
 
-            /* From XML::Node */
+            /***** From XML::Node *****/
 
             void setAttribute(unsigned int index, SubString name, SubString value) override;
 
@@ -76,11 +82,11 @@ namespace SVGL
              */
             std::ostream& stream(std::ostream& out) const override;
 
-            void clearBuffers() override;
+            /***** From Elements::Root *****/
 
-            void buffer(double tolerance) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
 
-            void render(Render::Context* context) override;
+
         };
     }
 }

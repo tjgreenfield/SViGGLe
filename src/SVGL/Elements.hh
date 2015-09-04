@@ -33,7 +33,8 @@
 #include <SVGL/Elements/Graphic/ElementsRect.hh>
 #include <SVGL/Elements/Graphic/ElementsText.hh>
 
+#include <SVGL/Elements/Structure/ElementsDefs.hh>
 #include <SVGL/Elements/Structure/ElementsGroup.hh>
 #include <SVGL/Elements/Structure/ElementsStyle.hh>
 #include <SVGL/Elements/Structure/ElementsSVG.hh>
-#include <SVGL/Elements/Structure/ElementsViewPort.hh>
+#include <SVGL/Elements/Structure/ElementsUse.hh>

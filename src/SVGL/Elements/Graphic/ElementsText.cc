@@ -25,49 +25,19 @@ namespace SVGL
     namespace Elements
     {
         Text::Text(Root* _parent) :
-            Graphic(_parent)
+            Graphic(_parent),
+            x(0),
+            y(0)
         {
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** From CSS::Element *****/
         const char* Text::getTagName() const
         {
             return "text";
         }
 
-        /**
-         * Calculate the relative units
-         */
-        void Text::calculate(const CSS::SizeContext& sizeContext)
-        {
-            x.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            y.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-        }
-
-        /**
-         * Get the Style object for the current element.
-         *
-         * @details The style object is used to apply styles from the stylesheets.
-         * @return A pointer to the Style object.
-         */
-        CSS::Style* Text::getStyle()
-        {
-            return &style;
-        }
-
-        /**
-         * Test the value of the specified attribute.
-         *
-         * @param[in] index The attribute index of the attribute to test.
-         * @param[in] attributeValue The value of the attribute to test.
-         */
-        bool Text::testAttributeValue(unsigned int index, const char* attributeValue) const
-        {
-            return Graphic::testAttributeValue(index, attributeValue);
-        }
-
+        /***** From XML::Node *****/
         void Text::setAttribute(unsigned int index, SubString name, SubString value)
         {
             switch (index)
@@ -85,12 +55,25 @@ namespace SVGL
             text.append(data.start, data.count);
         }
 
-        void Text::buffer(double tolerance)
+        /***** From Element::Root *****/
+        Instance_uptr Text::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            if (!dirty)
-            {
-                return;
-            }
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
+        }
+
+        /***** Elements::Text::Instance *****/
+
+        Text::Instance::Instance(const Text* _text, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            text(_text)
+        {
+            style.applyPropertySets(text->cascadedStyles, inherit, sizeContext);
+            x = text->x.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            y = text->y.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+        }
+
+        void Text::Instance::buffer(double tolerance)
+        {
+            tolerance = text->transform.transformTolerance(tolerance);
             Font::StyledFaceKey testKey(style);
             if (styledFaceKey != testKey)
             {
@@ -100,21 +83,21 @@ namespace SVGL
             // TODO adjust tolerance by font size
             if (styledFace)
             {
-                styledFace->buffer(style, text.c_str(), tolerance);
-                dirty = false;
+                styledFace->buffer(style, text->text.c_str(), tolerance);
             }
         }
 
-        void Text::render(Render::Context* context)
+        void Text::Instance::render(Render::Context* context)
         {
             Transforms::Transform t;
+            t.translateR(x, y);
             t.scaleR(styledFaceKey.effectiveFontSize, styledFaceKey.effectiveFontSize);
 
             context->pushTransform(&t);
             context->pushColor(style.stroke);
             if (styledFace)
             {
-                styledFace->render(context, style, text.c_str());
+                styledFace->render(context, style, text->text.c_str());
             }
             context->popColor();
             context->popTransform();

@@ -35,39 +35,48 @@ namespace SVGL
         class Image : public Graphic
         {
         protected:
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Image* image;
+                Styles::Image style;
+                Images::Image* texture;
+                Transforms::Transform imageTransform;
+
+                double x;
+                double y;
+                double width;
+                double height;
+
+            public:
+                Instance(const Image* _image, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
             std::string href;
-            CSS::CalculableCache x;
-            CSS::CalculableCache y;
-            CSS::CalculableCache width;
-            CSS::CalculableCache height;
+            CSS::Calculable x;
+            CSS::Calculable y;
+            CSS::Calculable width;
+            CSS::Calculable height;
 
-            Styles::Image style;
-
-            Transforms::Transform imageTransform;
-            Images::Image* image;
 
         public:
             Image(Root* _parent = nullptr);
 
-            /**
-             * Get the tag name of the element.
-             */
+            /***** CSS::Element *****/
+
             const char* getTagName() const override;
 
-            CSS::Style* getStyle() override;
-
-            /**
-             * Calculate the relative units
-             */
-            void calculate(const CSS::SizeContext& sizeContext) override;
+            /***** XML::Node *****/
 
             void setAttribute(unsigned int index, SubString name, SubString value);
 
-            void clearBuffers() override;
+            /***** Elements::Root *****/
 
-            void buffer(double tolerance) override;
-
-            void render(Render::Context* context) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
 
         };
     }

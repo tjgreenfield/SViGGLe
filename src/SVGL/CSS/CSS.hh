@@ -33,4 +33,5 @@
 #include "CSSProperty.hh"
 #include "CSSPropertySet.hh"
 #include "CSSStyleSheet.hh"
+#include "CSSStyleSheetIndex.hh"
 #include "CSSColor.hh"

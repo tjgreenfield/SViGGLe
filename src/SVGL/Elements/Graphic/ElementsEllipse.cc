@@ -28,7 +28,7 @@ namespace SVGL
     namespace Elements
     {
         Ellipse::Ellipse(Root* _parent) :
-            Path(_parent),
+            Graphic(_parent),
             cx(0),
             cy(0),
             rx(0),
@@ -37,24 +37,14 @@ namespace SVGL
 
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Element ****/
+
         const char* Ellipse::getTagName() const
         {
             return "ellipse";
         }
 
-        /**
-         * Calculate the relative units
-         */
-        void Ellipse::calculate(const CSS::SizeContext& sizeContext)
-        {
-            cx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            cy.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-            rx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            ry.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-        }
+        /***** XML::Node *****/
 
         void Ellipse::setAttribute(unsigned int index, SubString name, SubString value)
         {
@@ -99,25 +89,49 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Path::setAttribute(index, name, value);
+                Graphic::setAttribute(index, name, value);
                 break;
             }
         }
 
-        void Ellipse::clearBuffers()
+        /***** Elements::Root *****/
+
+        Instance_uptr Ellipse::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            commandList.clear();
-            Path::clearBuffers();
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
         }
 
-        void Ellipse::buffer(double tolerance)
+        /***** Elements::Ellipse::Instance *****/
+
+        Ellipse::Instance::Instance(const Ellipse* _ellipse, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            ellipse(_ellipse)
         {
-            commandList.clear();
-            commandList.emplace_back(new PathCommands::MoveTo(rx, 0));
-            commandList.emplace_back(new PathCommands::EllipticalTo(Point(-rx, 0), rx, ry, 0, 0, 1, commandList.back().get()));
-            commandList.emplace_back(new PathCommands::EllipticalTo(Point(rx, 0), rx, ry, 0, 0, 1, commandList.back().get()));
+            style.applyPropertySets(ellipse->cascadedStyles, inherit, sizeContext);
+            cx = _ellipse->cx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            cy = _ellipse->cy.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+            rx = _ellipse->rx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            ry = _ellipse->ry.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+        }
+
+        void Ellipse::Instance::buffer(double tolerance)
+        {
+            PathCommands::List commandList;
+            commandList.emplace_back(new PathCommands::MoveTo(cx + rx, cy));
+            commandList.emplace_back(new PathCommands::EllipticalTo(Point(cx - rx, cy), rx, ry, 0, 0, 1, commandList.back().get()));
+            commandList.emplace_back(new PathCommands::EllipticalTo(Point(cx + rx, cy), rx, ry, 0, 0, 1, commandList.back().get()));
             commandList.emplace_back(new PathCommands::ClosePath());
-            Path::buffer(tolerance);
+
+            tolerance = ellipse->transform.transformTolerance(tolerance);
+            renderBuffer.clear();
+            renderBuffer.buffer(commandList, style, tolerance);
+        }
+
+        void Ellipse::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&ellipse->transform);
+            renderBuffer.render(context, style);
+            context->popTransform();
         }
     }
 }
+

@@ -18,15 +18,17 @@
  *
  */
 
-#include "ElementsImage.hh"
+#include "ElementsUse.hh"
+#include <SVGL/SVGLDocument.hh>
 #include <SVGL/Images/ImagesCollection.hh>
 
 namespace SVGL
 {
     namespace Elements
     {
-        Image::Image(Root* _parent) :
+        Use::Use(Root* _parent) :
             Graphic(_parent),
+            href(""),
             x(0),
             y(0),
             width(0),
@@ -35,14 +37,14 @@ namespace SVGL
 
         }
 
-        /***** CSS::Element *****/
-        const char* Image::getTagName() const
+        /***** From CSS::Element *****/
+        const char* Use::getTagName() const
         {
-            return "image";
+            return "use";
         }
 
-        /***** XML::Node *****/
-        void Image::setAttribute(unsigned int index, SubString name, SubString value)
+        /***** From XML::Node *****/
+        void Use::setAttribute(unsigned int index, SubString name, SubString value)
         {
             switch (index)
             {
@@ -93,53 +95,58 @@ namespace SVGL
             }
         }
 
-        /***** Elements::Root *****/
-
-        Instance_uptr Image::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+        /***** From Elements::Root *****/
+        Instance_uptr Use::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
-        }
+            CSS::PropertySet propertySet(cascadedStyles);
+            propertySet.set(getSpecifiedStyle());
+            propertySet.inherit(inherit);
 
-        /***** Elements::Image::Instance *****/
-
-        Image::Instance::Instance(const Image* _image, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
-            image(_image),
-            texture(nullptr)
-        {
-            style.applyPropertySets(image->cascadedStyles, inherit, sizeContext);
-            x = image->x.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            y = image->y.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-            width = image->width.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            height = image->height.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-
-        }
-
-        void Image::Instance::buffer(double)
-        {
-            if (!texture)
+            Document* document = getDocument();
+            if (document)
             {
-                texture = Images::Collection::loadImage(image->href.c_str());
+                if (href.size() > 0)
+                {
+                    if (href.at(0) == '#')
+                    {
+                        Elements::Root* target = document->getElementByID(href.c_str() + 1);
+
+                        return Instance_uptr(new Instance(this, std::move(target->calculateInstance(propertySet, sizeContext)), propertySet, sizeContext));
+                    }
+                }
             }
-            imageTransform.identity();
-            imageTransform.translateR(x, y);
-            imageTransform.scaleR(width, height);
+            return Instance_uptr(nullptr);
+
         }
 
-        void Image::Instance::render(Render::Context* context)
+        /***** Elements::Use::Instance *****/
+
+        Use::Instance::Instance(const Use* _use, Instance_uptr&& _target, const CSS::PropertySet& , const CSS::SizeContext& sizeContext) :
+            use(_use),
+            target(std::move(_target))
         {
-            if (!image)
+            //style.applyPropertySets(use->cascadedStyles, sizeContext);
+            useTransform.translateR(use->x.calculate(sizeContext), use->y.calculate(sizeContext));
+        }
+
+        void Use::Instance::buffer(double tolerance)
+        {
+            if (target)
             {
-                return;
+                target->buffer(tolerance);
             }
-            context->pushTransform(&image->transform);
-            context->pushTransform(&imageTransform);
+        }
 
-            context->setTextureShader();
-            texture->render(context, style);
-            context->setColorShader();
-
-            context->popTransform();
-            context->popTransform();
+        void Use::Instance::render(Render::Context* context)
+        {
+            if (target)
+            {
+                context->pushTransform(&use->transform);
+                context->pushTransform(&useTransform);
+                target->render(context);
+                context->popTransform();
+                context->popTransform();
+            }
         }
     }
 }

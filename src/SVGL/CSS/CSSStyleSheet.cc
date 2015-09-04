@@ -44,59 +44,6 @@ namespace SVGL
                 rulesets.push_back(std::move(ruleset));
                 parser.readWSP();
             }
-            buildIndex();
-        }
-
-        void StyleSheet::applyProperty(PropertySet* propertySet, const PropertySet& inherit, const Property::Index property, const Value* value)
-        {
-            if (const Keyword* keyword = dynamic_cast<const Keyword*>(value))
-            {
-                if (keyword->keyword == Keyword::INHERIT)
-                {
-                    (*propertySet)[property] = inherit[property];
-                    return;
-                }
-            }
-            // TODO, decompose 'font' property
-            (*propertySet)[property] = value;
-        }
-
-        /**
-         * Apply the stylesheet to specified element (where applicable)
-         * param[in] element The element to apply the stylesheet to
-         */
-        void StyleSheet::apply(Element* element, PropertySet* propertySet, const PropertySet& inherit, CSS::SizeContext& sizeContext) const
-        {
-            propertySet->inherit(inherit);
-            for (SelectorBlock selectorBlock : selectorIndex)
-            {
-                if (selectorBlock.selector->match(element))
-                {
-                    for (auto const& i : selectorBlock.block->map)
-                    {
-                        applyProperty(propertySet, inherit, i.first, i.second->value.get());
-                    }
-                }
-            }
-            for (SelectorBlock selectorBlock : importantSelectorIndex)
-            {
-                if (selectorBlock.selector->match(element))
-                {
-                    for (auto const& i : selectorBlock.block->importantMap)
-                    {
-                        applyProperty(propertySet, inherit, i.first, i.second->value.get());
-                    }
-                }
-            }
-            // Apply element's style over the top of the style sheet
-            // TODO move into element code?
-            const DeclarationBlock* specifiedStyle = element->getSpecifiedStyle();
-            for (auto const& i : specifiedStyle->map)
-            {
-                applyProperty(propertySet, inherit, i.first, i.second->value.get());
-            }
-            element->calculate(sizeContext);
-            element->getStyle()->applyPropertySet(*propertySet, inherit, sizeContext);
         }
 
         /**
@@ -111,49 +58,6 @@ namespace SVGL
                 rulesets.push_back(std::move(ruleset));
                 parser.readWSP();
             }
-            buildIndex();
-        }
-
-
-        static bool selectorSort(const SelectorBlock& a, const SelectorBlock& b)
-        {
-            return ((a.selector->getSpecificity()) < (b.selector->getSpecificity()));
-        }
-
-        /**
-         * Build the indexes onces the sheet is complete or updated.
-         */
-        void StyleSheet::buildIndex()
-        {
-            selectorIndex.clear();
-            importantSelectorIndex.clear();
-            for (const Ruleset_uptr& ruleset : rulesets)
-            {
-                for (const Selector_uptr& selector : ruleset->selectors)
-                {
-                    if (ruleset->block->importantMap.size() > 0)
-                    {
-                        importantSelectorIndex.push_back(SelectorBlock(selector.get(), ruleset->block.get()));
-                    }
-                    if (ruleset->block->map.size() > 0)
-                    {
-                        selectorIndex.push_back(SelectorBlock(selector.get(), ruleset->block.get()));
-                    }
-                }
-            }
-            std::sort(selectorIndex.begin(), selectorIndex.end(), selectorSort);
-            std::sort(importantSelectorIndex.begin(), importantSelectorIndex.end(), selectorSort);
-        }
-
-        /**
-         * Merge in another stylesheet object
-         */
-        StyleSheet& StyleSheet::operator+=(StyleSheet& _styleSheet)
-        {
-            std::copy(_styleSheet.selectorIndex.begin(), _styleSheet.selectorIndex.end(), std::back_inserter(selectorIndex));
-
-            std::copy(_styleSheet.importantSelectorIndex.begin(), _styleSheet.importantSelectorIndex.end(), std::back_inserter(importantSelectorIndex));
-            return *this;
         }
 
         /**

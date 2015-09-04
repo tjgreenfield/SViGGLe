@@ -28,7 +28,7 @@ namespace SVGL
     namespace Elements
     {
         Circle::Circle(Root* _parent) :
-            Path(_parent),
+            Graphic(_parent),
             cx(0),
             cy(0),
             r(0)
@@ -36,23 +36,14 @@ namespace SVGL
 
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Element *****/
+
         const char* Circle::getTagName() const
         {
             return "circle";
         }
 
-        /**
-         * Calculate the relative units
-         */
-        void Circle::calculate(const CSS::SizeContext& sizeContext)
-        {
-            cx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            cy.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-            r.calculate(sizeContext, CSS::Calculable::PercentMode::DIAGONAL);
-        }
+        /***** XML::Node *****/
 
         void Circle::setAttribute(unsigned int index, SubString name, SubString value)
         {
@@ -88,25 +79,47 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Path::setAttribute(index, name, value);
+                Graphic::setAttribute(index, name, value);
                 break;
             }
         }
 
-        void Circle::clearBuffers()
+        /***** Elements::Root *****/
+
+        Instance_uptr Circle::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            commandList.clear();
-            Path::clearBuffers();
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
         }
 
-        void Circle::buffer(double tolerance)
+        /***** Elements::Circle::Instance *****/
+
+        Circle::Instance::Instance(const Circle* _circle, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            circle(_circle)
         {
-            commandList.clear();
-            commandList.emplace_back(new PathCommands::MoveTo(r, 0));
-            commandList.emplace_back(new PathCommands::EllipticalTo(Point(-r, 0), r, r, 0, 0, 1, commandList.back().get()));
-            commandList.emplace_back(new PathCommands::EllipticalTo(Point(r, 0), r, r, 0, 0, 1, commandList.back().get()));
+            style.applyPropertySets(circle->cascadedStyles, inherit, sizeContext);
+            cx = _circle->cx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            cy = _circle->cy.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+            r = _circle->r.calculate(sizeContext, CSS::Calculable::PercentMode::DIAGONAL);
+        }
+
+        void Circle::Instance::buffer(double tolerance)
+        {
+            PathCommands::List commandList;
+            commandList.emplace_back(new PathCommands::MoveTo(cx + r, cy));
+            commandList.emplace_back(new PathCommands::EllipticalTo(Point(cx - r, cy), r, r, 0, 0, 1, commandList.back().get()));
+            commandList.emplace_back(new PathCommands::EllipticalTo(Point(cx + r, cy), r, r, 0, 0, 1, commandList.back().get()));
             commandList.emplace_back(new PathCommands::ClosePath());
-            Path::buffer(tolerance);
+
+            tolerance = circle->transform.transformTolerance(tolerance);
+            renderBuffer.clear();
+            renderBuffer.buffer(commandList, style, tolerance);
+        }
+
+        void Circle::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&circle->transform);
+            renderBuffer.render(context, style);
+            context->popTransform();
         }
     }
 

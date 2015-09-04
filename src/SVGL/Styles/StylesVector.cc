@@ -43,7 +43,7 @@ namespace SVGL
             hasFill() = 1;
         }
 
-        void Vector::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+        void Vector::applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext)
         {
             using namespace CSS;
             using namespace CSS::Property;
@@ -201,7 +201,7 @@ namespace SVGL
                 strokeWidth = 1;
             }
 
-            Graphic::applyPropertySet(propertySet, inherit, sizeContext);
+            Graphic::applyPropertySet(propertySet, sizeContext);
         }
     }
 }

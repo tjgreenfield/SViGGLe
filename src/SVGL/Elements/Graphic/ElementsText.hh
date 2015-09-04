@@ -33,54 +33,41 @@ namespace SVGL
         class Text : public Graphic
         {
         protected:
-            CSS::CalculableCache x, y;
-            Styles::Text style;
-            Font::StyledFaceKey styledFaceKey;
-            Font::StyledFaceHandle styledFace;
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Text* text;
+                double x;
+                double y;
+                Styles::Text style;
+                Font::StyledFaceKey styledFaceKey;
+                Font::StyledFaceHandle styledFace;
+
+            public:
+                Instance(const Text* _text, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
+            CSS::Calculable x;
+            CSS::Calculable y;
             std::string text;
 
         public:
             Text(Root* _parent = nullptr);
 
-            /* From CSS::Element */
-
-            /**
-             * Get the tag name of the element.
-             */
+            /***** From CSS::Element *****/
             const char* getTagName() const override;
 
-            /**
-             * Calculate the relative units
-             */
-            void calculate(const CSS::SizeContext& sizeContext) override;
-
-            /**
-             * Test the value of the specified attribute.
-             *
-             * @param[in] index The attribute index of the attribute to test.
-             * @param[in] attributeValue The value of the attribute to test.
-             */
-            bool testAttributeValue(unsigned int index, const char* attributeValue) const override;
-
-            /**
-             * Get the Style object for the current element.
-             *
-             * @details The style object is used to apply styles from the stylesheets.
-             * @return A pointer to the Style object.
-             */
-            CSS::Style* getStyle() override;
-
-            /* From XML::Node */
-
+            /***** From XML::Node *****/
             void setAttribute(unsigned int index, SubString name, SubString value) override;
 
             void appendText(SubString data) override;
 
-            /* From Element */
-
-            void buffer(double tolerance) override;
-
-            void render(Render::Context* context) override;
+            /***** From Element::Root *****/
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

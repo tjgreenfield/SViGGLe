@@ -44,7 +44,9 @@ namespace SVGL
              *
              * @param[in] propertySet The set of properties to apply.
              */
-            virtual void applyPropertySet(const PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) = 0;
+            void applyPropertySets(const PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+            virtual void applyPropertySet(const PropertySet& propertySet, const CSS::SizeContext& sizeContext) = 0;
 
             virtual void updateSizeContext(SizeContext* sizeContext);
         };

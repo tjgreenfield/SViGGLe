@@ -28,7 +28,7 @@ namespace SVGL
     namespace Elements
     {
         Rect::Rect(Root* _parent) :
-            Path(_parent),
+            Graphic(_parent),
             x(0),
             y(0),
             width(0),
@@ -39,27 +39,13 @@ namespace SVGL
 
         }
 
-        /**
-         * Get the tag name of the element.
-         */
+        /***** CSS::Element *****/
         const char* Rect::getTagName() const
         {
             return "rect";
         }
 
-        /**
-         * Calculate the relative units
-         */
-        void Rect::calculate(const CSS::SizeContext& sizeContext)
-        {
-            x.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            y.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-            width.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            height.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-            rx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
-            ry.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
-        }
-
+        /***** XML::Node *****/
         void Rect::setAttribute(unsigned int index, SubString name, SubString value)
         {
             switch (index)
@@ -121,20 +107,35 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Path::setAttribute(index, name, value);
+                Graphic::setAttribute(index, name, value);
                 break;
             }
         }
 
-        void Rect::clearBuffers()
+        /***** Elements::Root *****/
+
+        Instance_uptr Rect::calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
         {
-            commandList.clear();
-            Path::clearBuffers();
+            return std::move(Instance_uptr(new Instance(this, inherit, sizeContext)));
         }
 
-        void Rect::buffer(double tolerance)
+        /***** Elements::Rect::Instance *****/
+
+        Rect::Instance::Instance(const Rect* _rect, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) :
+            rect(_rect)
         {
-            commandList.clear();
+            style.applyPropertySets(rect->cascadedStyles, inherit, sizeContext);
+            x = rect->x.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            y = rect->y.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+            width = rect->width.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            height = rect->height.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+            rx = rect->rx.calculate(sizeContext, CSS::Calculable::PercentMode::X);
+            ry = rect->ry.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
+        }
+
+        void Rect::Instance::buffer(double tolerance)
+        {
+            PathCommands::List commandList;
             if ((rx == 0) && (ry == 0))
             {
                 commandList.emplace_back(new PathCommands::MoveTo(x, y));
@@ -168,7 +169,16 @@ namespace SVGL
                 commandList.emplace_back(new PathCommands::EllipticalTo(Point(x + rx_, y), rx_, ry_, 0, 0, 1, commandList.back().get()));
                 commandList.emplace_back(new PathCommands::ClosePath());
             }
-            Path::buffer(tolerance);
+
+            tolerance = rect->transform.transformTolerance(tolerance);
+            renderBuffer.clear();
+            renderBuffer.buffer(commandList, style, tolerance);
+        }
+
+        void Rect::Instance::render(Render::Context* context)
+        {
+            context->pushTransform(&rect->transform);
+            renderBuffer.render(context, style);
         }
     }
 }

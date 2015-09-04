@@ -26,34 +26,51 @@ namespace SVGL
 {
     namespace Elements
     {
-        class Rect : public Path
+        class Rect : public Graphic
         {
         protected:
-            CSS::CalculableCache x;
-            CSS::CalculableCache y;
-            CSS::CalculableCache width;
-            CSS::CalculableCache height;
-            CSS::CalculableCache rx;
-            CSS::CalculableCache ry;
+            class Instance : public Elements::Instance
+            {
+            protected:
+                const Rect* rect;
+                Styles::Shape style;
+                Render::PathBuffer renderBuffer;
+                double x;
+                double y;
+                double width;
+                double height;
+                double rx;
+                double ry;
+
+            public:
+                Instance(const Rect* _rect, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+
+                void buffer(double tolerance) override;
+
+                void render(Render::Context* context) override;
+            };
+
+            CSS::Calculable x;
+            CSS::Calculable y;
+            CSS::Calculable width;
+            CSS::Calculable height;
+            CSS::Calculable rx;
+            CSS::Calculable ry;
 
         public:
             Rect(Root* _parent = nullptr);
 
-            /**
-             * Get the tag name of the element.
-             */
+            /***** CSS::Element *****/
+
             const char* getTagName() const override;
 
-            /**
-             * Calculate the relative units
-             */
-            void calculate(const CSS::SizeContext& sizeContext) override;
+            /***** XML::Node *****/
 
             void setAttribute(unsigned int index, SubString name, SubString value);
 
-            void clearBuffers() override;
+            /***** Elements::Root *****/
 
-            void buffer(double tolerance) override;
+            Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

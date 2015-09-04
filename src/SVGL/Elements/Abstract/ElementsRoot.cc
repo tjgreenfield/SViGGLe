@@ -110,5 +110,10 @@ namespace SVGL
                 return nullptr;
             }
         }
+
+        void Root::cascadeStyle(const CSS::StyleSheetIndex& )
+        {
+
+        }
     }
 }

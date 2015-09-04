@@ -23,6 +23,7 @@
 #include "CSSStructures.hh"
 #include "CSSPropertySet.hh"
 #include "CSSStyle.hh"
+#include "CSSStyleSheet.hh"
 #include <memory>
 
 namespace SVGL
@@ -33,32 +34,40 @@ namespace SVGL
         /**
          * A class that provides the abililty to read CSS styles and apply them to elements.
          */
-        class StyleSheet
+        class StyleSheetIndex
         {
-            friend Parser;
-            friend class StyleSheetIndex;
-            friend std::ostream& operator<<(std::ostream& out, const StyleSheet& styleSheet);
-
         public:
             /**
-             * Constructor
+             * Apply the stylesheet to specified element (where applicable)
+             * param[in] element The element to apply the stylesheet to
              */
-            StyleSheet(const char* code = "");
+            void apply(Element* element, PropertySet* propertySet) const;
 
             /**
-             * Add new CSS code to the style sheet
-             * param[in] code The string containing the CSS code to add.
+             * Add a stylesheet to the index
              */
-            void add(const char* code);
+            void add(const StyleSheet& _styleSheet);
+
+            /**
+             * Clear the index
+             */
+            void clear();
+
+
+            /**
+             * Sort the index in preparation to apply
+             */
+            void sort();
 
 
         protected:
-            typedef std::vector<Ruleset_uptr> Rulesets; //!< Type for the set of rulesets
-            Rulesets rulesets; //!< The set of rulesets
+            typedef std::vector<SelectorBlock> SelectorIndex; //!< Type for the indexes
+            SelectorIndex selectorIndex; //!< The indexes of selectors for non-important declarations
+            SelectorIndex importantSelectorIndex; //!< The indexes of selectors for important declarations
         };
 
         typedef std::unique_ptr<StyleSheet> StyleSheet_uptr;
 
-        std::ostream& operator<<(std::ostream& out, const StyleSheet& styleSheet);
+        std::ostream& operator<<(std::ostream& out, const StyleSheetIndex& styleSheetIndex);
     }
 }

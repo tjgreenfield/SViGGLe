@@ -29,5 +29,13 @@ namespace SVGL
         {
 
         }
+
+        void Style::applyPropertySets(const PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext)
+        {
+            CSS::PropertySet combinedSet(propertySet);
+            combinedSet.inherit(inherit);
+
+            applyPropertySet(combinedSet, sizeContext);
+        }
     }
 }

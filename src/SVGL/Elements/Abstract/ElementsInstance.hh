@@ -20,20 +20,24 @@
 
 #pragma once
 
-#include "StylesVector.hh"
+#include <SVGL/Render/RenderContext.hh>
+
+#include <memory>
 
 namespace SVGL
 {
-    namespace Styles
+    namespace Elements
     {
-        class Image : public CSS::Style// doesn't inherit? need generic Style base class?
+        class Instance
         {
-            /*
-            `color-profile'
-            */
         public:
+            virtual ~Instance() = default;
 
-            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext) override;
+            virtual void buffer(double tolerance) = 0;
+
+            virtual void render(Render::Context* context) = 0;
         };
+
+        typedef std::unique_ptr<Instance> Instance_uptr;
     }
 }

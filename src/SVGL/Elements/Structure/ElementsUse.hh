@@ -20,50 +20,53 @@
 
 #pragma once
 
-#include "ElementsPath.hh"
+#include <SVGL/Elements/Abstract/ElementsGraphic.hh>
+#include <SVGL/Images/ImagesImage.hh>
+#include <SVGL/Styles/StylesImage.hh>
+#include <SVGL/CSS/CSSStyle.hh>
+#include <SVGL/CSS/CSSSizeContext.hh>
+#include <SVGL/CSS/CSSCalculableCache.hh>
+
 
 namespace SVGL
 {
     namespace Elements
     {
-        class Circle : public Graphic
+        class Use : public Graphic
         {
         protected:
             class Instance : public Elements::Instance
             {
             protected:
-                const Circle* circle;
-                Styles::Shape style;
-                Render::PathBuffer renderBuffer;
-                double cx;
-                double cy;
-                double r;
+                const Use* use;
+                Instance_uptr target;
+                Transforms::Transform useTransform;
 
             public:
-                Instance(const Circle* _circle, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
+                Instance(const Use* _use, Instance_uptr&& _target, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext);
 
                 void buffer(double tolerance) override;
 
                 void render(Render::Context* context) override;
             };
 
-            CSS::Calculable cx;
-            CSS::Calculable cy;
-            CSS::Calculable r;
+            std::string href;
+            CSS::Calculable x;
+            CSS::Calculable y;
+            CSS::Calculable width;
+            CSS::Calculable height;
 
         public:
-            Circle(Root* _parent = nullptr);
+            Use(Root* _parent = nullptr);
 
-            /***** CSS::Element *****/
-
+            /***** From CSS::Element *****/
             const char* getTagName() const override;
 
-            /***** XML::Node *****/
 
+            /***** From XML::Node *****/
             void setAttribute(unsigned int index, SubString name, SubString value);
 
             /***** Elements::Root *****/
-
             Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
 
         };

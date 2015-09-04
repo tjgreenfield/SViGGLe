@@ -91,7 +91,7 @@ namespace SVGL
 
             Vector();
 
-            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
+            void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext) override;
         };
     }
 }

@@ -105,7 +105,7 @@ namespace SVGL
                 glBufferData(GL_ARRAY_BUFFER, p.size() * 2 * sizeof(double), &p[0], GL_STATIC_DRAW);
 
                 glBindVertexArray(strokeVertexArrays[i]);
-                glEnableVertexAttribArray(0); // ??
+                glEnableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, strokeGLBuffers[i]);
                 glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
             }
@@ -133,7 +133,7 @@ namespace SVGL
                 glBufferData(GL_ARRAY_BUFFER, p.size() * 2 * sizeof(double), &p[0], GL_STATIC_DRAW);
 
                 glBindVertexArray(fillVertexArrays[i]);
-                glEnableVertexAttribArray(0); // ??
+                glEnableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, fillBuffers[i]);
                 glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
             }
@@ -171,16 +171,20 @@ namespace SVGL
         {
             if (style.hasFill())
             {
-                context->pushColor(style.fill);
-                renderFill();
-                context->popColor();
+                //context->pushColor(style.fill);
+                //renderFill();
+                //context->popColor();
+                style.fill->renderFill(context, *this);
+
             }
             context->incrementDepth();
             if (style.hasStroke())
             {
-                context->pushColor(style.stroke);
-                renderStroke();
-                context->popColor();
+                //context->pushColor(style.stroke);
+                //renderStroke();
+                //context->popColor();
+                style.stroke->renderStroke(context, *this);
+
             }
             context->incrementDepth();
         }

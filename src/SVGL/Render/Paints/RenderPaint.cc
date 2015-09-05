@@ -18,32 +18,25 @@
  *
  */
 
-#pragma once
-
-#include <SVGL/SVGLDocument.hh>
-#include <SVGL/Elements/ElementsTag.hh>
-#include <SVGL/XML/XMLParser.hh>
-#include <SVGL/XML/XMLNode.hh>
-#include <SVGL/Types/SubString.hh>
-
-#include <unordered_map>
+#include "RenderPaint.hh"
 
 namespace SVGL
 {
-
-
-    class Parser : public XML::Parser
+    namespace Render
     {
-    public:
-        inline Parser(const char* _s = nullptr) :
-            XML::Parser(_s)
+        void Paint::renderFill(Context* , const PathBuffer& ) const
         {
 
         }
 
-        Document_uptr readSVG();
+        void Paint::renderStroke(Context* , const PathBuffer& ) const
+        {
 
-        XML::Node_uptr createElement(SubString tag, XML::Node* _parent) override;
-    };
+        }
 
+        typedef std::unique_ptr<Paint> Paint_uptr;
+    }
 }
+
+
+

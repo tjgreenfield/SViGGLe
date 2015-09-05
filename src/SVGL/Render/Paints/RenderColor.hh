@@ -20,30 +20,30 @@
 
 #pragma once
 
-#include <SVGL/SVGLDocument.hh>
-#include <SVGL/Elements/ElementsTag.hh>
-#include <SVGL/XML/XMLParser.hh>
-#include <SVGL/XML/XMLNode.hh>
-#include <SVGL/Types/SubString.hh>
-
-#include <unordered_map>
+#include "RenderPaint.hh"
 
 namespace SVGL
 {
-
-
-    class Parser : public XML::Parser
+    namespace Render
     {
-    public:
-        inline Parser(const char* _s = nullptr) :
-            XML::Parser(_s)
+        class Color : public Paint
         {
+        protected:
+            unsigned int rgba;
 
-        }
+        public:
+            Color(unsigned int _rgba);
 
-        Document_uptr readSVG();
+            void setColor(unsigned int rgb);
 
-        XML::Node_uptr createElement(SubString tag, XML::Node* _parent) override;
-    };
+            void setAlpha(unsigned int a);
 
+            void enable(Context* context) const;
+
+            void renderFill(Context* context, const PathBuffer& buffer) const override;
+
+            void renderStroke(Context* context, const PathBuffer& buffer) const override;
+
+        };
+    }
 }

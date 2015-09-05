@@ -22,6 +22,8 @@
 
 #include "StylesGraphic.hh"
 
+#include <SVGL/Render/Paints/RenderPaint.hh>
+
 namespace SVGL
 {
     namespace Styles
@@ -82,8 +84,14 @@ namespace SVGL
             BITRANGE_IMPL(strokeLineCap, bits, 15, 2);
             BITRANGE_IMPL(strokeLineJoin, bits, 17, 2);
 
-            Color fill;
-            Color stroke;
+            //Color fill;
+            //Color stroke;
+            Render::Paint_uptr fill;
+            float fillOpacity;
+
+            Render::Paint_uptr stroke;
+            float strokeOpacity;
+
             double strokeWidth;
             double strokeMiterLimit;
             double strokeDashOffset;

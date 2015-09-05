@@ -19,6 +19,9 @@
  */
 
 #include "StylesVector.hh"
+
+#include <SVGL/Render/Paints/RenderColor.hh>
+
 #include <iostream>
 #include <limits>
 
@@ -32,8 +35,8 @@ namespace SVGL
          */
         Vector::Vector() :
             Graphic(),
-            fill(0xFF000000),
-            stroke(0x00000000),
+            //fill(0xFF000000),
+            //stroke(0x00000000),
             strokeWidth(1),
             strokeMiterLimit(4),
             strokeDashOffset(0),
@@ -51,19 +54,22 @@ namespace SVGL
             constexpr auto keywordFromValue = &Keyword::keywordFromValue;
 
             // fill
-            if (colorFromValue(&fill, propertySet[Property::FILL]))
+            unsigned int fillColor;
+            if (colorFromValue(&fillColor, propertySet[Property::FILL]))
             {
+                fill = Render::Paint_uptr(new Render::Color(fillColor));
                 hasFill() = 1;
             }
             else
             {
                 if (keywordFromValue(propertySet[Property::FILL]) == Keyword::NONE)
                 {
+                    fill = nullptr;
                     hasFill() = 0;
                 }
                 else
                 {
-                    fill = RGBA(0, 0, 0, (fill >> 24) & 0xFF);
+                    fill = Render::Paint_uptr(new Render::Color(RGB(0, 0, 0)));
                     hasFill() = 1;
                 }
             }
@@ -82,28 +88,31 @@ namespace SVGL
             // fill-opacity
             if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::FILL_OPACITY]))
             {
-                fill = RGBA(fill, 255 * dimension->calculate(sizeContext));
+                fillOpacity = dimension->calculate(sizeContext);
             }
             else
             {
-                fill = RGBA(fill, 255);
+                fillOpacity = 1.0;
             }
 
             // stroke
-            if (colorFromValue(&stroke, propertySet[Property::STROKE]))
+            unsigned int strokeColor;
+            if (colorFromValue(&strokeColor, propertySet[Property::STROKE]))
             {
+                stroke = Render::Paint_uptr(new Render::Color(strokeColor));
                 hasStroke() = 1;
             }
             else
             {
                 if (keywordFromValue(propertySet[Property::STROKE]) == Keyword::NONE)
                 {
+                    stroke = nullptr;
                     hasStroke() = 0;
                 }
                 else
                 {
-                    stroke = RGBA(0, 0, 0, (stroke >> 24) & 0xFF);
-                    hasStroke() = 1;
+                    stroke = nullptr;
+                    hasStroke() = 0;
                 }
             }
 
@@ -184,11 +193,11 @@ namespace SVGL
             // stroke-opacity
             if (auto dimension = dynamic_cast<const CSS::Dimension*>(propertySet[Property::STROKE_OPACITY]))
             {
-                stroke = RGBA(stroke, 255 * dimension->calculate(sizeContext));
+                strokeOpacity = dimension->calculate(sizeContext);
             }
             else
             {
-                stroke = RGBA(stroke, 255);
+                strokeOpacity = 1.0;
             }
 
             // stroke-width

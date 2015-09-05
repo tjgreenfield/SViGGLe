@@ -27,12 +27,22 @@ namespace SVGL
         Texture::Texture()
         {
             glGenTextures(1, &texture);
+
+            if (!buffer)
+            {
+                initBuffer();
+            }
         }
 
         Texture::Texture(Texture&& _texture)
         {
             texture = _texture.texture;
             _texture.texture = 0;
+
+            if (!buffer)
+            {
+                initBuffer();
+            }
         }
 
         Texture& Texture::operator=(Texture&& _texture)
@@ -52,14 +62,6 @@ namespace SVGL
 
         void Texture::bind() const
         {
-            /*glActiveTexture(GL_TEXTURE0 + 0);
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glBindSampler(0, linearFiltering);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-
             GLint program;
             glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
@@ -72,28 +74,60 @@ namespace SVGL
 
         void Texture::loadRGB(unsigned int width, unsigned int height, const unsigned char* data)
         {
+            glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, width, height);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         }
 
         void Texture::loadRGBA(unsigned int width, unsigned int height, const unsigned char* data)
         {
+            glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         }
 
         void Texture::render() const
         {
             bind();
+            glBindVertexArray(vertexArray);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        }
 
-            glBegin(GL_QUADS);
-            glVertex2d(0, 0);
-            glVertex2d(1, 0);
-            glVertex2d(1, 1);
-            glVertex2d(0, 1);
-            glEnd();
+        GLuint Texture::buffer = 0;
+        GLuint Texture::vertexArray = 0;
+
+        void Texture::initBuffer()
+        {
+            double points[] = {
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                };
+
+            glGenBuffers(1, &buffer);
+            glGenVertexArrays(1, &vertexArray);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(double), &points[0], GL_STATIC_DRAW);
+
+            glBindVertexArray(vertexArray);
+            glEnableVertexAttribArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 0, (GLubyte*)NULL);
         }
     }
 }

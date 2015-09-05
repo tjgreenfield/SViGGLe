@@ -247,6 +247,14 @@ static GLFWwindow* initGL()
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
+    glfwWindowHint(GLFW_ALPHA_BITS, 8);
+    glfwWindowHint(GLFW_DEPTH_BITS, 32);
+    glfwWindowHint(GLFW_STENCIL_BITS, 32);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Simple example", NULL, NULL);
     if (!window)
     {
@@ -410,4 +418,5 @@ void renderTest()
         glfwPollEvents();
     }
 }
+
 

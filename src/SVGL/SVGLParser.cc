@@ -23,69 +23,44 @@
 
 namespace SVGL
 {
-    ElementTypeMap elementTypeMap = {
-        { "svg", ET_SVG },
-        { "g", ET_G },
-        { "path", ET_PATH },
-        { "rect", ET_RECT },
-        { "circle", ET_CIRCLE},
-        { "ellipse", ET_ELLIPSE},
-        { "line", ET_LINE},
-        { "polyline", ET_POLYLINE},
-        { "polygon", ET_POLYGON},
-        { "text", ET_TEXT},
-        { "style", ET_STYLE},
-        { "image", ET_IMAGE},
-        { "defs", ET_DEFS},
-        { "use", ET_USE}
-    };
 
-    ElementType getElementType(SubString tag)
-    {
-        auto i = elementTypeMap.find(tag);
-        if (i != elementTypeMap.end())
-        {
-            return i->second;
-        }
-        return ET_INVALID;
-    }
 
     XML::Node_uptr Parser::createElement(SubString tag, XML::Node* _parent)
     {
         Elements::Root* parent = dynamic_cast<Elements::Root*>(_parent);
-        ElementType type = getElementType(tag);
+        Elements::Tag::Index type = Elements::Tag::getIndex(tag);
         switch (type)
         {
         default:
-        case ET_INVALID:
+        case Elements::Tag::INVALID:
             return std::move(XML::Node_uptr(new XML::Node()));
-        case ET_SVG:
+        case Elements::Tag::SVG:
             return std::move(XML::Node_uptr(new Elements::SVG(parent)));
-        case ET_G:
+        case Elements::Tag::G:
             return std::move(XML::Node_uptr(new Elements::Group(parent)));
-        case ET_PATH:
+        case Elements::Tag::PATH:
             return std::move(XML::Node_uptr(new Elements::Path(parent)));
-        case ET_RECT:
+        case Elements::Tag::RECT:
             return std::move(XML::Node_uptr(new Elements::Rect(parent)));
-        case ET_CIRCLE:
+        case Elements::Tag::CIRCLE:
             return std::move(XML::Node_uptr(new Elements::Circle(parent)));
-        case ET_ELLIPSE:
+        case Elements::Tag::ELLIPSE:
             return std::move(XML::Node_uptr(new Elements::Ellipse(parent)));
-        case ET_LINE:
+        case Elements::Tag::LINE:
             return std::move(XML::Node_uptr(new Elements::Line(parent)));
-        case ET_POLYLINE:
+        case Elements::Tag::POLYLINE:
             return std::move(XML::Node_uptr(new Elements::PolyLine(parent)));
-        case ET_POLYGON:
+        case Elements::Tag::POLYGON:
             return std::move(XML::Node_uptr(new Elements::Polygon(parent)));
-        case ET_TEXT:
+        case Elements::Tag::TEXT:
             return std::move(XML::Node_uptr(new Elements::Text(parent)));
-        case ET_STYLE:
+        case Elements::Tag::STYLE:
             return std::move(XML::Node_uptr(new Elements::Style(parent)));
-        case ET_IMAGE:
+        case Elements::Tag::IMAGE:
             return std::move(XML::Node_uptr(new Elements::Image(parent)));
-        case ET_DEFS:
+        case Elements::Tag::DEFS:
             return std::move(XML::Node_uptr(new Elements::Defs(parent)));
-        case ET_USE:
+        case Elements::Tag::USE:
             return std::move(XML::Node_uptr(new Elements::Use(parent)));
         }
     }

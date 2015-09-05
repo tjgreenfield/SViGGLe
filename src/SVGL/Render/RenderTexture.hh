@@ -29,6 +29,12 @@ namespace SVGL
         class Texture
         {
         protected:
+
+            static GLuint buffer;
+            static GLuint vertexArray;
+
+            static void initBuffer();
+
             GLuint texture;
 
         public:

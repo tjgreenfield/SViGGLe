@@ -20,10 +20,11 @@
 
 #pragma once
 
+#include "RenderContext.hh"
+
 #include <SVGL/PathCommands/PathCommands.hh>
 #include <SVGL/PathCommands/PathCommandsList.hh>
 #include <SVGL/PathCommands/Buffer/PathCommandsPolygon.hh>
-#include "RenderContext.hh"
 #include <SVGL/GL/gl.h>
 
 #include <vector>

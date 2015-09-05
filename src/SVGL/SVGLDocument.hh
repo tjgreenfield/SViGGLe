@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <SVGL/Elements/Structure/ElementsSVG.hh>
-#include <SVGL/Elements/Abstract/ElementsRoot.hh>
-#include <SVGL/Elements/Abstract/ElementsInstance.hh>
+#include <SVGL/Elements/Structures/ElementsSVG.hh>
+#include <SVGL/Elements/Abstracts/ElementsRoot.hh>
+#include <SVGL/Elements/Abstracts/ElementsInstance.hh>
 #include <SVGL/CSS/CSSStyleSheet.hh>
 #include <SVGL/XML/XML.hh>
 #include <SVGL/Types/SubString.hh>

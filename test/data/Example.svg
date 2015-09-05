@@ -180,7 +180,7 @@
 
     </g>
 
-    <atext stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</atext>
+    <text stroke="yellow" fill="green" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="10">The quick brown <tspan font-weight="bold" fill="blue" >fox</tspan> jumped over the lazy dog.</text>
     <g style="stroke:red" stroke="red" fill="blue" transform="scale(10, 10)">
         <rect fill="none" stroke-width="0.1" x="0" y="0" width="10" height="10"/>
         <text style="stroke-dasharray:10,1;stroke-width:0.1" fill="purple" font-family="'Courier New', sans-serif" font-style="regular" font-weight="normal" font-size="30">XQLI</text>

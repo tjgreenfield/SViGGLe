@@ -50,6 +50,7 @@ namespace SVGL
             {
                 std::cout << "Vertex Shader Log: (" << status << ") " << buffer << std::endl;
                 std::cout << vertexShader << std::endl;
+                getchar();
             }
 
 
@@ -63,6 +64,7 @@ namespace SVGL
             {
                 std::cout << "Fragment Shader Log: (" << status << ") " << buffer << std::endl;
                 std::cout << fragmentShader << std::endl;
+                getchar();
             }
 
             unsigned int shaderProgramme = glCreateProgram();
@@ -101,8 +103,9 @@ namespace SVGL
                 "uniform dmat3x2 transform;\n"
                 "uniform float depth;\n"
                 "in vec2 vp;\n"
+                "out vec2 otex;"
                 "void main () {\n"
-                "   gl_TexCoord[0] = vec4(vp.x, 1 - vp.y, 0, 0);\n"
+                "   otex = vec2(vp.x, 1 - vp.y);\n"
                 "   gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],\n"
                 "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],\n"
                 "                      depth,\n"
@@ -113,9 +116,10 @@ namespace SVGL
                 "uniform sampler2D imageMap;"
                 "uniform vec4 pen;"
                 "uniform int mode;"
+                "in vec2 otex;"
                 "out vec4 frag_colour;"
                 "void main () {"
-                "    frag_colour = texture2D(imageMap, gl_TexCoord[0].st);"
+                "    frag_colour = texture2D(imageMap, otex);"
                 "}");
 
         }
@@ -129,17 +133,16 @@ namespace SVGL
             color = RGBA(255, 255, 255, 255);
 
             glEnable(GL_BLEND);
-            glEnable(GL_DEPTH_TEST);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LESS);
+
+            glEnable(GL_STENCIL_TEST);
+            glStencilFunc(GL_ALWAYS, 0, 0xFFFFFFFF);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
             glLineWidth(1.0);
-
-            glHint(GL_POINT_SMOOTH, GL_NICEST);
-            glHint(GL_LINE_SMOOTH, GL_NICEST);
-            glHint(GL_POLYGON_SMOOTH, GL_NICEST);
-
-            glEnable(GL_POINT_SMOOTH);
-            glEnable(GL_LINE_SMOOTH);
-            glEnable(GL_POLYGON_SMOOTH);
 
             glUseProgram(colorShaderProgramme);
 
@@ -242,6 +245,10 @@ namespace SVGL
         void Context::setTextureShader()
         {
             glUseProgram(textureShaderProgramme);
+            GLint program;
+            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+            int location = glGetUniformLocation(program, "imageMap");
+            glUniform1f(location, 0);
             update();
         }
 

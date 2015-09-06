@@ -34,12 +34,16 @@ namespace SVGL
         {
         protected:
             double advance;
+            double width;
+            double height;
             PathCommands::List commandList;
 
         public:
-            Glyph(FT_Outline outline, double _advance);
+            Glyph(FT_Outline outline, double _advance, double _width, double _height);
 
             const PathCommands::List& getCommandList() const;
+            double getWidth() const;
+            double getHeight() const;
             double getAdvance() const;
         };
     }

@@ -62,6 +62,12 @@ namespace SVGL
             return std::move(XML::Node_uptr(new Elements::Defs(parent)));
         case Elements::Tag::USE:
             return std::move(XML::Node_uptr(new Elements::Use(parent)));
+        case Elements::Tag::LINEAR_GRADIENT:
+            return std::move(XML::Node_uptr(new Elements::LinearGradient(parent)));
+        case Elements::Tag::RADIAL_GRADIENT:
+            return std::move(XML::Node_uptr(new Elements::RadialGradient(parent)));
+        case Elements::Tag::STOP:
+            return std::move(XML::Node_uptr(new Elements::Stop(parent)));
         }
     }
 

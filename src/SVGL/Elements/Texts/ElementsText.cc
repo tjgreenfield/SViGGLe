@@ -38,14 +38,14 @@ namespace SVGL
         }
 
         /***** From XML::Node *****/
-        void Text::setAttribute(unsigned int index, SubString name, SubString value)
+        void Text::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -67,6 +67,7 @@ namespace SVGL
             text(_text)
         {
             style.applyPropertySets(text->cascadedStyles, inherit, sizeContext);
+
             x = text->x.calculate(sizeContext, CSS::Calculable::PercentMode::X);
             y = text->y.calculate(sizeContext, CSS::Calculable::PercentMode::Y);
         }
@@ -85,22 +86,30 @@ namespace SVGL
             {
                 styledFace->buffer(style, text->text.c_str(), tolerance);
             }
+
+            style.buffer(*this);
         }
 
-        void Text::Instance::render(Render::Context* context)
+        void Text::Instance::render(Render::Context* context) const
         {
             Transforms::Transform t;
             t.translateR(x, y);
             t.scaleR(styledFaceKey.effectiveFontSize, styledFaceKey.effectiveFontSize);
 
             context->pushTransform(&t);
-            //context->pushColor(style.stroke);
             if (styledFace)
             {
                 styledFace->render(context, style, text->text.c_str());
             }
-            //context->popColor();
             context->popTransform();
+        }
+
+        void Text::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            if (styledFace)
+            {
+                styledFace->calculateBoundingBox(boundingBox, text->text.c_str());
+            }
         }
     }
 }

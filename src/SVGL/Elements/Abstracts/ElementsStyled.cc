@@ -125,7 +125,7 @@ namespace SVGL
         {
             if (unsigned int attributeIndex = Attribute::getIndex(name))
             {
-                setAttribute(attributeIndex, name, value);
+                setAttribute(attributeIndex, value);
             }
             else if (CSS::Property::Index propertyIndex = CSS::Property::map.lookup(name))
             {
@@ -138,7 +138,7 @@ namespace SVGL
             }
         }
 
-        void Styled::setAttribute(unsigned int index, SubString, SubString value)
+        void Styled::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {

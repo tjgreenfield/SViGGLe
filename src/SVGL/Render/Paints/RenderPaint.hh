@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <SVGL/Elements/Abstracts/ElementsInstance.hh>
+
 #include <memory>
 
 namespace SVGL
@@ -33,6 +35,8 @@ namespace SVGL
         {
         public:
             virtual ~Paint() = default;
+
+            virtual void buffer(const Elements::Instance& instance);
 
             virtual void renderFill(Context* context, const PathBuffer& buffer) const;
 

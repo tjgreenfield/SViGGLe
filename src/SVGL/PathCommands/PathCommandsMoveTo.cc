@@ -36,5 +36,10 @@ namespace SVGL
             stroker->strokeBuffer.newSet();
             stroker->at = *this;
         }
+
+        void MoveTo::calculateBoundingBox(BoundingBox* boundingBox)
+        {
+            *boundingBox += *this;
+        }
     }
 }

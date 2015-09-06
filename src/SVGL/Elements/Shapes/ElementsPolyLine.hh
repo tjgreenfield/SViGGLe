@@ -20,7 +20,11 @@
 
 #pragma once
 
-#include "ElementsPath.hh"
+#include <SVGL/Elements/Abstracts/ElementsStyled.hh>
+#include <SVGL/Elements/Abstracts/ElementsInstance.hh>
+#include <SVGL/Render/RenderPathBuffer.hh>
+#include <SVGL/Styles/StylesShape.hh>
+#include <SVGL/CSS/CSSCalculable.hh>
 
 namespace SVGL
 {
@@ -41,7 +45,9 @@ namespace SVGL
 
                 void buffer(double tolerance) override;
 
-                void render(Render::Context* context) override;
+                void render(Render::Context* context) const override;
+
+                void calculateBoundingBox(BoundingBox* boundingBox) const override;
             };
 
             std::vector<Point> points;
@@ -55,11 +61,12 @@ namespace SVGL
 
             /***** XML::Node *****/
 
-            void setAttribute(unsigned int index, SubString name, SubString value);
+            void setAttribute(unsigned int index, SubString value) override;
 
             /***** Elements::Root *****/
 
             Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
+
         };
     }
 }

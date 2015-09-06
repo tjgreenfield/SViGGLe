@@ -46,7 +46,10 @@ namespace SVGL
                 STYLE,
                 IMAGE,
                 DEFS,
-                USE
+                USE,
+                LINEAR_GRADIENT,
+                RADIAL_GRADIENT,
+                STOP
             };
 
             typedef std::unordered_map<SubString, Index> Map;

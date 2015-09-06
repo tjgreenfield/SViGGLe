@@ -45,7 +45,7 @@ namespace SVGL
 
         /***** XML::Node *****/
 
-        void Circle::setAttribute(unsigned int index, SubString name, SubString value)
+        void Circle::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -79,7 +79,7 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -104,6 +104,8 @@ namespace SVGL
 
         void Circle::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             PathCommands::List commandList;
             commandList.emplace_back(new PathCommands::MoveTo(cx + r, cy));
             commandList.emplace_back(new PathCommands::EllipticalTo(Point(cx - r, cy), r, r, 0, 0, 1, commandList.back().get()));
@@ -115,11 +117,20 @@ namespace SVGL
             renderBuffer.buffer(commandList, style, tolerance);
         }
 
-        void Circle::Instance::render(Render::Context* context)
+        void Circle::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&circle->transform);
             renderBuffer.render(context, style);
             context->popTransform();
+        }
+
+        void Circle::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            boundingBox->pMin.x = cx - r;
+            boundingBox->pMin.y = cy - r;
+
+            boundingBox->pMax.x = cx + r;
+            boundingBox->pMax.y = cy + r;
         }
     }
 

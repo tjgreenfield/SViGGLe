@@ -53,9 +53,9 @@ namespace SVGL
          */
         std::ostream& stream(std::ostream& out) const override;
 
-        Document* getDocument();
+        Document* getDocument() const override;
 
-        Elements::Root* getElementByID(const char* _id);
+        Elements::Root* getElementByID(const char* _id) const;
 
         void submitElementID(const SubString _id, Elements::Root* element);
 

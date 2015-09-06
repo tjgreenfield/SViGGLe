@@ -41,7 +41,7 @@ namespace SVGL
 
         /***** XML::Node *****/
 
-        void Polygon::setAttribute(unsigned int index, SubString name, SubString value)
+        void Polygon::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -51,7 +51,7 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -73,6 +73,8 @@ namespace SVGL
 
         void Polygon::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             PathCommands::List commandList;
             if (polygon->points.size() > 0)
             {
@@ -89,11 +91,24 @@ namespace SVGL
             renderBuffer.buffer(commandList, style, tolerance);
         }
 
-        void Polygon::Instance::render(Render::Context* context)
+        void Polygon::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&polygon->transform);
             renderBuffer.render(context, style);
             context->popTransform();
+        }
+
+        void Polygon::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            if (polygon->points.size())
+            {
+                *boundingBox = polygon->points[0];
+
+                for (const auto& point : polygon->points)
+                {
+                    *boundingBox += point;
+                }
+            }
         }
     }
 }

@@ -115,6 +115,12 @@ namespace SVGL
             return x * p.x + y * p.y;
         }
 
+        inline Point dotInverse() const
+        {
+            double invLength = 1 / length();
+            return (invLength * invLength) * *this;
+        }
+
         inline double cross(const Point& p) const
         {
             return x * p.y - y * p.x;

@@ -47,7 +47,9 @@ namespace SVGL
 
                 void buffer(double tolerance) override;
 
-                void render(Render::Context* context) override;
+                void render(Render::Context* context) const override;
+
+                void calculateBoundingBox(BoundingBox* boundingBox) const override;
             };
 
             std::string href;
@@ -64,7 +66,7 @@ namespace SVGL
 
 
             /***** From XML::Node *****/
-            void setAttribute(unsigned int index, SubString name, SubString value);
+            void setAttribute(unsigned int index, SubString value) override;
 
             /***** Elements::Root *****/
             Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;

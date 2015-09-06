@@ -38,7 +38,7 @@ namespace SVGL
 
             CalculableCache(double _specified = 0, Unit = Unit::USER);
 
-            double calculate(const CSS::SizeContext& sizeContext = CSS::SizeContext(1, 1, 1), PercentMode mode = PercentMode::RAW);
+            double calculate(const CSS::SizeContext& sizeContext = CSS::SizeContext(nullptr, 1, 1, 1), PercentMode mode = PercentMode::RAW);
 
             inline operator double()
             {

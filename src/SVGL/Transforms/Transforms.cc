@@ -78,6 +78,11 @@ namespace SVGL
             return Point(a * p.x + c * p.y + e, b * p.x + d * p.y + f);
         }
 
+        double Transform::operator*(const double v)
+        {
+            return v * sqrt(a*a + b*b + c*c + d*d);
+        }
+
         double Transform::transformTolerance(double t) const
         {
             return std::min(t / sqrt(a * a + c * c), t / (sqrt(b * b + d * d)));
@@ -217,6 +222,14 @@ namespace SVGL
 
         Rotate::Rotate(double r) :
             Rotated(cos(r), sin(r))
+        {
+
+        }
+
+        BoundingBox::BoundingBox(const SVGL::BoundingBox& boundingBox) :
+            Transform(boundingBox.pMax.x - boundingBox.pMin.x, 0,
+                      0, boundingBox.pMax.y - boundingBox.pMin.y,
+                    boundingBox.pMin.x, boundingBox.pMin.y)
         {
 
         }

@@ -30,18 +30,20 @@ namespace SVGL
         class CubicTo : public Command
         {
         public:
-            Point p1, p2;
+            Point op, p1, p2;
 
-            inline CubicTo(double _p1x, double _p1y, double _p2x, double _p2y, double _x, double _y) :
+            inline CubicTo(double _opx, double _opy, double _p1x, double _p1y, double _p2x, double _p2y, double _x, double _y) :
                 Command(_x, _y),
+                op(_opx, _opy),
                 p1(_p1x, _p1y),
                 p2(_p2x, _p2y)
             {
 
             }
 
-            inline CubicTo(Point _p1, Point _p2, Point _pend) :
+            inline CubicTo(Point _op, Point _p1, Point _p2, Point _pend) :
                 Command(_pend),
+                op(_op),
                 p1(_p1),
                 p2(_p2)
             {
@@ -49,6 +51,8 @@ namespace SVGL
             }
 
             void buffer(Stroker* stroker) const override;
+
+            void calculateBoundingBox(BoundingBox* boundingBox) override;
         };
     }
 }

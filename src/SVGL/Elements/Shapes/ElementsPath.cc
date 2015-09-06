@@ -49,7 +49,7 @@ namespace SVGL
 
         /***** XML::Node *****/
 
-        void Path::setAttribute(unsigned int index, SubString name, SubString value)
+        void Path::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -57,7 +57,7 @@ namespace SVGL
                 commandList = PathCommands::Parser(value.start).readPathCommandsList();
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -85,16 +85,31 @@ namespace SVGL
 
         void Path::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             renderBuffer.clear();
             tolerance = path->transform.transformTolerance(tolerance);
             renderBuffer.buffer(path->commandList, style, tolerance);
         }
 
-        void Path::Instance::render(Render::Context* context)
+        void Path::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&path->transform);
             renderBuffer.render(context, style);
             context->popTransform();
+        }
+
+        void Path::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            if (path->commandList.size())
+            {
+                *boundingBox = *path->commandList[0];
+
+                for (const auto& command : path->commandList)
+                {
+                    command->calculateBoundingBox(boundingBox);
+                }
+            }
         }
     }
 }

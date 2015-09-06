@@ -21,6 +21,8 @@
 #pragma once
 
 #include <SVGL/Render/RenderContext.hh>
+#include <SVGL/CSS/CSSSizeContext.hh>
+#include <SVGL/Types/BoundingBox.hh>
 
 #include <memory>
 
@@ -35,7 +37,10 @@ namespace SVGL
 
             virtual void buffer(double tolerance) = 0;
 
-            virtual void render(Render::Context* context) = 0;
+            virtual void render(Render::Context* context) const = 0;
+
+            virtual void calculateBoundingBox(BoundingBox* boundingBox) const = 0;
+
         };
 
         typedef std::unique_ptr<Instance> Instance_uptr;

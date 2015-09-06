@@ -23,6 +23,7 @@
 #include "Buffer/PathCommandsPolygon.hh"
 #include "Buffer/PathCommandsStroker.hh"
 
+#include <SVGL/Types/BoundingBox.hh>
 #include <SVGL/Types/Point.hh>
 
 
@@ -51,6 +52,8 @@ namespace SVGL
             }
 
             virtual void buffer(Stroker* state) const = 0;
+
+            virtual void calculateBoundingBox(BoundingBox* boundingBox) = 0;
         };
 
         typedef std::unique_ptr<Command> Command_uptr;

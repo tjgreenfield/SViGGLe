@@ -100,6 +100,8 @@ namespace SVGL
             Vector();
 
             void applyPropertySet(const CSS::PropertySet& propertySet, const CSS::SizeContext& sizeContext) override;
+
+            void buffer(const Elements::Instance& instance);
         };
     }
 }

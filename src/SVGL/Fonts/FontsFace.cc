@@ -75,7 +75,7 @@ namespace SVGL
                 FT_Load_Char(ftFace, c, FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP);
 
                 return &(glyphMap.emplace(c, std::move(
-                        Glyph(ftFace->glyph->outline, ftFace->glyph->advance.x)
+                        Glyph(ftFace->glyph->outline, ftFace->glyph->advance.x, ftFace->glyph->metrics.width, ftFace->glyph->metrics.height)
                         )).first->second);
             }
         }

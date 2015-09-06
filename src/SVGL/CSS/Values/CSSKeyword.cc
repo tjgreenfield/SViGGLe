@@ -174,6 +174,15 @@ namespace SVGL
             {"optimizeLegibility", OPTIMIZE_LEGIBILITY},
             {"geometricPrecision", GEOMETRIC_PRECISION},
 
+            // gradientUnits
+            {"userSpaceOnUse", USER_SPACE_ON_USE},
+            {"objectBoundingBox", OBJECT_BOUNDING_BOX},
+
+            // spreadMethod
+            {"pad", PAD},
+            {"reflect", REFLECT},
+            {"repeat", REPEAT},
+
             // Colors
             { "aliceblue", ALICEBLUE},
             { "antiquewhite", ANTIQUEWHITE},
@@ -325,7 +334,7 @@ namespace SVGL
 
         });
 
-        int Keyword::keywordFromValue(const Value* value)
+        unsigned int Keyword::keywordFromValue(const Value* value)
         {
             if (const Keyword* keyword = dynamic_cast<const Keyword*>(value))
             {

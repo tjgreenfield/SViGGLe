@@ -114,7 +114,7 @@ namespace SVGL
 
             void setAttribute(SubString name, SubString value) override;
 
-            virtual void setAttribute(unsigned int index, SubString name, SubString value);
+            void setAttribute(unsigned int index, SubString value) override;
 
 
             /****** From Elements::Root *****/
@@ -124,7 +124,6 @@ namespace SVGL
             /****** Common interface for all Styled Elements *****/
 
             virtual void setDirty();
-
         };
 
         typedef std::unique_ptr<Styled> Styled_uptr;

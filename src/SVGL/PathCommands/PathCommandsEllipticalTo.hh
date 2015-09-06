@@ -30,6 +30,8 @@ namespace SVGL
         class EllipticalTo : public Command
         {
         public:
+            Point op;
+
             double rx, ry, xAxisRotation, largeArcFlag, sweepFlag;
 
             double cosp, sinp, t1, dt, cx, cy; // calculated values
@@ -37,6 +39,8 @@ namespace SVGL
             EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev);
 
             void buffer(Stroker* stroker) const override;
+
+            void calculateBoundingBox(BoundingBox* boundingBox) override;
         };
     }
 }

@@ -20,11 +20,10 @@
 
 #include "RenderTest.hh"
 
+
 int main(int argc, const char** argv)
 {
-    //CSSTest();
-    //XMLTest();
-    //SVGTest();
+
 
     renderTest();
     return 0;

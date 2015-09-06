@@ -43,6 +43,8 @@ namespace SVGL
             {}
 
             void buffer(Stroker* stroker) const override;
+
+            void calculateBoundingBox(BoundingBox* boundingBox) override;
         };
     }
 }

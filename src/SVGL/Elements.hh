@@ -26,6 +26,10 @@
 #include <SVGL/Elements/Abstracts/ElementsRoot.hh>
 #include <SVGL/Elements/Abstracts/ElementsStyled.hh>
 
+#include <SVGL/Elements/Paints/ElementsLinearGradient.hh>
+#include <SVGL/Elements/Paints/ElementsRadialGradient.hh>
+#include <SVGL/Elements/Paints/ElementsStop.hh>
+
 #include <SVGL/Elements/Shapes/ElementsCircle.hh>
 #include <SVGL/Elements/Shapes/ElementsEllipse.hh>
 #include <SVGL/Elements/Shapes/ElementsImage.hh>

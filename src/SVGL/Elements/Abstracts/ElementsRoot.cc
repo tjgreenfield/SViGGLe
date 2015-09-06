@@ -77,16 +77,28 @@ namespace SVGL
             return parent;
         }
 
-        Document* Root::getDocument()
+        Document* Root::getDocument() const
         {
             return parent ? parent->getDocument() : nullptr;
         }
 
         void Root::setAttribute(SubString name, SubString value)
         {
-            if (strncmp(name.start, "id", 3) == 0)
+            if (unsigned int attributeIndex = Attribute::getIndex(name))
             {
+                setAttribute(attributeIndex, value);
+            }
+        }
+
+        void Root::setAttribute(unsigned int index, SubString value)
+        {
+            switch (index)
+            {
+            default:
+                break;
+            case Attribute::ID:
                 id.assign(value.start, value.count);
+                break;
             }
         }
 

@@ -171,20 +171,12 @@ namespace SVGL
         {
             if (style.hasFill())
             {
-                //context->pushColor(style.fill);
-                //renderFill();
-                //context->popColor();
                 style.fill->renderFill(context, *this);
-
             }
             context->incrementDepth();
             if (style.hasStroke())
             {
-                //context->pushColor(style.stroke);
-                //renderStroke();
-                //context->popColor();
                 style.stroke->renderStroke(context, *this);
-
             }
             context->incrementDepth();
         }

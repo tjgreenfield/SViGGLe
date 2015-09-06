@@ -26,6 +26,11 @@ namespace SVGL
 {
     namespace CSS
     {
+        Calculable::Calculable() :
+            specified(0),
+            unit(Unit::INVALID)
+        {
+        }
 
         Calculable::Calculable(double _specified, Unit _unit) :
             specified(_specified),
@@ -73,6 +78,21 @@ namespace SVGL
                     return specified * 0.01;
                 }
             }
+        }
+
+        double Calculable::calculateX(const CSS::SizeContext& sizeContext) const
+        {
+            return calculate(sizeContext, PercentMode::X);
+        }
+
+        double Calculable::calculateY(const CSS::SizeContext& sizeContext) const
+        {
+            return calculate(sizeContext, PercentMode::Y);
+        }
+
+        double Calculable::calculateXY(const CSS::SizeContext& sizeContext) const
+        {
+            return calculate(sizeContext, PercentMode::DIAGONAL);
         }
     }
 }

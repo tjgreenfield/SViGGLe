@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <SVGL/Types/BoundingBox.hh>
 #include <SVGL/Types/Point.hh>
 #include <ostream>
 
@@ -39,6 +40,7 @@ namespace SVGL
 
             Transform& operator*=(const Transform& t);
             Point operator*(const Point& p);
+            double operator*(const double v);
 
             double transformTolerance(double t) const;
 
@@ -79,6 +81,13 @@ namespace SVGL
         {
         public:
             Rotate(double r);
+        };
+
+        class BoundingBox : public Transform
+        {
+        public:
+            BoundingBox(const SVGL::BoundingBox& boundingBox);
+
         };
     }
     std::ostream& operator<<(std::ostream& out, const Transforms::Transform& transform);

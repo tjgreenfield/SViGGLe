@@ -26,6 +26,7 @@
 #include <SVGL/Styles/StylesText.hh>
 #include <SVGL/Render/RenderContext.hh>
 #include <SVGL/Render/RenderPathBuffer.hh>
+#include <SVGL/Types/BoundingBox.hh>
 
 #include <map>
 #include <memory>
@@ -63,6 +64,8 @@ namespace SVGL
             void buffer(const Styles::Text& style, const char* text, double tolerance);
 
             void render(Render::Context* context, const Styles::Text& style, const char* text) const;
+
+            void calculateBoundingBox(BoundingBox* boundingBox, const char* text);
         };
 
         class StyledFaceHandle

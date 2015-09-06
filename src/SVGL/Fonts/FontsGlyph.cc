@@ -24,10 +24,12 @@ namespace SVGL
 {
     namespace Font
     {
-        Glyph::Glyph(FT_Outline outline, double _advance) :
-            advance(_advance)
+        Glyph::Glyph(FT_Outline outline, double _advance, double _width, double _height) :
+            advance(_advance),
+            width(_width),
+            height(_height)
         {
-            int p1x, p1y, p2x, p2y, x, y, startX, startY, startP1x, startP1y, startP2x, startP2y;
+            int p1x, p1y, p2x, p2y, x, y, startX, startY, startP1x, startP1y, startP2x, startP2y, prevX, prevY;
             int tag, prevTag = FT_CURVE_TAG_ON, startTag = FT_CURVE_TAG_ON;
             int point = 0;
 
@@ -64,8 +66,8 @@ namespace SVGL
                         case FT_CURVE_TAG_ON:
                         default:
                             commandList.emplace_back(new PathCommands::MoveTo(x, y));
-                            startX = x;
-                            startY = y;
+                            startX = prevX = x;
+                            startY = prevY = y;
                             firstPointInContour = false;
                             break;
                         }
@@ -77,7 +79,9 @@ namespace SVGL
                         case FT_CURVE_TAG_CONIC:
                             if (prevTag == FT_CURVE_TAG_CONIC)
                             {
-                                commandList.emplace_back(new PathCommands::CubicTo(p1x, p1y, p1x, p1y, (x + p1x) >> 1, (y + p1y) >> 1));
+                                commandList.emplace_back(new PathCommands::CubicTo(prevX, prevY, p1x, p1y, p1x, p1y, (x + p1x) >> 1, (y + p1y) >> 1));
+                                prevX = (x + p1x) >> 1;
+                                prevY = (y + p1y) >> 1;
                                 p1x = x;
                                 p1y = y;
                             }
@@ -104,14 +108,20 @@ namespace SVGL
                             if (prevTag == FT_CURVE_TAG_ON)
                             {
                                 commandList.emplace_back(new PathCommands::LineTo(x, y));
+                                prevX = x;
+                                prevY = y;
                             }
                             else if (prevTag == FT_CURVE_TAG_CONIC)
                             {
-                                commandList.emplace_back(new PathCommands::CubicTo(p1x, p1y, p1x, p1y, x, y));
+                                commandList.emplace_back(new PathCommands::CubicTo(prevX, prevY, p1x, p1y, p1x, p1y, x, y));
+                                prevX = x;
+                                prevY = y;
                             }
                             else if (prevTag == FT_CURVE_TAG_CUBIC)
                             {
-                                commandList.emplace_back(new PathCommands::CubicTo(p1x, p1y, p2x, p2y, x, y));
+                                commandList.emplace_back(new PathCommands::CubicTo(prevX, prevY, p1x, p1y, p2x, p2y, x, y));
+                                prevX = x;
+                                prevY = y;
                             }
                             break;
                         }
@@ -124,20 +134,28 @@ namespace SVGL
                     if (startTag == FT_CURVE_TAG_ON)
                     {
                         commandList.emplace_back(new PathCommands::ClosePath());
+                        prevX = x;
+                        prevY = y;
                     }
                     else // startTag == FT_CURVE_TAG_CONIC
                     {
-                        commandList.emplace_back(new PathCommands::CubicTo(startP1x, startP1y, startP2x, startP2y, startX, startY));
+                        commandList.emplace_back(new PathCommands::CubicTo(prevX, prevY, startP1x, startP1y, startP2x, startP2y, startX, startY));
+                        prevX = x;
+                        prevY = y;
                     }
                     // shouldn't be any conic ones
                 }
                 else if (prevTag == FT_CURVE_TAG_CONIC)
                 {
-                    commandList.emplace_back(new PathCommands::CubicTo(p1x, p1y, p1x, p1y, startX, startY));
+                    commandList.emplace_back(new PathCommands::CubicTo(prevX, prevY, p1x, p1y, p1x, p1y, startX, startY));
+                    prevX = x;
+                    prevY = y;
                 }
                 else if (prevTag == FT_CURVE_TAG_CUBIC)
                 {
-                    commandList.emplace_back(new PathCommands::CubicTo(p1x, p1y, p2x, p2y, startX, startY));
+                    commandList.emplace_back(new PathCommands::CubicTo(prevX, prevY, p1x, p1y, p2x, p2y, startX, startY));
+                    prevX = x;
+                    prevY = y;
                 }
                 prevTag = FT_CURVE_TAG_ON;
             }
@@ -151,6 +169,16 @@ namespace SVGL
         double Glyph::getAdvance() const
         {
             return advance;
+        }
+
+        double Glyph::getWidth() const
+        {
+            return width;
+        }
+
+        double Glyph::getHeight() const
+        {
+            return height;
         }
     }
 }

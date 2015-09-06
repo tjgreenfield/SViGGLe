@@ -182,6 +182,15 @@ namespace SVGL
                 OPTIMIZE_LEGIBILITY,
                 GEOMETRIC_PRECISION,
 
+                // gradientUnits
+                USER_SPACE_ON_USE,
+                OBJECT_BOUNDING_BOX,
+
+                // spreadMethod
+                PAD,
+                REFLECT,
+                REPEAT,
+
                 // colors will all be > 4278190080 (0xFF000000)
                 ALICEBLUE = RGB(240, 248, 255),
                 ANTIQUEWHITE = RGB(250, 235, 215),
@@ -351,7 +360,7 @@ namespace SVGL
 
             static Map map;
 
-            static int keywordFromValue(const Value* value);
+            static unsigned int keywordFromValue(const Value* value);
         };
     }
 }

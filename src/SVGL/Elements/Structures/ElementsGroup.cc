@@ -192,7 +192,7 @@ namespace SVGL
             }
         }
 
-        void Group::Instance::render(Render::Context* context)
+        void Group::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&group->transform);
             for (const auto& i : children)
@@ -205,6 +205,20 @@ namespace SVGL
             context->popTransform();
         }
 
+
+        void Group::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            for (const auto& i : children)
+            {
+                if (i)
+                {
+                    BoundingBox childBox;
+                    i->calculateBoundingBox(&childBox);
+                    // TODO Incorporate children's transforms
+                    *boundingBox += childBox;
+                }
+            }
+        }
 
     }
 }

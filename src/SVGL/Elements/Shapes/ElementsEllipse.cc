@@ -46,7 +46,7 @@ namespace SVGL
 
         /***** XML::Node *****/
 
-        void Ellipse::setAttribute(unsigned int index, SubString name, SubString value)
+        void Ellipse::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -89,7 +89,7 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -115,6 +115,8 @@ namespace SVGL
 
         void Ellipse::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             PathCommands::List commandList;
             commandList.emplace_back(new PathCommands::MoveTo(cx + rx, cy));
             commandList.emplace_back(new PathCommands::EllipticalTo(Point(cx - rx, cy), rx, ry, 0, 0, 1, commandList.back().get()));
@@ -126,11 +128,20 @@ namespace SVGL
             renderBuffer.buffer(commandList, style, tolerance);
         }
 
-        void Ellipse::Instance::render(Render::Context* context)
+        void Ellipse::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&ellipse->transform);
             renderBuffer.render(context, style);
             context->popTransform();
+        }
+
+        void Ellipse::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            boundingBox->pMin.x = cx - rx;
+            boundingBox->pMin.y = cy - ry;
+
+            boundingBox->pMax.x = cx + rx;
+            boundingBox->pMax.y = cy + ry;
         }
     }
 }

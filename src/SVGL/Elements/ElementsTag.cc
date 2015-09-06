@@ -25,20 +25,23 @@ namespace SVGL
     namespace Elements
     {
         Tag::Map Tag::map = {
-            { "svg", Tag::Index::SVG },
-            { "g", Tag::Index::G },
-            { "path", Tag::Index::PATH },
-            { "rect", Tag::Index::RECT },
-            { "circle", Tag::Index::CIRCLE},
-            { "ellipse", Tag::Index::ELLIPSE},
-            { "line", Tag::Index::LINE},
-            { "polyline", Tag::Index::POLYLINE},
-            { "polygon", Tag::Index::POLYGON},
-            { "text", Tag::Index::TEXT},
-            { "style", Tag::Index::STYLE},
-            { "image", Tag::Index::IMAGE},
-            { "defs", Tag::Index::DEFS},
-            { "use", Tag::Index::USE}
+            { "svg", Tag::SVG },
+            { "g", Tag::G },
+            { "path", Tag::PATH },
+            { "rect", Tag::RECT },
+            { "circle", Tag::CIRCLE},
+            { "ellipse", Tag::ELLIPSE},
+            { "line", Tag::LINE},
+            { "polyline", Tag::POLYLINE},
+            { "polygon", Tag::POLYGON},
+            { "text", Tag::TEXT},
+            { "style", Tag::STYLE},
+            { "image", Tag::IMAGE},
+            { "defs", Tag::DEFS},
+            { "use", Tag::USE},
+            { "linearGradient", Tag::LINEAR_GRADIENT},
+            { "radialGradient", Tag::RADIAL_GRADIENT},
+            { "stop", Tag::STOP},
         };
 
         Tag::Index Tag::getIndex(SubString tag)
@@ -48,7 +51,8 @@ namespace SVGL
             {
                 return i->second;
             }
-            return Index::INVALID;
+            return INVALID;
         }
     }
 }
+

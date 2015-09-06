@@ -28,7 +28,8 @@ namespace SVGL
 {
     namespace CSS
     {
-        SizeContext::SizeContext(double _viewportWidth, double _viewportHeight, double _fontSize, const std::vector<std::string>&) :
+        SizeContext::SizeContext(const Document* _document, double _viewportWidth, double _viewportHeight, double _fontSize, const std::vector<std::string>&) :
+            document(_document),
             viewportWidth(_viewportWidth),
             viewportHeight(_viewportHeight),
             fontSize(_fontSize),

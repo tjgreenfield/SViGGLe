@@ -29,12 +29,21 @@ namespace SVGL
 {
     namespace Render
     {
+        class Paint;
+        class LinearGradient;
+        class RadialGradient;
+
         class Context
         {
+            friend class Paint;
+            friend class LinearGradient;
+            friend class RadialGradient;
         protected:
 
             typedef std::vector<Transforms::Transform> TransformStack;
             TransformStack transformStack;
+
+            Transforms::Transform gradientShiftTransform;
 
             typedef std::vector<Color> ColorStack;
             ColorStack colorStack;
@@ -42,7 +51,16 @@ namespace SVGL
             int depth;
 
             GLuint colorShaderProgramme;
+
             GLuint textureShaderProgramme;
+
+            GLuint linearGradientPadShaderProgramme;
+            GLuint linearGradientReflectShaderProgramme;
+            GLuint linearGradientRepeatShaderProgramme;
+
+            GLuint radialGradientPadShaderProgramme;
+            GLuint radialGradientReflectShaderProgramme;
+            GLuint radialGradientRepeatShaderProgramme;
 
             GLuint compileShaders(const char* vertexShader, const char* fragmentShader);
             void initShaders();
@@ -51,19 +69,24 @@ namespace SVGL
             Transforms::Transform worldTransform;
             Color color;
 
+            /* Prevent copying */
             Context();
+            Context(const Context&) = delete;
+            Context& operator=(const Context&) = delete;
+            Context(Context&&) = default;
+            Context& operator=(Context&&) = default;
+            ~Context() = default;
 
             void begin();
 
             void update();
 
+            void resetGradientShift();
+            void gradientShift(const Transforms::Transform& t);
+
             void updateTransform();
             void pushTransform(const Transforms::Transform* t);
             void popTransform();
-
-            void updateColor();
-            void pushColor(unsigned int c);
-            void popColor();
 
             void updateDepth();
             void incrementDepth();

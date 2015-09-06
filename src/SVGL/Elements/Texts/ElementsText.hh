@@ -48,7 +48,9 @@ namespace SVGL
 
                 void buffer(double tolerance) override;
 
-                void render(Render::Context* context) override;
+                void render(Render::Context* context) const override;
+
+                void calculateBoundingBox(BoundingBox* boundingBox) const override;
             };
 
             CSS::Calculable x;
@@ -62,7 +64,7 @@ namespace SVGL
             const char* getTagName() const override;
 
             /***** From XML::Node *****/
-            void setAttribute(unsigned int index, SubString name, SubString value) override;
+            void setAttribute(unsigned int index, SubString value) override;
 
             void appendText(SubString data) override;
 

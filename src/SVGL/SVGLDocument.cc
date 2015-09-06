@@ -42,12 +42,12 @@ namespace SVGL
         return out;
     }
 
-    Document* Document::getDocument()
+    Document* Document::getDocument() const
     {
-        return this;
+        return (Document*)this;
     }
 
-    Elements::Root* Document::getElementByID(const char* _id)
+    Elements::Root* Document::getElementByID(const char* _id) const
     {
         const auto& i = idMap.find(_id);
         if (i != idMap.end())
@@ -99,7 +99,7 @@ namespace SVGL
     void Document::buffer(double tolerance)
     {
         CSS::PropertySet inherit;
-        CSS::SizeContext sizeContext(1280, 720, 10);
+        CSS::SizeContext sizeContext(this, 1280, 720, 10);
         instance = calculateInstance(inherit, sizeContext);
         instance->buffer(tolerance);
     }

@@ -34,6 +34,11 @@ namespace SVGL
 
         }
 
+        void Paint::buffer(const Elements::Instance&)
+        {
+
+        }
+
         typedef std::unique_ptr<Paint> Paint_uptr;
     }
 }

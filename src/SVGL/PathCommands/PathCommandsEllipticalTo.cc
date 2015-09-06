@@ -30,6 +30,7 @@ namespace SVGL
     {
         EllipticalTo::EllipticalTo(Point p, double _rx, double _ry, double _xAxisRotation, double _largeArcFlag, double _sweepFlag, Point* prev) :
             Command(p),
+            op(*prev),
             rx(_rx),
             ry(_ry),
             xAxisRotation(_xAxisRotation),
@@ -127,10 +128,6 @@ namespace SVGL
 
         void EllipticalTo::buffer(Stroker* stroker) const
         {
-            // this might need adjusting
-            //int vertexCount = std::max(abs(int(std::max(std::abs(rx), std::abs(ry)) * dt / PI / stroker->tolerance)), 4);
-            //double deltaT = (dt / (vertexCount - 1));
-
             double ratio = 1 - (stroker->tolerance / std::max(std::abs(rx), std::abs(ry)));
             double deltaT = (ratio > SQRT2_2) ? acos(ratio) : PI_4;
             int vertexCount = std::abs(dt / deltaT);
@@ -154,6 +151,37 @@ namespace SVGL
 
                 stroker->bufferDash(pCentre);
             }
+        }
+
+        void EllipticalTo::calculateBoundingBox(BoundingBox* boundingBox)
+        {
+            *boundingBox += *this;
+            *boundingBox += op;
+
+            // max x
+            {
+                double t = atan((-sinp*ry) / (cosp*rx));
+                if ((t > t1) && (t < dt))
+                {
+                    Transforms::Rotate rotate(t);
+                    Point point((cosp*rx*rotate.a) + (sinp*ry*rotate.b) + cx, //x
+                                (cosp*ry*rotate.c) + (sinp*rx*rotate.d) + cy); //y
+                    *boundingBox += point;
+                }
+            }
+
+            // max y
+            {
+                double t = atan((cosp*ry) / (sinp*rx));
+                if ((t > t1) && (t < dt))
+                {
+                    Transforms::Rotate rotate(t);
+                    Point point((cosp*rx*rotate.a) + (sinp*ry*rotate.b) + cx, //x
+                                (cosp*ry*rotate.c) + (sinp*rx*rotate.d) + cy); //y
+                    *boundingBox += point;
+                }
+            }
+
         }
     }
 }

@@ -46,7 +46,7 @@ namespace SVGL
         }
 
         /***** XML::Node *****/
-        void Rect::setAttribute(unsigned int index, SubString name, SubString value)
+        void Rect::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -107,7 +107,7 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -135,6 +135,8 @@ namespace SVGL
 
         void Rect::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             PathCommands::List commandList;
             if ((rx == 0) && (ry == 0))
             {
@@ -175,10 +177,19 @@ namespace SVGL
             renderBuffer.buffer(commandList, style, tolerance);
         }
 
-        void Rect::Instance::render(Render::Context* context)
+        void Rect::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&rect->transform);
             renderBuffer.render(context, style);
+        }
+
+        void Rect::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            boundingBox->pMin.x = x;
+            boundingBox->pMin.y = y;
+
+            boundingBox->pMax.x = x + width;
+            boundingBox->pMax.y = y + height;
         }
     }
 }

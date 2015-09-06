@@ -44,7 +44,7 @@ namespace SVGL
         }
 
         /***** From XML::Node *****/
-        void Use::setAttribute(unsigned int index, SubString name, SubString value)
+        void Use::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -90,7 +90,7 @@ namespace SVGL
                 }
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -137,7 +137,7 @@ namespace SVGL
             }
         }
 
-        void Use::Instance::render(Render::Context* context)
+        void Use::Instance::render(Render::Context* context) const
         {
             if (target)
             {
@@ -146,6 +146,14 @@ namespace SVGL
                 target->render(context);
                 context->popTransform();
                 context->popTransform();
+            }
+        }
+
+        void Use::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            if (target)
+            {
+                target->calculateBoundingBox(boundingBox);
             }
         }
     }

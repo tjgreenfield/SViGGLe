@@ -40,7 +40,7 @@ namespace SVGL
         }
 
         /***** XML::Node *****/
-        void PolyLine::setAttribute(unsigned int index, SubString name, SubString value)
+        void PolyLine::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -50,7 +50,7 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -72,6 +72,8 @@ namespace SVGL
 
         void PolyLine::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             PathCommands::List commandList;
             if (polyline->points.size() > 0)
             {
@@ -87,11 +89,24 @@ namespace SVGL
             renderBuffer.buffer(commandList, style, tolerance);
         }
 
-        void PolyLine::Instance::render(Render::Context* context)
+        void PolyLine::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&polyline->transform);
             renderBuffer.render(context, style);
             context->popTransform();
+        }
+
+        void PolyLine::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            if (polyline->points.size())
+            {
+                *boundingBox = polyline->points[0];
+
+                for (const auto& point : polyline->points)
+                {
+                    *boundingBox += point;
+                }
+            }
         }
     }
 }

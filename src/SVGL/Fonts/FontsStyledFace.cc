@@ -65,6 +65,8 @@ namespace SVGL
             t.scaleR(scale, scale);
             context->pushTransform(&t);
 
+            context->resetGradientShift();
+
             while (*text)
             {
                 auto i = glyphBuffers.find(*text);
@@ -74,6 +76,7 @@ namespace SVGL
                     double advance = face->getGlyph(*text)->getAdvance();
                     context->worldTransform.translateR(advance, 0);
                     context->updateTransform();
+                    context->gradientShift(Transforms::Translate(advance, 0));
                 }
                 else
                 {
@@ -81,8 +84,26 @@ namespace SVGL
                 }
                 ++text;
             }
+            context->resetGradientShift();
             context->popTransform();
         }
+
+        void StyledFace::calculateBoundingBox(BoundingBox* boundingBox, const char* text)
+        {
+            boundingBox->pMin.x = 0;
+            boundingBox->pMin.y = 0;
+            boundingBox->pMax.x = 0;
+            boundingBox->pMax.y = 0;
+            while (*text)
+            {
+                Glyph* glyph = face->getGlyph(*text);
+                boundingBox->pMax.y = std::max(boundingBox->pMax.y, glyph->getHeight());
+                boundingBox->pMax.x += glyph->getAdvance();
+                ++text;
+            }
+        }
+
+        /***** StyledFaceHandle *****/
 
         StyledFaceHandle::StyledFaceHandle() :
             styledFace(nullptr)

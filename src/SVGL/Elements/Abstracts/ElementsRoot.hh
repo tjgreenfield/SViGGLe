@@ -71,13 +71,15 @@ namespace SVGL
              */
             const Root* getParent() const;
 
-            virtual Document* getDocument();
+            virtual Document* getDocument() const;
 
             virtual void submitElementIDs(Document* document);
 
             virtual Root* findElementByID(const char* _id);
 
             void setAttribute(SubString name, SubString value) override;
+
+            virtual void setAttribute(unsigned int index, SubString value);
 
             virtual void cascadeStyle(const CSS::StyleSheetIndex& styleSheetIndex);
 

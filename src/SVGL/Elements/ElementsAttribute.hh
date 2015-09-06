@@ -52,6 +52,8 @@ namespace SVGL
                 RY,
                 CX,
                 CY,
+                FX,
+                FY,
                 R,
                 POINTS,
                 XLINK_HREF,
@@ -59,7 +61,14 @@ namespace SVGL
 
                 TYPE,
                 MEDIA,
-                TITLE
+                TITLE,
+
+                STOP_COLOR,
+                STOP_OPACITY,
+                OFFSET,
+                GRADIENT_UNITS,
+                GRADIENT_TRANSFORM,
+                SPREAD_METHOD,
 
                 // TODO Include "event" attributes
                 // TODO Include "conditional processing" attributes

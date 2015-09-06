@@ -25,20 +25,25 @@
 
 namespace SVGL
 {
+    class Document;
+
     namespace CSS
     {
         class SizeContext
         {
         public:
+            const Document* document;
             double viewportWidth;
             double viewportHeight;
             double viewportDiagonal;
+
             double fontSize;
             double fontXHeight;
             char fontStretch;
             char fontWeight;
 
-            SizeContext(double _viewportWidth, double _viewportHeight, double _fontSize, const std::vector<std::string>& fontFamilies = {{"courier"}});
+
+            SizeContext(const Document* document, double _viewportWidth, double _viewportHeight, double _fontSize, const std::vector<std::string>& fontFamilies = {{"courier"}});
 
             void setViewport(double _viewportWidth, double _viewportHeight);
 

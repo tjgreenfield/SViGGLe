@@ -41,11 +41,15 @@ namespace SVGL
             double specified;
             Unit unit;
 
+            Calculable();
             Calculable(double _specified, Unit = Unit::USER);
 
             virtual ~Calculable() = default;
 
-            double calculate(const CSS::SizeContext& sizeContext = CSS::SizeContext(1, 1, 1), PercentMode mode = PercentMode::RAW) const;
+            double calculate(const CSS::SizeContext& sizeContext = CSS::SizeContext(nullptr, 1, 1, 1), PercentMode mode = PercentMode::RAW) const;
+            double calculateX(const CSS::SizeContext& sizeContext = CSS::SizeContext(nullptr, 1, 1, 1)) const;
+            double calculateY(const CSS::SizeContext& sizeContext = CSS::SizeContext(nullptr, 1, 1, 1)) const;
+            double calculateXY(const CSS::SizeContext& sizeContext = CSS::SizeContext(nullptr, 1, 1, 1)) const;
         };
     }
 }

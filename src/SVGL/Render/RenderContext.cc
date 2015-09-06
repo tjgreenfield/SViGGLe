@@ -20,6 +20,11 @@
 
 #include "RenderContext.hh"
 
+#include <SVGL/Render/Shaders/RenderShadersColor.hh>
+#include <SVGL/Render/Shaders/RenderShadersTexture.hh>
+#include <SVGL/Render/Shaders/RenderShadersLinearGradient.hh>
+#include <SVGL/Render/Shaders/RenderShadersRadialGradient.hh>
+
 #include <SVGL/GL/gl.h>
 
 #include <iostream>
@@ -77,50 +82,18 @@ namespace SVGL
 
         void Context::initShaders()
         {
-            colorShaderProgramme = compileShaders(
-                "#version 400\n"
-                "uniform dmat3x2 transform;\n"
-                "uniform float depth;\n"
-                "in vec2 vp;\n"
-                "void main () {\n"
-                "   gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],\n"
-                "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],\n"
-                "                      depth,\n"
-                "                      1.0);\n"
-                "}",
+            colorShaderProgramme = compileShaders(Shaders::colorVert, Shaders::colorFrag);
 
-                "#version 400\n"
-                "uniform sampler2D imageMap;"
-                "uniform vec4 pen;"
-                "uniform int mode;"
-                "out vec4 frag_colour;"
-                "void main () {"
-                "    frag_colour = pen;"
-                "}");
+            textureShaderProgramme = compileShaders(Shaders::textureVert, Shaders::textureFrag);
 
-            textureShaderProgramme = compileShaders(
-                "#version 400\n"
-                "uniform dmat3x2 transform;\n"
-                "uniform float depth;\n"
-                "in vec2 vp;\n"
-                "out vec2 otex;"
-                "void main () {\n"
-                "   otex = vec2(vp.x, 1 - vp.y);\n"
-                "   gl_Position = vec4 (vp.x * transform[0][0] + vp.y * transform[1][0] + transform[2][0],\n"
-                "                      vp.x * transform[0][1] + vp.y * transform[1][1] + transform[2][1],\n"
-                "                      depth,\n"
-                "                      1.0);\n"
-                "}",
+            linearGradientPadShaderProgramme = compileShaders(Shaders::linearGradientVert, Shaders::linearGradientPadFrag);
+            linearGradientReflectShaderProgramme = compileShaders(Shaders::linearGradientVert, Shaders::linearGradientReflectFrag);
+            linearGradientRepeatShaderProgramme = compileShaders(Shaders::linearGradientVert, Shaders::linearGradientRepeatFrag);
 
-                "#version 400\n"
-                "uniform sampler2D imageMap;"
-                "uniform vec4 pen;"
-                "uniform int mode;"
-                "in vec2 otex;"
-                "out vec4 frag_colour;"
-                "void main () {"
-                "    frag_colour = texture2D(imageMap, otex);"
-                "}");
+            radialGradientPadShaderProgramme = compileShaders(Shaders::radialGradientVert, Shaders::radialGradientPadFrag);
+            radialGradientReflectShaderProgramme = compileShaders(Shaders::radialGradientVert, Shaders::radialGradientReflectFrag);
+            radialGradientRepeatShaderProgramme = compileShaders(Shaders::radialGradientVert, Shaders::radialGradientRepeatFrag);
+
 
         }
 
@@ -152,7 +125,6 @@ namespace SVGL
         void Context::update()
         {
             updateTransform();
-            updateColor();
             updateDepth();
         }
 
@@ -181,51 +153,6 @@ namespace SVGL
             updateTransform();
         }
 
-        void Context::updateColor()
-        {
-            GLint program;
-            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-            int location = glGetUniformLocation(program, "pen");
-            glUniform4f(location,
-                        ((float)((color >> 16) & 0xff)) / 0xff,
-                        ((float)((color >> 8) & 0xff)) / 0xff,
-                        ((float)((color) & 0xff)) / 0xff,
-                        ((float)((color >> 24) & 0xff)) / 0xff);
-        }
-
-        void Context::pushColor(unsigned int c)
-        {
-            colorStack.push_back(color);
-            color = c;
-
-            GLint program;
-            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-            int location = glGetUniformLocation(program, "pen");
-            glUniform4f(location,
-                        ((float)((color >> 16) & 0xff)) / 0xff,
-                        ((float)((color >> 8) & 0xff)) / 0xff,
-                        ((float)((color) & 0xff)) / 0xff,
-                        ((float)((color >> 24) & 0xff)) / 0xff);
-        }
-
-        void Context::popColor()
-        {
-            color = colorStack.back();
-            colorStack.pop_back();
-
-            GLint program;
-            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-            int location = glGetUniformLocation(program, "pen");
-            glUniform4f(location,
-                        ((float)((color >> 16) & 0xff)) / 0xff,
-                        ((float)((color >> 8) & 0xff)) / 0xff,
-                        ((float)((color) & 0xff)) / 0xff,
-                        ((float)((color >> 24) & 0xff)) / 0xff);
-        }
-
         void Context::updateDepth()
         {
             GLint program;
@@ -245,9 +172,7 @@ namespace SVGL
         void Context::setTextureShader()
         {
             glUseProgram(textureShaderProgramme);
-            GLint program;
-            glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-            int location = glGetUniformLocation(program, "imageMap");
+            int location = glGetUniformLocation(textureShaderProgramme, "imageMap");
             glUniform1f(location, 0);
             update();
         }
@@ -255,7 +180,20 @@ namespace SVGL
         void Context::setColorShader()
         {
             glUseProgram(colorShaderProgramme);
+
             update();
+        }
+
+        void Context::resetGradientShift()
+        {
+            gradientShiftTransform.identity();
+        }
+
+        void Context::gradientShift(const Transforms::Transform& t)
+        {
+            gradientShiftTransform *= t;
         }
     }
 }
+
+

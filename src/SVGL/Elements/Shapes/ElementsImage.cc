@@ -42,7 +42,7 @@ namespace SVGL
         }
 
         /***** XML::Node *****/
-        void Image::setAttribute(unsigned int index, SubString name, SubString value)
+        void Image::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -88,7 +88,7 @@ namespace SVGL
                 }
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -125,7 +125,7 @@ namespace SVGL
             imageTransform.scaleR(width, height);
         }
 
-        void Image::Instance::render(Render::Context* context)
+        void Image::Instance::render(Render::Context* context) const
         {
             if (!image)
             {
@@ -140,6 +140,15 @@ namespace SVGL
 
             context->popTransform();
             context->popTransform();
+        }
+
+        void Image::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            boundingBox->pMin.x = x;
+            boundingBox->pMin.y = y;
+
+            boundingBox->pMax.x = x + width;
+            boundingBox->pMax.y = y + height;
         }
     }
 }

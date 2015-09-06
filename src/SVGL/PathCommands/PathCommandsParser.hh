@@ -180,7 +180,7 @@ namespace SVGL
                     return false;
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1, p2, pend));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1, p2, pend));
                 return true;
             }
 
@@ -192,7 +192,7 @@ namespace SVGL
                     return false;
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1 + *prev, p2 + *prev, pend + *prev));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1 + *prev, p2 + *prev, pend + *prev));
                 return true;
             }
 
@@ -210,7 +210,7 @@ namespace SVGL
                     return false;
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1, p2, pend));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1, p2, pend));
                 return true;
             }
 
@@ -228,7 +228,7 @@ namespace SVGL
                     return false;
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1 + *prev, p2 + *prev, pend + *prev));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1 + *prev, p2 + *prev, pend + *prev));
                 return true;
             }
 
@@ -238,7 +238,7 @@ namespace SVGL
                     return false;
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1, p1, pend));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1, p1, pend));
                 return true;
             }
 
@@ -248,7 +248,7 @@ namespace SVGL
                     return false;
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1 + *prev, p1 + *prev, pend + *prev));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1 + *prev, p1 + *prev, pend + *prev));
                 return true;
             }
 
@@ -264,7 +264,7 @@ namespace SVGL
                 }
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1, p1, pend));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1, p1, pend));
                 return true;
             }
 
@@ -280,7 +280,7 @@ namespace SVGL
                 }
                 if (!readPoint(&pend))
                     return false;
-                commandList.emplace_back(prev = new CubicTo(p1 + *prev, p1 + *prev, pend + *prev));
+                commandList.emplace_back(prev = new CubicTo(*prev, p1 + *prev, p1 + *prev, pend + *prev));
                 return true;
             }
 

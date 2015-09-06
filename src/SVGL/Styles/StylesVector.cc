@@ -21,6 +21,8 @@
 #include "StylesVector.hh"
 
 #include <SVGL/Render/Paints/RenderColor.hh>
+#include <SVGL/Elements/Abstracts/ElementsPaint.hh>
+#include <SVGL/SVGLDocument.hh>
 
 #include <iostream>
 #include <limits>
@@ -67,6 +69,22 @@ namespace SVGL
                     fill = nullptr;
                     hasFill() = 0;
                 }
+                else if (auto hash = dynamic_cast<const CSS::Hash*>(propertySet[Property::FILL]))
+                {
+                    auto root = sizeContext.document->getElementByID(hash->hash.c_str());
+                    if (auto paint = dynamic_cast<const Elements::Paint*>(root))
+                    {
+                        fill = paint->calculatePaint(propertySet, sizeContext);
+                    }
+                    if (fill)
+                    {
+                        hasFill() = 1;
+                    }
+                    else
+                    {
+                        hasFill() = 0;
+                    }
+                }
                 else
                 {
                     fill = Render::Paint_uptr(new Render::Color(RGB(0, 0, 0)));
@@ -108,6 +126,22 @@ namespace SVGL
                 {
                     stroke = nullptr;
                     hasStroke() = 0;
+                }
+                else if (auto hash = dynamic_cast<const CSS::Hash*>(propertySet[Property::STROKE]))
+                {
+                    auto root = sizeContext.document->getElementByID(hash->hash.c_str());
+                    if (auto paint = dynamic_cast<const Elements::Paint*>(root))
+                    {
+                        stroke = paint->calculatePaint(propertySet, sizeContext);
+                    }
+                    if (stroke)
+                    {
+                        hasStroke() = 1;
+                    }
+                    else
+                    {
+                        hasStroke() = 0;
+                    }
                 }
                 else
                 {
@@ -211,6 +245,18 @@ namespace SVGL
             }
 
             Graphic::applyPropertySet(propertySet, sizeContext);
+        }
+
+        void Vector::buffer(const Elements::Instance& instance)
+        {
+            if (fill)
+            {
+                fill->buffer(instance);
+            }
+            if (stroke)
+            {
+                stroke->buffer(instance);
+            }
         }
     }
 }

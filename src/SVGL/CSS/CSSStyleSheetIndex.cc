@@ -98,8 +98,14 @@ namespace SVGL
 
         void StyleSheetIndex::sort()
         {
-            std::sort(selectorIndex.begin(), selectorIndex.end(), selectorSort);
-            std::sort(importantSelectorIndex.begin(), importantSelectorIndex.end(), selectorSort);
+            if (!selectorIndex.empty())
+            {
+                std::sort(selectorIndex.begin(), selectorIndex.end(), selectorSort);
+            }
+            if (!importantSelectorIndex.empty())
+            {
+                std::sort(importantSelectorIndex.begin(), importantSelectorIndex.end(), selectorSort);
+            }
         }
 
         /**

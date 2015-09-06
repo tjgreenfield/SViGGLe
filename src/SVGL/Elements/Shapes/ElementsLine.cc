@@ -46,7 +46,7 @@ namespace SVGL
 
         /***** XML::Node *****/
 
-        void Line::setAttribute(unsigned int index, SubString name, SubString value)
+        void Line::setAttribute(unsigned int index, SubString value)
         {
             switch (index)
             {
@@ -89,7 +89,7 @@ namespace SVGL
             case Attribute::D:
                 break;
             default:
-                Styled::setAttribute(index, name, value);
+                Styled::setAttribute(index, value);
                 break;
             }
         }
@@ -115,6 +115,8 @@ namespace SVGL
 
         void Line::Instance::buffer(double tolerance)
         {
+            style.buffer(*this);
+
             PathCommands::List commandList;
             commandList.emplace_back(new PathCommands::MoveTo(x1, y1));
             commandList.emplace_back(new PathCommands::LineTo(x2, y2));
@@ -124,10 +126,19 @@ namespace SVGL
             renderBuffer.buffer(commandList, style, tolerance);
         }
 
-        void Line::Instance::render(Render::Context* context)
+        void Line::Instance::render(Render::Context* context) const
         {
             context->pushTransform(&line->transform);
             renderBuffer.render(context, style);
+        }
+
+        void Line::Instance::calculateBoundingBox(BoundingBox* boundingBox) const
+        {
+            boundingBox->pMin.x = std::min(x1, x2);
+            boundingBox->pMin.y = std::min(y1, y2);
+
+            boundingBox->pMax.x = std::max(x1, x2);
+            boundingBox->pMax.y = std::max(y1, y2);
         }
     }
 }

@@ -26,7 +26,7 @@
 #include <SVGL/PathCommands/PathCommandsList.hh>
 #include <SVGL/Render/RenderPathBuffer.hh>
 #include <SVGL/Styles/StylesShape.hh>
-#include <SVGL/CSS/CSSCalculableCache.hh>
+#include <SVGL/CSS/CSSCalculable.hh>
 
 namespace SVGL
 {
@@ -49,7 +49,9 @@ namespace SVGL
 
                 void buffer(double tolerance) override;
 
-                void render(Render::Context* context) override;
+                void render(Render::Context* context) const override;
+
+                void calculateBoundingBox(BoundingBox* boundingBox) const override;
             };
 
         public:
@@ -75,7 +77,7 @@ namespace SVGL
 
             /***** From XML::Node *****/
 
-            void setAttribute(unsigned int index, SubString name, SubString value) override;
+            void setAttribute(unsigned int index, SubString value) override;
 
             /**
              * Output to stream
@@ -85,8 +87,6 @@ namespace SVGL
             /***** From Elements::Root *****/
 
             Instance_uptr calculateInstance(const CSS::PropertySet& inherit, const CSS::SizeContext& sizeContext) override;
-
-
-        };
+       };
     }
 }

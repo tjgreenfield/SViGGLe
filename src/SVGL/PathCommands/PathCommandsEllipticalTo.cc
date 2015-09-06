@@ -168,6 +168,21 @@ namespace SVGL
                                 (cosp*ry*rotate.c) + (sinp*rx*rotate.d) + cy); //y
                     *boundingBox += point;
                 }
+                if (t > 0)
+                {
+                    t -= PI;
+                }
+                else
+                {
+                    t += PI;
+                }
+                if ((t > t1) && (t < dt))
+                {
+                    Transforms::Rotate rotate(t);
+                    Point point((cosp*rx*rotate.a) + (sinp*ry*rotate.b) + cx, //x
+                                (cosp*ry*rotate.c) + (sinp*rx*rotate.d) + cy); //y
+                    *boundingBox += point;
+                }
             }
 
             // max y
@@ -180,8 +195,22 @@ namespace SVGL
                                 (cosp*ry*rotate.c) + (sinp*rx*rotate.d) + cy); //y
                     *boundingBox += point;
                 }
+                if (t > 0)
+                {
+                    t -= PI;
+                }
+                else
+                {
+                    t += PI;
+                }
+                if ((t > t1) && (t < dt))
+                {
+                    Transforms::Rotate rotate(t);
+                    Point point((cosp*rx*rotate.a) + (sinp*ry*rotate.b) + cx, //x
+                                (cosp*ry*rotate.c) + (sinp*rx*rotate.d) + cy); //y
+                    *boundingBox += point;
+                }
             }
-
         }
     }
 }

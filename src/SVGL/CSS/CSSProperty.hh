@@ -26,6 +26,11 @@
 #include <vector>
 #include <string>
 
+// TODO: find a better way to deal with this naming clash
+#ifdef OVERFLOW
+#undef OVERFLOW
+#endif
+
 namespace SVGL
 {
     namespace CSS

@@ -310,7 +310,13 @@ void renderTest()
 
 
     SVGL::Parser parser;
-    parser.loadFile("data/example.svg");
+    parser.loadFile("data/Example.svg");
+    
+    if (!parser)
+    {
+		std::cout << "Error opening sample file data/example.svg" << std::endl;
+		exit(-1);
+	}
 
     document = parser.readSVG();
 

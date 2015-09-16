@@ -81,6 +81,11 @@ namespace SVGL
 
             Parser(const Parser& parser) = default;
             Parser& operator=(const Parser& parser) = default;
+            
+            operator bool()
+            {
+				return s != nullptr;
+			}
 
             /**
              * Load data from file

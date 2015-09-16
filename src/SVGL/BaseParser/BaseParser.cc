@@ -52,6 +52,8 @@ namespace SVGL
          */
         void Parser::loadFile(const char* path)
         {
+			s = nullptr;
+			
             // open the file
             std::ifstream file;
             file.open(path);

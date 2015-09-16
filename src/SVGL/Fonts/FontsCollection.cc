@@ -128,11 +128,14 @@ namespace SVGL
             }
             if (face->face_flags & FT_FACE_FLAG_FIXED_SIZES)
             {
-                for (int i = 0; i < face->num_fixed_sizes; ++i)
-                {
-                    getFamily(face->family_name).insert(path, index, face->style_name, i, face->available_sizes[i].size >> 6);
-                    //std::cout << face->family_name << ":" << face->style_name << "$" << (face->available_sizes[i].size >> 6) << " @ " << path << "#" << index << std::endl;
-                }
+				if ((face->family_name != nullptr) && (face->style_name != nullptr))
+				{
+					for (int i = 0; i < face->num_fixed_sizes; ++i)
+					{
+						getFamily(face->family_name).insert(path, index, face->style_name, i, face->available_sizes[i].size >> 6);
+						//std::cout << face->family_name << ":" << face->style_name << "$" << (face->available_sizes[i].size >> 6) << " @ " << path << "#" << index << std::endl;
+					}
+				}
             }
         }
 
